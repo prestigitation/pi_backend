@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Role;
 
+use App\Helpers\Enums\DashboardRoles;
+
 class User extends Authenticatable // implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
@@ -19,7 +21,7 @@ class User extends Authenticatable // implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'type'
+        'name', 'email', 'password', 'type', 'patronymic', 'surname'
     ];
 
     /**
@@ -67,11 +69,11 @@ class User extends Authenticatable // implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return $this->roles()->where('name', 'Admin')->exists();
+        return $this->roles()->where('name', DashboardRoles::ROLE_ADMIN)->exists();
     }
 
     public function isUser()
     {
-        return $this->roles()->where('name', 'User')->exists();
+        return $this->roles()->where('name', DashboardRoles::ROLE_USER)->exists();
     }
 }

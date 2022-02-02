@@ -4,13 +4,13 @@
         <div class="row">
 
           <div class="col-12">
-        
+
             <div class="card" v-if="$gate.isAdmin()">
               <div class="card-header">
                 <h3 class="card-title">User List</h3>
 
                 <div class="card-tools">
-                  
+
                   <button type="button" class="btn btn-sm btn-primary" @click="newModal">
                       <i class="fa fa-plus-square"></i>
                       Add New
@@ -97,14 +97,14 @@
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
                             <has-error :form="form" field="email"></has-error>
                         </div>
-                    
+
                         <div class="form-group">
                             <label>Password</label>
                             <input v-model="form.password" type="password" name="password"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
                             <has-error :form="form" field="password"></has-error>
                         </div>
-                    
+
                         <div class="form-group">
                             <label>User Role</label>
                             <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
@@ -149,15 +149,15 @@
             getResults(page = 1) {
 
                   this.$Progress.start();
-                  
-                  axios.get('api/user?page=' + page).then(({ data }) => (this.users = data.data));
+
+                  axios.get(`api/${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
 
                   this.$Progress.finish();
             },
             updateUser(){
                 this.$Progress.start();
                 // console.log('Editing data');
-                this.form.put('api/user/'+this.form.id)
+                this.form.put(`api/${this.$props.entity}/`+this.form.id)
                 .then((response) => {
                     // success
                     $('#addNew').modal('hide');
@@ -198,7 +198,7 @@
 
                         // Send request to the server
                          if (result.value) {
-                                this.form.delete('api/user/'+id).then(()=>{
+                                this.form.delete(`api/${this.$props.entity}/`+id).then(()=>{
                                         Swal.fire(
                                         'Deleted!',
                                         'Your file has been deleted.',
@@ -216,18 +216,17 @@
             this.$Progress.start();
 
             if(this.$gate.isAdmin()){
-              axios.get("api/user").then(({ data }) => (this.users = data.data));
+              axios.get(`api/${this.$props.entity}`).then(({ data }) => (this.users = data.data));
             }
 
             this.$Progress.finish();
           },
-          
+
           createUser(){
 
               this.form.post('api/user')
               .then((response)=>{
                   $('#addNew').modal('hide');
-
                   Toast.fire({
                         icon: 'success',
                         title: response.data.message
@@ -248,12 +247,16 @@
 
         },
         mounted() {
-            console.log('User Component mounted.')
+        },
+        props: {
+            entity: {
+                type: String,
+                default: 'user'
+            }
         },
         created() {
-
             this.$Progress.start();
-            this.loadUsers();
+            this.loadUsers(this.$props.entity);
             this.$Progress.finish();
         }
     }

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use App\Helpers\Enums\DashboardRoles;
+
 class RegisterController extends Controller
 {
     /*
@@ -62,19 +64,19 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    public function create(array $data)
     {
         $user = User::create([
             'name' => $data['name'],
+            'surname' => $data['surname'],
+            'patronymic' => $data['patronymic'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'type' => 'admin',
+            'type' => 'user',
         ]);
 
-        // Assigning Role by default user role
-
-        // $role = Role::where('name', 'User')->first();
-        // $user->assignRole($role);
+        $role = Role::where('name', DashboardRoles::ROLE_USER)->first();
+        $user->assignRole($role);
 
         return $user;
     }
