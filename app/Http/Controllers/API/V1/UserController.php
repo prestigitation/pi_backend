@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Http\Repositories\UserRepository;
+use App\Repositories\UserRepository;
+use App\Http\Requests\Users\SearchUserRequest;
 use App\Http\Requests\Users\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -102,10 +103,10 @@ class UserController extends BaseController
         return $this->sendResponse([$user], 'User has been Deleted');
     }
 
-    public function search(Request $request)
+    public function search(SearchUserRequest $request)
     {
-        $user = UserRepository::search($request->search);
-        if($user) return $user;
-        return $this->sendError('Не удалось найти пользователя');
+        $users = UserRepository::search($request->validated());
+        if($users) return response()->json($users);
+        else return $this->sendError('Не удалось найти ни одного пользователя');
     }
 }

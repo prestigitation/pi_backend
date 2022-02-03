@@ -13,42 +13,52 @@
             </div>
         </div>
         <button class="btn btn-success my-lg-4 my-1 col-3 mx-auto" @click.prevent="findUser">Найти</button>
-        <div v-if="roles || roles.length">{{roles}}</div>
+        <div v-if="foundUsers.length">
+            <Users></Users>
+        </div>
     </div>
 </section>
 </template>
-<script>import axios from "axios"
+<script>
+import axios from "axios"
+import Users from "./Users.vue"
 
 export default {
-    name: 'users-roles',
+    name: "users-roles",
     data() {
         return {
             user: {
-                id: '',
-                name: '',
-                surname: '',
-                patronymic: ''
+                id: "",
+                name: "",
+                surname: "",
+                patronymic: ""
             },
             roles: [],
-            foundUser: undefined,
-        }
+            foundUsers: [],
+        };
     },
     created() {
-        axios.get('role').then(({data}) => {
-            console.log(window.axios.defaults)
-            this.roles = data
-        })
+        axios.get("role").then(({ data }) => {
+            this.roles = data;
+        });
     },
     methods: {
         findUser() {
-            let formData = new FormData()
-            if(this.user.id) formData.append('id', this.user.id)
-            if(this.user.name) formData.append('name', this.user.name)
-            if(this.user.surname) formData.append('surname', this.user.surname)
-            if(this.user.patronymic) formData.append('patronymic', this.user.patronymic)
-            axios.post('user/find', formData)
+            let formData = new FormData();
+            if (this.user.id)
+                formData.append("id", this.user.id);
+            if (this.user.name)
+                formData.append("name", this.user.name);
+            if (this.user.surname)
+                formData.append("surname", this.user.surname);
+            if (this.user.patronymic)
+                formData.append("patronymic", this.user.patronymic);
+            axios.post("user/search", formData).then(({ data }) => {
+                this.foundUsers = data;
+            });
         }
-    }
+    },
+    components: { Users }
 }
 </script>
 <style lang="scss" scoped>

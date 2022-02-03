@@ -7,61 +7,67 @@
 
             <div class="card" v-if="$gate.isAdmin()">
               <div class="card-header">
-                <h3 class="card-title">User List</h3>
+                <h3 class="card-title"> {{entity_title}} List</h3>
 
                 <div class="card-tools">
 
                   <button type="button" class="btn btn-sm btn-primary" @click="newModal">
                       <i class="fa fa-plus-square"></i>
-                      Add New
+                      Добавить
                   </button>
                 </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover">
-                  <thead>
+                <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Type</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Email Verified?</th>
-                      <th>Created</th>
-                      <th>Action</th>
+                        <slot name="table_header">
+                            <th>ID</th>
+                            <th>Роль</th>
+                            <th>Фамилия</th>
+                            <th>Имя</th>
+                            <th>Отчество</th>
+                            <th>Email</th>
+                            <th>Cоздан</th>
+                            <th>Действия</th>
+                        </slot>
                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr v-for="user in users.data" :key="user.id">
+                </thead>
+                <tbody>
+                    <slot name="table_body">
+                        <tr v-for="user in users.data" :key="user.id">
 
-                      <td>{{user.id}}</td>
-                      <td class="text-capitalize">{{user.type}}</td>
-                      <td class="text-capitalize">{{user.name}}</td>
-                      <td>{{user.email}}</td>
-                      <td :inner-html.prop="user.email_verified_at | yesno"></td>
-                      <td>{{user.created_at}}</td>
-
-                      <td>
-
-                        <a href="#" @click="editModal(user)">
-                            <i class="fa fa-edit blue"></i>
-                        </a>
-                        /
-                        <a href="#" @click="deleteUser(user.id)">
-                            <i class="fa fa-trash red"></i>
-                        </a>
-                      </td>
+                            <td>{{user.id}}</td>
+                            <td class="text-capitalize">{{user.type}}</td>
+                            <td class="text-capitalize">{{user.surname}}</td>
+                            <td class="text-capitalize">{{user.name}}</td>
+                            <td class="text-capitalize">{{user.patronymic}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.created_at}}</td>
+                            <td>
+                                <slot name="table_actions">
+                                    <a href="#" @click="editModal(user)">
+                                        <i class="fa fa-edit blue"></i>
+                                    </a>
+                                    /
+                                    <a href="#" @click="deleteUser(user.id)">
+                                        <i class="fa fa-trash red"></i>
+                                    </a>
+                                </slot>
+                            </td>
                     </tr>
-                  </tbody>
+                    </slot>
+                </tbody>
                 </table>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                  <pagination :data="users" @pagination-change-page="getResults"></pagination>
-              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <pagination :data="users" @pagination-change-page="getResults"></pagination>
+                </div>
             </div>
             <!-- /.card -->
-          </div>
+        </div>
         </div>
 
 
@@ -86,9 +92,21 @@
                 <form @submit.prevent="editmode ? updateUser() : createUser()">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Name</label>
+                            <label>Имя</label>
                             <input v-model="form.name" type="text" name="name"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                            <has-error :form="form" field="name"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <label>Фамилия</label>
+                            <input v-model="form.surname" type="text" name="surname"
+                                class="form-control" :class="{ 'is-invalid': form.errors.has('surname') }">
+                            <has-error :form="form" field="name"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <label>Отчество</label>
+                            <input v-model="form.patronymic" type="text" name="patronymic"
+                                class="form-control" :class="{ 'is-invalid': form.errors.has('patronymic') }">
                             <has-error :form="form" field="name"></has-error>
                         </div>
                         <div class="form-group">
@@ -99,7 +117,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Password</label>
+                            <label>Пароль</label>
                             <input v-model="form.password" type="password" name="password"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
                             <has-error :form="form" field="password"></has-error>
@@ -120,12 +138,12 @@
                         <button v-show="editmode" type="submit" class="btn btn-success">Update</button>
                         <button v-show="!editmode" type="submit" class="btn btn-primary">Create</button>
                     </div>
-                  </form>
+                </form>
                 </div>
             </div>
         </div>
     </div>
-  </section>
+</section>
 </template>
 
 <script>
@@ -138,6 +156,8 @@
                     id : '',
                     type : '',
                     name: '',
+                    surname: '',
+                    patronymic: '',
                     email: '',
                     password: '',
                     email_verified_at: '',
@@ -147,23 +167,20 @@
         methods: {
 
             getResults(page = 1) {
-
-                  this.$Progress.start();
-
-                  axios.get(`api/${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
-
-                  this.$Progress.finish();
+                this.$Progress.start();
+                axios.get(`${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
+                this.$Progress.finish();
             },
             updateUser(){
                 this.$Progress.start();
                 // console.log('Editing data');
-                this.form.put(`api/${this.$props.entity}/`+this.form.id)
+                this.form.put(`${this.$props.entity}/`+this.form.id)
                 .then((response) => {
                     // success
                     $('#addNew').modal('hide');
                     Toast.fire({
-                      icon: 'success',
-                      title: response.data.message
+                        icon: 'success',
+                        title: response.data.message
                     });
                     this.$Progress.finish();
                         //  Fire.$emit('AfterCreate');
@@ -197,8 +214,8 @@
                     }).then((result) => {
 
                         // Send request to the server
-                         if (result.value) {
-                                this.form.delete(`api/${this.$props.entity}/`+id).then(()=>{
+                        if (result.value) {
+                                this.form.delete(`${this.$props.entity}/`+id).then(()=>{
                                         Swal.fire(
                                         'Deleted!',
                                         'Your file has been deleted.',
@@ -207,43 +224,40 @@
                                     // Fire.$emit('AfterCreate');
                                     this.loadUsers();
                                 }).catch((data)=> {
-                                  Swal.fire("Failed!", data.message, "warning");
-                              });
-                         }
+                                Swal.fire("Failed!", data.message, "warning");
+                            });
+                        }
                     })
             },
-          loadUsers(){
-            this.$Progress.start();
+        loadUsers(){
+        this.$Progress.start();
 
-            if(this.$gate.isAdmin()){
-              axios.get(`api/${this.$props.entity}`).then(({ data }) => (this.users = data.data));
-            }
+        if(this.$gate.isAdmin()){
+            axios.get(`${this.$props.entity}`).then(({ data }) => (this.users = data.data));
+        }
 
-            this.$Progress.finish();
-          },
+        this.$Progress.finish();
+        },
+        createUser(){
 
-          createUser(){
-
-              this.form.post('api/user')
-              .then((response)=>{
-                  $('#addNew').modal('hide');
-                  Toast.fire({
+        this.form.post('user')
+            .then((response)=>{
+                $('#addNew').modal('hide');
+                Toast.fire({
                         icon: 'success',
                         title: response.data.message
-                  });
+                });
 
-                  this.$Progress.finish();
-                  this.loadUsers();
-
-              })
-              .catch(()=>{
-
-                  Toast.fire({
-                      icon: 'error',
-                      title: 'Some error occured! Please try again'
-                  });
-              })
-          }
+                this.$Progress.finish();
+                this.loadUsers();
+            })
+            .catch(()=>{
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Some error occured! Please try again'
+                });
+            })
+        }
 
         },
         mounted() {
@@ -258,6 +272,11 @@
             this.$Progress.start();
             this.loadUsers(this.$props.entity);
             this.$Progress.finish();
+        },
+        computed: {
+            entity_title() {
+                return this.$props.entity.charAt(0).toUpperCase() + this.$props.entity.slice(1);
+            }
         }
     }
 </script>
