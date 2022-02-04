@@ -7,8 +7,16 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
 
+use App\Helpers\Enums\DashboardRoles;
+use App\Helpers\Functions\FilterRolesNames;
+
 class AuthServiceProvider extends ServiceProvider
 {
+
+    public function __construct()
+    {
+        $this->roleNameFilter = new FilterRolesNames();
+    }
     /**
      * The policy mappings for the application.
      *
@@ -48,6 +56,17 @@ class AuthServiceProvider extends ServiceProvider
 
             // for simplicity
             return $user->isUser();
+        });
+
+        Gate::define('setRole', function (User $user) {
+            $roles = [
+                DashboardRoles::ROLE_ADMIN->value,
+                DashboardRoles::ROLE_OWNER->value,
+            ];
+            return count(array_intersect(
+                $this->roleNameFilter->getRolesNames($user->roles->toArray()),
+                $roles
+            ));
         });
     }
 }

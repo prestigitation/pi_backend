@@ -1,24 +1,28 @@
 <template>
-  <section class="content">
+<section class="content">
     <div class="container-fluid">
         <div class="row">
 
-          <div class="col-12">
+        <div class="col-12">
 
             <div class="card" v-if="$gate.isAdmin()">
-              <div class="card-header">
-                <h3 class="card-title"> {{entity_title}} List</h3>
+            <div class="card-header">
+                    <h3 class="card-title">
+                        <slot name="table_title">
+                            Список пользователей
+                        </slot>
+                    </h3>
 
                 <div class="card-tools">
 
-                  <button type="button" class="btn btn-sm btn-primary" @click="newModal">
-                      <i class="fa fa-plus-square"></i>
-                      Добавить
-                  </button>
+                <button type="button" class="btn btn-sm btn-primary" @click="newModal">
+                    <i class="fa fa-plus-square"></i>
+                    Добавить
+                </button>
                 </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
                 <table class="table table-hover">
                 <thead>
                     <tr>
@@ -45,7 +49,7 @@
                             <td class="text-capitalize">{{user.patronymic}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.created_at}}</td>
-                            <td>
+                            <td @click.prevent="setCurrentRow">
                                 <slot name="table_actions">
                                     <a href="#" @click="editModal(user)">
                                         <i class="fa fa-edit blue"></i>
@@ -63,7 +67,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-                <pagination :data="users" @pagination-change-page="getResults"></pagination>
+                <pagination :data="table_data ? table_data : users" @pagination-change-page="getResults"></pagination>
                 </div>
             </div>
             <!-- /.card -->
@@ -165,110 +169,129 @@
             }
         },
         methods: {
-
-            getResults(page = 1) {
-                this.$Progress.start();
-                axios.get(`${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
-                this.$Progress.finish();
-            },
-            updateUser(){
-                this.$Progress.start();
-                // console.log('Editing data');
-                this.form.put(`${this.$props.entity}/`+this.form.id)
-                .then((response) => {
-                    // success
-                    $('#addNew').modal('hide');
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.data.message
-                    });
+                getResults(page = 1) {
+                    this.$Progress.start();
+                    axios.get(`${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
                     this.$Progress.finish();
-                        //  Fire.$emit('AfterCreate');
+                },
+                updateUser(){
+                    this.$Progress.start();
+                    // console.log('Editing data');
+                    this.form.put(`${this.$props.entity}/`+this.form.id)
+                    .then((response) => {
+                        // success
+                        $('#addNew').modal('hide');
+                        Toast.fire({
+                            icon: 'success',
+                            title: response.data.message
+                        });
+                        this.$Progress.finish();
+                            //  Fire.$emit('AfterCreate');
 
-                    this.loadUsers();
-                })
-                .catch(() => {
-                    this.$Progress.fail();
-                });
-
-            },
-            editModal(user){
-                this.editmode = true;
-                this.form.reset();
-                $('#addNew').modal('show');
-                this.form.fill(user);
-            },
-            newModal(){
-                this.editmode = false;
-                this.form.reset();
-                $('#addNew').modal('show');
-            },
-            deleteUser(id){
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-
-                        // Send request to the server
-                        if (result.value) {
-                                this.form.delete(`${this.$props.entity}/`+id).then(()=>{
-                                        Swal.fire(
-                                        'Deleted!',
-                                        'Your file has been deleted.',
-                                        'success'
-                                        );
-                                    // Fire.$emit('AfterCreate');
-                                    this.loadUsers();
-                                }).catch((data)=> {
-                                Swal.fire("Failed!", data.message, "warning");
-                            });
-                        }
+                        this.loadUsers();
                     })
-            },
-        loadUsers(){
-        this.$Progress.start();
+                    .catch(() => {
+                        this.$Progress.fail();
+                    });
 
-        if(this.$gate.isAdmin()){
-            axios.get(`${this.$props.entity}`).then(({ data }) => (this.users = data.data));
-        }
+                },
+                editModal(user){
+                    this.editmode = true;
+                    this.form.reset();
+                    $('#addNew').modal('show');
+                    this.form.fill(user);
+                },
+                newModal(){
+                    this.editmode = false;
+                    this.form.reset();
+                    $('#addNew').modal('show');
+                },
+                deleteUser(id){
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
 
-        this.$Progress.finish();
-        },
-        createUser(){
+                            // Send request to the server
+                            if (result.value) {
+                                    this.form.delete(`${this.$props.entity}/`+id).then(()=>{
+                                            Swal.fire(
+                                            'Deleted!',
+                                            'Your file has been deleted.',
+                                            'success'
+                                            );
+                                        // Fire.$emit('AfterCreate');
+                                        this.loadUsers();
+                                    }).catch((data)=> {
+                                    Swal.fire("Failed!", data.message, "warning");
+                                });
+                            }
+                        })
+                },
+                loadUsers() {
+                    this.$Progress.start();
 
-        this.form.post('user')
-            .then((response)=>{
-                $('#addNew').modal('hide');
-                Toast.fire({
-                        icon: 'success',
-                        title: response.data.message
-                });
+                    if(this.$gate.isAdmin() && !this.table_data) {
+                        axios.get(`${this.$props.entity}`).then(({ data }) => (this.users = data.data));
+                    } else this.users = this.$props.table_data
 
-                this.$Progress.finish();
-                this.loadUsers();
-            })
-            .catch(()=>{
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Some error occured! Please try again'
-                });
-            })
-        }
+                    this.$Progress.finish();
+                },
+                createUser(){
 
+                this.form.post(`${this.$props.entity}`)
+                    .then((response)=>{
+                        $('#addNew').modal('hide');
+                        Toast.fire({
+                                icon: 'success',
+                                title: response.data.message
+                        });
+
+                        this.$Progress.finish();
+                        this.loadUsers();
+                    })
+                    .catch(()=>{
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Some error occured! Please try again'
+                        });
+                    })
+                },
+                setCurrentRow(e) {
+                        // нахождение текущего пользователя по строке, на которой был совершен клик
+                        let id = e?.target?.parentElement?.parentElement?.parentElement?.childNodes[0]?.innerText
+                        if(id && !isNaN(parseInt(id))) {
+                            if(this.table_data) {
+                                this.$emit('set_editing_id', this.findCurrentUser(this.table_data.data, id))
+                            }
+                            else if(this.users) {
+                                this.$emit('set_editing_id', this.findCurrentUser(this.users.data, id))
+                            }
+                        }
+                    },
+                findCurrentUser(data, userId) {
+                    return data.filter(item => item.id === parseInt(userId))[0]
+                }
         },
         mounted() {
+            console.log(this.$props.table_data);
+            console.log(this.user)
         },
         props: {
             entity: {
                 type: String,
                 default: 'user'
+            },
+            table_data: {
+                type: Object,
+                default: () => undefined
             }
         },
-        created() {
+        mounted() {
             this.$Progress.start();
             this.loadUsers(this.$props.entity);
             this.$Progress.finish();

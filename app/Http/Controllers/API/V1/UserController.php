@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\Functions\FilterRolesNames;
 use App\Repositories\UserRepository;
 use App\Http\Requests\Users\SearchUserRequest;
 use App\Http\Requests\Users\UserRequest;
@@ -13,14 +14,21 @@ use Illuminate\Support\Facades\Gate;
 
 class UserController extends BaseController
 {
+
+    private $userRepository;
+    private $filterRolesNames;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserRepository $userRepository, FilterRolesNames $filterRolesNames)
     {
         $this->middleware('auth:api');
+
+        $this->userRepository = $userRepository;
+        $this->filterRolesNames = $filterRolesNames;
     }
 
     /**
@@ -54,6 +62,8 @@ class UserController extends BaseController
     {
         $user = User::create([
             'name' => $request['name'],
+            'surname' => $request['surname'],
+            'patronymic' => $request['patronymic'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
             'type' => $request['type'],
@@ -105,8 +115,33 @@ class UserController extends BaseController
 
     public function search(SearchUserRequest $request)
     {
-        $users = UserRepository::search($request->validated());
+        $users = $this->userRepository->search($request->validated());
         if($users) return response()->json($users);
         else return $this->sendError('Не удалось найти ни одного пользователя');
+    }
+
+    public function attachRole(int $userId, int $roleId)
+    {
+        if(Gate::allows('setRole')) {
+            $userRoles = User::find($userId)->roles->toArray();
+            if(!$this->filterRolesNames->duplicateRole($roleId, $userRoles)) { // проверка, если роль не дублируется
+                $this->userRepository->setRole($userId, $roleId);
+                return $this->sendResponse(['message' => 'Роль была успешно добавлена']);
+            } else {
+                return $this->sendError(null,'Такая роль у пользователя уже существует. Выберите другую.');
+            }
+        } else return $this->sendError(null, 'Не удалось добавить роль. Возможно, у вас недостаточно прав редактирования ролей пользователя');
+    }
+
+    public function detachRole(int $userId, int $roleId)
+    {
+        if(Gate::allows('setRole')) {
+            try {
+                $this->userRepository->detachRole($userId, $roleId);
+                return $this->sendResponse(['message' => 'Роль была успешно отвязана']);
+            } catch (\Exception $e) {
+                return $this->sendError(null, 'Не удалось отвязать роль у пользователя');
+            }
+        } else return $this->sendError(null, 'Недостаточно прав для отвязки роли пользователя');
     }
 }

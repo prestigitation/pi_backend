@@ -33,6 +33,9 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
     Route::get('tag/list', 'TagController@list');
     Route::get('category/list', 'CategoryController@list');
 
+    Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');
+    Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
+
     Route::post('user/search', 'UserController@search');
 
     Route::apiResources([
