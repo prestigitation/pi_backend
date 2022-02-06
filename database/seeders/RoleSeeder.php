@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 use App\Helpers\Enums\DashboardRoles;
+use App\Helpers\Traits\EnumHelper;
+
 use App\Models\Role;
 
 class RoleSeeder extends Seeder
@@ -16,10 +18,10 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        foreach(DashboardRoles::cases() as $index => $role) {
+        foreach(EnumHelper::getValues(DashboardRoles::cases()) as $index => $role) {
             Role::create([
                 'id' => $index + 1,
-                'name' => $role->value
+                'name' => $role
             ]);
         }
     }

@@ -72,7 +72,6 @@ class RegisterController extends Controller
             'patronymic' => $data['patronymic'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'type' => 'user',
         ]);
 
         $role = Role::where('name', DashboardRoles::ROLE_USER)->first();

@@ -6,6 +6,7 @@ use App\Helpers\Functions\FilterRolesNames;
 use App\Repositories\UserRepository;
 use App\Http\Requests\Users\SearchUserRequest;
 use App\Http\Requests\Users\UserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -43,9 +44,7 @@ class UserController extends BaseController
         }
         // $this->authorize('isAdmin');
 
-        $users = User::latest()->paginate(10);
-
-        return $this->sendResponse($users, 'Users list');
+        return $this->userRepository->getAll();
     }
 
     /**

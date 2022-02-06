@@ -6,7 +6,13 @@ use App\Models\User;
 
 class UserRepository {
 
-    public function search(array $validatedSearch) {
+    public function getAll()
+    {
+        return new UserResource(User::paginate(10));
+    }
+
+    public function search(array $validatedSearch)
+    {
         $userQuery = User::with(['roles']);
         foreach($validatedSearch as $key => $value) {
             $userQuery->when(true, function($query) use ($key, $value) {

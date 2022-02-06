@@ -44,5 +44,6 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
         'tag' => 'TagController',
         'group' => 'GroupController',
         'role' => 'RoleController',
+        'teacher' => 'TeacherController'
     ]);
 });

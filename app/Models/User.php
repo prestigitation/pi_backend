@@ -21,7 +21,7 @@ class User extends Authenticatable // implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'type', 'patronymic', 'surname'
+        'name', 'email', 'password', 'patronymic', 'surname'
     ];
 
     /**
@@ -41,6 +41,13 @@ class User extends Authenticatable // implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Загрузка связанных моделей по умолчанию
+     *
+     * @var array
+     */
+    protected $with = ['roles'];
 
      /**
      * Get the profile photo URL attribute.
@@ -75,5 +82,26 @@ class User extends Authenticatable // implements MustVerifyEmail
     public function isUser()
     {
         return $this->roles()->where('name', DashboardRoles::ROLE_USER)->exists();
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
+
+
+    /**
+
+        *Получение пользователей с заданными именем роли.
+
+        *@param string $roleName
+        *@return User[]
+     */
+
+    public function scopeOfRole($query, string $roleName) {
+        $query->whereHas('roles', function ($q) use ($roleName) {
+            $q->where('name', $roleName);
+        });
     }
 }

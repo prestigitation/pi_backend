@@ -9,7 +9,7 @@
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
-                            Список пользователей
+                            Список <slot name="entity_title">пользователей</slot>
                         </slot>
                     </h3>
 
@@ -28,7 +28,7 @@
                     <tr>
                         <slot name="table_header">
                             <th>ID</th>
-                            <th>Роль</th>
+                            <th>Роли</th>
                             <th>Фамилия</th>
                             <th>Имя</th>
                             <th>Отчество</th>
@@ -43,7 +43,11 @@
                         <tr v-for="user in users.data" :key="user.id">
 
                             <td>{{user.id}}</td>
-                            <td class="text-capitalize">{{user.type}}</td>
+                            <td class="text-capitalize">
+                                <span class="badge badge-primary" v-for="role in user.roles" :key="role.id">
+                                    {{role.name}}
+                                </span>
+                            </td>
                             <td class="text-capitalize">{{user.surname}}</td>
                             <td class="text-capitalize">{{user.name}}</td>
                             <td class="text-capitalize">{{user.patronymic}}</td>
@@ -201,10 +205,14 @@
                     $('#addNew').modal('show');
                     this.form.fill(user);
                 },
-                newModal(){
-                    this.editmode = false;
-                    this.form.reset();
-                    $('#addNew').modal('show');
+                newModal() {
+                    if(this.$props.entity) {
+                        this.$emit('openAddModal')
+                    } else {
+                        this.editmode = false;
+                        this.form.reset();
+                        $('#addNew').modal('show');
+                    }
                 },
                 deleteUser(id){
                     Swal.fire({
@@ -235,11 +243,14 @@
                 loadUsers() {
                     this.$Progress.start();
 
-                    if(this.$gate.isAdmin() && !this.table_data) {
-                        axios.get(`${this.$props.entity}`).then(({ data }) => (this.users = data.data));
-                    } else this.users = this.$props.table_data
+                    if(this.$gate.isAdmin()) {
+                        if(!this.table_data) {
+                            axios.get(`${this.$props.entity}`).then(({ data }) => (this.users = data));
+                        } else this.users = this.table_data
+                    }
 
                     this.$Progress.finish();
+
                 },
                 createUser(){
 
@@ -276,10 +287,6 @@
                 findCurrentUser(data, userId) {
                     return data.filter(item => item.id === parseInt(userId))[0]
                 }
-        },
-        mounted() {
-            console.log(this.$props.table_data);
-            console.log(this.user)
         },
         props: {
             entity: {

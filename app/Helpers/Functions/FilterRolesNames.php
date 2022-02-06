@@ -2,15 +2,14 @@
 
 namespace App\Helpers\Functions;
 
-use App\Models\Role;
+use App\Helpers\Traits\EnumHelper;
 
 class FilterRolesNames
 {
-    public function getRolesNames(array $rolesData)
+    use EnumHelper;
+    public function getRolesNames(array $roles)
     {
-        return array_map(function($role) {
-            return $role['name'];
-        }, $rolesData);
+        return EnumHelper::getValues($roles);
     }
 
     public function duplicateRole(int $roleId, array $roles)

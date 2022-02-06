@@ -10,6 +10,8 @@ use Laravel\Passport\Passport;
 use App\Helpers\Enums\DashboardRoles;
 use App\Helpers\Functions\FilterRolesNames;
 
+use App\Helpers\Traits\EnumHelper;
+
 class AuthServiceProvider extends ServiceProvider
 {
 
@@ -60,12 +62,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('setRole', function (User $user) {
             $roles = [
-                DashboardRoles::ROLE_ADMIN->value,
-                DashboardRoles::ROLE_OWNER->value,
+                DashboardRoles::ROLE_ADMIN,
+                DashboardRoles::ROLE_OWNER,
             ];
             return count(array_intersect(
-                $this->roleNameFilter->getRolesNames($user->roles->toArray()),
-                $roles
+                EnumHelper::getNames($user->roles->toArray()),
+                EnumHelper::getValues($roles)
             ));
         });
     }

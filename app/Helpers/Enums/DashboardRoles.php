@@ -1,16 +1,15 @@
 <?php
 namespace App\Helpers\Enums;
 
+use App\Helpers\Traits\EnumHelper;
+
 enum DashboardRoles: string {
-    case ROLE_USER = 'user';
-    case ROLE_ADMIN = 'admin';
+    use EnumHelper;
 
-    case ROLE_LABORANT = 'laborant';
-
-    case ROLE_TEACHER = 'teacher';
-    case ROLE_STUDENT = 'student';
-
-    //зав.кафедры
-    case ROLE_OWNER = 'owner';
-
+    case ROLE_USER = 'Пользователь';
+    case ROLE_ADMIN = 'Администратор';
+    case ROLE_LABORANT = 'Лаборант';
+    case ROLE_TEACHER = 'Преподаватель';
+    case ROLE_STUDENT = 'Студент';
+    case ROLE_OWNER = 'Заведующий кафедрой';
 }

@@ -26,7 +26,6 @@ class UsersTableSeeder extends Seeder
             'patronymic' => 'oe',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('12345678'),
-            'type' => 'admin',
         ]);
     }
 }

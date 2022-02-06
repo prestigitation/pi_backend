@@ -6,7 +6,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+
+use App\Helpers\Enums\NewsCategories;
+use App\Helpers\Traits\EnumHelper;
+use App\Models\Category;
 
 class CategoriesTableSeeder extends Seeder
 {
@@ -19,33 +22,11 @@ class CategoriesTableSeeder extends Seeder
     {
         DB::table('categories')->truncate();
 
-        DB::table('categories')->insert(
-            [
-                [
-                    'name' => 'Electrical Vehicle/e-Power',
-                    'description' => Str::words(50),
-                ],
-                [
-                    'name' => 'Compact Car',
-                    'description' => Str::words(50),
-                ],
-                [
-                    'name' => 'Light Car',
-                    'description' => Str::words(50),
-                ],
-                [
-                    'name' => 'Minivan',
-                    'description' => Str::words(50),
-                ],
-                [
-                    'name' => 'Sports & Specialty',
-                    'description' => Str::words(50),
-                ],
-                [
-                    'name' => 'Sedan',
-                    'description' => Str::words(50),
-                ],
-            ]
-        );
+        foreach(EnumHelper::getValues(NewsCategories::cases()) as $index => $role) {
+            Category::create([
+                'id' => $index + 1,
+                'name' => $role
+            ]);
+        }
     }
 }
