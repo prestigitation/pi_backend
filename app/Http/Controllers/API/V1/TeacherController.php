@@ -7,12 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TeacherResource;
 use Illuminate\Http\Request;
 
-use App\Helpers\Enums\DashboardRoles;
-
-use App\Models\User;
+use App\Repositories\TeacherRepository;
 
 class TeacherController extends Controller
 {
+    private $teacherRepository;
+
+    public function __construct(TeacherRepository $teacherRepository)
+    {
+        $this->teacherRepository = $teacherRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +25,8 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teacherQuery = User::ofRole(DashboardRoles::ROLE_TEACHER->value);
-        return new TeacherResource($teacherQuery->paginate(10));
+        $teachers = $this->teacherRepository->getAll();
+        return new TeacherResource($teachers);
     }
 
     /**

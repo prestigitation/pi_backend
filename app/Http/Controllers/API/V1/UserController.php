@@ -6,11 +6,10 @@ use App\Helpers\Functions\FilterRolesNames;
 use App\Repositories\UserRepository;
 use App\Http\Requests\Users\SearchUserRequest;
 use App\Http\Requests\Users\UserRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Controllers\Auth\RegisterController;
 
 
 class UserController extends BaseController
@@ -18,18 +17,20 @@ class UserController extends BaseController
 
     private $userRepository;
     private $filterRolesNames;
+    private $registerController;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserRepository $userRepository, FilterRolesNames $filterRolesNames)
+    public function __construct(UserRepository $userRepository, FilterRolesNames $filterRolesNames, RegisterController $registerController)
     {
         $this->middleware('auth:api');
 
         $this->userRepository = $userRepository;
         $this->filterRolesNames = $filterRolesNames;
+        $this->registerController = $registerController;
     }
 
     /**
@@ -59,16 +60,7 @@ class UserController extends BaseController
      */
     public function store(UserRequest $request)
     {
-        $user = User::create([
-            'name' => $request['name'],
-            'surname' => $request['surname'],
-            'patronymic' => $request['patronymic'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-            'type' => $request['type'],
-        ]);
-
-        return $this->sendResponse($user, 'User Created Successfully');
+        return $this->registerController->create($request->validated());
     }
 
     /**

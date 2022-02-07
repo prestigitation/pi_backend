@@ -28,10 +28,11 @@
                     <tr>
                         <slot name="table_header">
                             <th>ID</th>
-                            <th>Роли</th>
+                            <slot name="table_additional_headers" />
                             <th>Фамилия</th>
                             <th>Имя</th>
                             <th>Отчество</th>
+                            <th>Роли</th>
                             <th>Email</th>
                             <th>Cоздан</th>
                             <th>Действия</th>
@@ -43,14 +44,15 @@
                         <tr v-for="user in users.data" :key="user.id">
 
                             <td>{{user.id}}</td>
-                            <td class="text-capitalize">
-                                <span class="badge badge-primary" v-for="role in user.roles" :key="role.id">
-                                    {{role.name}}
-                                </span>
-                            </td>
+                            <slot name="table_additional_contents" />
                             <td class="text-capitalize">{{user.surname}}</td>
                             <td class="text-capitalize">{{user.name}}</td>
                             <td class="text-capitalize">{{user.patronymic}}</td>
+                            <td class="text-capitalize">
+                                <span class="badge badge-primary mx-1" v-for="role in user.roles" :key="role.id">
+                                    {{role.name}}
+                                </span>
+                            </td>
                             <td>{{user.email}}</td>
                             <td>{{user.created_at}}</td>
                             <td @click.prevent="setCurrentRow">
@@ -82,80 +84,27 @@
         <div v-if="!$gate.isAdmin()">
             <not-found></not-found>
         </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNew" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" v-show="!editmode">Create New User</h5>
-                    <h5 class="modal-title" v-show="editmode">Update User's Info</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <slot name="edit_modal">
+            <user-modal
+                @update_user="$props.update_user ? $props.update_user() : updateUser()"
+                @create_user="$props.create_user ? $props.create_user() : createUser()"
+                id="addNew"
+                :editmode="editmode"
+                :form="form"
+            >
+                <div slot="modal_additional_content">
+                    <slot name="user_additional_content"></slot>
                 </div>
-
-                <!-- <form @submit.prevent="createUser"> -->
-
-                <form @submit.prevent="editmode ? updateUser() : createUser()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Имя</label>
-                            <input v-model="form.name" type="text" name="name"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                            <has-error :form="form" field="name"></has-error>
-                        </div>
-                        <div class="form-group">
-                            <label>Фамилия</label>
-                            <input v-model="form.surname" type="text" name="surname"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('surname') }">
-                            <has-error :form="form" field="name"></has-error>
-                        </div>
-                        <div class="form-group">
-                            <label>Отчество</label>
-                            <input v-model="form.patronymic" type="text" name="patronymic"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('patronymic') }">
-                            <has-error :form="form" field="name"></has-error>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input v-model="form.email" type="text" name="email"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
-                            <has-error :form="form" field="email"></has-error>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Пароль</label>
-                            <input v-model="form.password" type="password" name="password"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
-                            <has-error :form="form" field="password"></has-error>
-                        </div>
-
-                        <div class="form-group">
-                            <label>User Role</label>
-                            <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
-                                <option value="">Select User Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">Standard User</option>
-                            </select>
-                            <has-error :form="form" field="type"></has-error>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button v-show="editmode" type="submit" class="btn btn-success">Update</button>
-                        <button v-show="!editmode" type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
-                </div>
-            </div>
-        </div>
+            </user-modal>
+        </slot>
     </div>
 </section>
 </template>
 
 <script>
+import UserModal from './UserModal.vue';
     export default {
+    components: { UserModal },
         data () {
             return {
                 editmode: false,
@@ -175,7 +124,7 @@
         methods: {
                 getResults(page = 1) {
                     this.$Progress.start();
-                    axios.get(`${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data.data));
+                    axios.get(`${this.$props.entity}?page=` + page).then(({ data }) => (this.users = data));
                     this.$Progress.finish();
                 },
                 updateUser(){
@@ -296,6 +245,12 @@
             table_data: {
                 type: Object,
                 default: () => undefined
+            },
+            update_user: {
+                type: Function
+            },
+            create_user: {
+                type: Function
             }
         },
         mounted() {

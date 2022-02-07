@@ -22,7 +22,6 @@ class CreateTeachersTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()));
             $table->string('avatar_path');
-            $table->timestamps();
         });
     }
 
