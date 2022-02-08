@@ -35,8 +35,9 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
 
     Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');
     Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
-
     Route::post('user/search', 'UserController@search');
+
+    Route::post('teacher/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api');
 
     Route::apiResources([
         'user' => 'UserController',

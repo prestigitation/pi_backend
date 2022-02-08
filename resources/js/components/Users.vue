@@ -23,19 +23,18 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                 <thead>
                     <tr>
                         <slot name="table_header">
-                            <th>ID</th>
                             <slot name="table_additional_headers" />
-                            <th>Фамилия</th>
-                            <th>Имя</th>
-                            <th>Отчество</th>
-                            <th>Роли</th>
-                            <th>Email</th>
-                            <th>Cоздан</th>
-                            <th>Действия</th>
+                            <th class="text-capitalize align-middle text-center">Фамилия</th>
+                            <th class="text-capitalize align-middle text-center">Имя</th>
+                            <th class="text-capitalize align-middle text-center">Отчество</th>
+                            <th class="text-capitalize align-middle text-center">Роли</th>
+                            <th class=" align-middle text-center">Email</th>
+                            <th class="text-capitalize align-middle text-center">Cоздан</th>
+                            <th class="text-capitalize align-middle text-center">Действия</th>
                         </slot>
                     </tr>
                 </thead>
@@ -43,19 +42,18 @@
                     <slot name="table_body">
                         <tr v-for="user in users.data" :key="user.id">
 
-                            <td>{{user.id}}</td>
-                            <slot name="table_additional_contents" />
-                            <td class="text-capitalize">{{user.surname}}</td>
-                            <td class="text-capitalize">{{user.name}}</td>
-                            <td class="text-capitalize">{{user.patronymic}}</td>
-                            <td class="text-capitalize">
+                            <slot name="table_additional_contents" :user="user" />
+                            <td class="text-capitalize align-middle text-center">{{user.surname}}</td>
+                            <td class="text-capitalize align-middle text-center">{{user.name}}</td>
+                            <td class="text-capitalize align-middle text-center">{{user.patronymic}}</td>
+                            <td class="text-capitalize align-middle text-center">
                                 <span class="badge badge-primary mx-1" v-for="role in user.roles" :key="role.id">
                                     {{role.name}}
                                 </span>
                             </td>
-                            <td>{{user.email}}</td>
-                            <td>{{user.created_at}}</td>
-                            <td @click.prevent="setCurrentRow">
+                            <td class="align-middle text-center">{{user.email}}</td>
+                            <td class="text-capitalize align-middle text-center">{{user.created_at}}</td>
+                            <td class="text-capitalize align-middle text-center" @click.prevent="setCurrentRow">
                                 <slot name="table_actions">
                                     <a href="#" @click="editModal(user)">
                                         <i class="fa fa-edit blue"></i>

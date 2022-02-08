@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-
+use App\Http\Requests\Teachers\StoreTeacherAvatarRequest;
 use App\Http\Resources\TeacherResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Repositories\TeacherRepository;
@@ -72,5 +73,14 @@ class TeacherController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function changeAvatar(int $id, StoreTeacherAvatarRequest $request) {
+        try {
+            $this->teacherRepository->setAvatar($id, $request->validated());
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+
     }
 }

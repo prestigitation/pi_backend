@@ -70651,3 +70651,8 @@ body.swal2-toast-column .swal2-toast .swal2-validation-message {
   font-weight: bold;
 }
 
+.table__image {
+  max-width: 125px;
+  max-height: 125px;
+}
+
