@@ -10,4 +10,5 @@ enum TeacherPositions: string {
     case POSITION_SENIOR_LECTURER = 'Старший преподаватель';
     case POSITION_DOCENT = 'Доцент';
     case POSITION_ENGINEER = 'Инженер-программист';
+    case POSITION_SENIOR_LABORANT = 'Cтарший лаборант';
 }

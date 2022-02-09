@@ -12,4 +12,5 @@ enum DashboardRoles: string {
     case ROLE_TEACHER = 'Преподаватель';
     case ROLE_STUDENT = 'Студент';
     case ROLE_OWNER = 'Заведующий кафедрой';
+    case ROLE_ENGINEER = 'Инженер-программист';
 }

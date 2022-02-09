@@ -19,9 +19,9 @@ class CreateTeachersTable extends Migration
         //TODO: поле с информацией о полезных ссылках, ?ссылке на зум или дискорд и пароль от них(если требуется)
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()));
-            $table->string('avatar_path');
+            $table->string('avatar_path')->nullable();
         });
     }
 

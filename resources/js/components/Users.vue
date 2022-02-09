@@ -101,8 +101,10 @@
 
 <script>
 import UserModal from './UserModal.vue';
+import { notificationMixin } from '../mixins/notificationMixin'
     export default {
     components: { UserModal },
+    mixins: [notificationMixin],
         data () {
             return {
                 editmode: false,
@@ -163,26 +165,22 @@ import UserModal from './UserModal.vue';
                 },
                 deleteUser(id){
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
+                        title: 'Удаление пользователя',
+                        text: "Вы действительно хотите удалить данного пользователя?",
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: 'Да'
                         }).then((result) => {
 
                             // Send request to the server
                             if (result.value) {
                                     this.form.delete(`${this.$props.entity}/`+id).then(()=>{
-                                            Swal.fire(
-                                            'Deleted!',
-                                            'Your file has been deleted.',
-                                            'success'
-                                            );
+                                        this.showSuccessMessage(response.data.data.message)
                                         // Fire.$emit('AfterCreate');
                                         this.loadUsers();
-                                    }).catch((data)=> {
-                                    Swal.fire("Failed!", data.message, "warning");
+                                    }).catch((error)=> {
+                                    this.showFailMessage(error.response.data.data)
                                 });
                             }
                         })

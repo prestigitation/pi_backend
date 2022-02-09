@@ -90,11 +90,11 @@ export default {
     },
     methods: {
         emitUpdateUser() {
-            this.$emit('update_user')
+            this.$emit('update_user', this.form)
         },
         emitCreateUser() {
             this.$emit('create_user')
-        }
+        },
     },
     mounted() {
         axios.get('role').then(({data}) => this.roles = data.data)

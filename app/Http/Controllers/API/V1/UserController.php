@@ -72,17 +72,11 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, int $id)
     {
-        $user = User::findOrFail($id);
+        return $this->userRepository->update($request, $id);
 
-        if (!empty($request->password)) {
-            $request->merge(['password' => Hash::make($request['password'])]);
-        }
-
-        $user->update($request->all());
-
-        return $this->sendResponse($user, 'User Information has been updated');
+        return $this->sendResponse(null, 'Информация о пользователе была успешно обновлена!');
     }
 
     /**
@@ -96,12 +90,9 @@ class UserController extends BaseController
 
         $this->authorize('isAdmin');
 
-        $user = User::findOrFail($id);
-        // delete the user
+        $this->userRepository->delete($id);
 
-        $user->delete();
-
-        return $this->sendResponse([$user], 'User has been Deleted');
+        return $this->sendResponse(null, 'Пользователь был удален');
     }
 
     public function search(SearchUserRequest $request)

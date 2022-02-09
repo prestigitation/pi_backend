@@ -45,6 +45,7 @@ return [
 
         'local' => [
             'driver' => 'local',
+            'visibility' => 'public',
             'root' => storage_path('app'),
         ],
 

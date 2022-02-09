@@ -30,6 +30,6 @@ class UsersTableSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => '12345678',
         ]);
-        $doe->roles()->attach(DashboardRoles::getEnumModel(Role::class, DashboardRoles::ROLE_ADMIN));
+        $doe->roles()->attach(Role::where('name', DashboardRoles::ROLE_ADMIN->value)->first()->id);
     }
 }

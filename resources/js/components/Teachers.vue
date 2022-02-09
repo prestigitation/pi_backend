@@ -3,7 +3,7 @@
         <users
             entity="teacher"
             @set_editing_id="setEditingTeacher"
-            :update_user="attachPhoto"
+            @update_user="editTeacher"
             @openAddModal="$router.push('/user/roles')"
         >
             <span slot="entity_title">преподавателей</span>
@@ -23,7 +23,7 @@
             </span>
             <template v-slot:table_additional_contents="{user}">
                 <td>
-                    <img :src="user.avatar_path" alt="table image" class="table__image">
+                    <img :src="user.avatar_path" alt="Нет изображения" class="table__image">
                 </td>
             </template>
         </users>
@@ -41,16 +41,22 @@ export default {
         }
     },
     methods: {
+        editTeacher(teacher) {
+            console.log(teacher);
+            //this.attachPhoto()
+        },
         setEditingTeacher(teacher) {
             this.teacher = teacher
         },
         async attachPhoto() {
             let avatar = this.$refs.avatar.files[0]
-            let formData = new FormData()
-            formData.append('avatar', avatar)
-            await axios.post(`teacher/${this.teacher.id}/avatar`, formData)
-            .then((response) => this.showSuccessMessage(response.data.data.message))
-            .catch((error) => this.showFailMessage(error.response.data.data))
+            if(avatar) {
+                let formData = new FormData()
+                formData.append('avatar', avatar)
+                await axios.post(`teacher/${this.teacher.id}/avatar`, formData)
+                .then((response) => this.showSuccessMessage(response.data.data.message))
+                .catch((error) => this.showFailMessage(error.response.data.data))
+            }
         }
     },
     mixins: [notificationMixin]

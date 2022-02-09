@@ -1,8 +1,10 @@
 <?php
 namespace App\Repositories;
 
+use App\Http\Requests\Users\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository {
 
@@ -25,6 +27,22 @@ class UserRepository {
         }
         $users = $userQuery->paginate(10);
         return new UserResource($users) ?? [];
+    }
+
+    public function update(UserRequest $request, int $id) {
+        $user = User::findOrFail($id);
+
+        if (!empty($request->password)) {
+            $request->merge(['password' => Hash::make($request['password'])]);
+        }
+
+        $user->update($request->all());
+    }
+
+    public function delete(int $id)
+    {
+        $user = User::find($id);
+        $user->delete();
     }
 
     public function setRole(int $userId, int $roleId)
