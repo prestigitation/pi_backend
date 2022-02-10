@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Enums\DashboardRoles;
 use App\Repositories\FileRepository;
 use Illuminate\Database\Seeder;
 
@@ -50,6 +51,9 @@ class TeacherSeeder extends Seeder
                 'patronymic' => "Анатольевна",
                 'position' => TeacherPositions::POSITION_DOCENT->value,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/tyagulska.png'),
+                'additional_info' => [
+                    'role' => [DashboardRoles::ROLE_OWNER->value]
+                ]
             ],
             [
                 'surname' => "Козак",
@@ -167,7 +171,14 @@ class TeacherSeeder extends Seeder
                     'password' => '123'
                 ]);
 
-                $teacherRoleId =  $this->teacherRepository->switchRoles(null);
+                if($teacher['additional_info']['role']) {
+                    foreach($teacher['additional_info']['role'] as $role) {
+                        $additionalTeacherRoleId =  $this->teacherRepository->switchRoles($role);
+                        $this->userRepository->setRole($newUser->id, $additionalTeacherRoleId);
+                    }
+                }
+
+                $teacherRoleId = $this->teacherRepository->switchRoles(null);
 
                 $this->userRepository->setRole($newUser->id, $teacherRoleId);
 

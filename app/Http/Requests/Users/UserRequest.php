@@ -38,7 +38,6 @@ class UserRequest extends FormRequest
     public function createRules(): array
     {
         return [
-            'type' => 'required|in:admin,user',
             'name' => 'required|string|max:191|min:2',
             'surname' => 'required|string|max:191|min:2',
             'patronymic' => 'required|string|max:191|min:2',

@@ -21,7 +21,7 @@ try {
  */
 
 window.axios = require('axios');
-window.axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
+window.axios.defaults.baseURL = 'http://127.0.0.1:8000/api/dashboard'
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

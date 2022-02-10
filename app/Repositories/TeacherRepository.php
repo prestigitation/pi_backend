@@ -37,7 +37,7 @@ class TeacherRepository
         return $this->loadAll()->paginate(10);
     }
 
-    private function getRoleId(string $name): int {
+    public function getRoleId(string $name): int {
         return Role::where('name', $name)->first()->id;
     }
 
@@ -61,6 +61,9 @@ class TeacherRepository
             }
             case TeacherPositions::POSITION_ENGINEER->value: {
                 return $this->getRoleId(DashboardRoles::ROLE_ENGINEER->value);
+            }
+            case DashboardRoles::ROLE_OWNER->value: {
+                return $this->getRoleId(DashboardRoles::ROLE_OWNER->value);
             }
             default: {
                 return $this->getRoleId(DashboardRoles::ROLE_TEACHER->value);

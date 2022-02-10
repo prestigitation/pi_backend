@@ -27,17 +27,23 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
-    Route::get('profile', 'ProfileController@profile');
-    Route::put('profile', 'ProfileController@updateProfile');
-    Route::post('change-password', 'ProfileController@changePassword');
+    Route::get('teacher', [
+        'as' => 'teachers.get',
+        'uses' => 'TeacherController@getAll'
+    ]);
+});
+
+Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {
     Route::get('tag/list', 'TagController@list');
+
     Route::get('category/list', 'CategoryController@list');
 
     Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');
     Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
     Route::post('user/search', 'UserController@search');
 
-    Route::post('teacher/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api');
+    Route::post('teacher/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
+
 
     Route::apiResources([
         'user' => 'UserController',

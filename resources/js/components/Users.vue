@@ -111,7 +111,6 @@ import { notificationMixin } from '../mixins/notificationMixin'
                 users : {},
                 form: new Form({
                     id : '',
-                    type : '',
                     name: '',
                     surname: '',
                     patronymic: '',
@@ -217,6 +216,9 @@ import { notificationMixin } from '../mixins/notificationMixin'
                         });
                     })
                 },
+                setNewData(data) {
+                    console.log(data);
+                },
                 setCurrentRow(e) {
                         // нахождение текущего пользователя по строке, на которой был совершен клик
                         let id = e?.target?.parentElement?.parentElement?.parentElement?.childNodes[0]?.innerText
@@ -232,6 +234,11 @@ import { notificationMixin } from '../mixins/notificationMixin'
                 findCurrentUser(data, userId) {
                     return data.filter(item => item.id === parseInt(userId))[0]
                 }
+        },
+        watch: {
+            '$props.table_data': function(current, previous) {
+                this.users = current
+            }
         },
         props: {
             entity: {
@@ -253,6 +260,11 @@ import { notificationMixin } from '../mixins/notificationMixin'
             this.$Progress.start();
             this.loadUsers(this.$props.entity);
             this.$Progress.finish();
+
+            this.$on('set_new_users', function(data) {
+                console.log(data);
+                return this.setNewData(data)
+            })
         },
         computed: {
             entity_title() {

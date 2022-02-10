@@ -105,7 +105,7 @@ export default {
             if (this.user.patronymic)
                 formData.append("patronymic", this.user.patronymic);
             axios.post("user/search", formData).then(({ data }) => {
-                this.foundUsers = data;
+                this.foundUsers = data
             });
         },
         openUserRoles() {

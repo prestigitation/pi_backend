@@ -47,16 +47,6 @@
                             <has-error :form="form" field="password"></has-error>
                         </div>
 
-                        <div class="form-group" v-show="roles">
-                            <label>Роль</label>
-                            <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
-                                <option v-for="role in roles" :key="role.id">
-                                    {{ role.name }}
-                                </option>
-                            </select>
-                            <has-error :form="form" field="type"></has-error>
-                        </div>
-
                         <slot name="modal_additional_content"></slot>
                     </div>
                     <div class="modal-footer">
@@ -73,11 +63,6 @@
 <script>
 export default {
     name: 'user-modal',
-    data() {
-        return {
-            roles: []
-        }
-    },
     props: {
         form: {
             type: Object,
@@ -96,8 +81,5 @@ export default {
             this.$emit('create_user')
         },
     },
-    mounted() {
-        axios.get('role').then(({data}) => this.roles = data.data)
-    }
 }
 </script>
