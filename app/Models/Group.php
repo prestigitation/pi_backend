@@ -18,4 +18,8 @@ class Group extends Model
     {
         return $this->belongsToMany(Direction::class);
     }
+
+    public function schedule() {
+        return $this->belongsToMany(Schedule::class);
+    }
 }

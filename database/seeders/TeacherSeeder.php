@@ -171,7 +171,7 @@ class TeacherSeeder extends Seeder
                     'password' => '123'
                 ]);
 
-                if($teacher['additional_info']['role']) {
+                if(isset($teacher['additional_info']['role'])) {
                     foreach($teacher['additional_info']['role'] as $role) {
                         $additionalTeacherRoleId =  $this->teacherRepository->switchRoles($role);
                         $this->userRepository->setRole($newUser->id, $additionalTeacherRoleId);

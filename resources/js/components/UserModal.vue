@@ -73,6 +73,11 @@ export default {
             default: () => false
         }
     },
+    watch: {
+        '$props.form': () => {
+            console.log(this.form);
+        }
+    },
     methods: {
         emitUpdateUser() {
             this.$emit('update_user', this.form)

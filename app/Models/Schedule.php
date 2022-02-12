@@ -9,4 +9,12 @@ class Schedule extends Model
 {
     protected $table = 'schedule';
     use HasFactory;
+
+    public function group() {
+        return $this->hasOne(Group::class);
+    }
+
+    public function day() {
+        return $this->hasOne(Day::class);
+    }
 }

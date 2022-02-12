@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\Users\UserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,7 +27,7 @@ class UserRepository {
             });
         }
         $users = $userQuery->paginate(10);
-        return new UserResource($users) ?? [];
+        return $users ?? [];
     }
 
     public function update(UserRequest $request, int $id) {
@@ -43,6 +44,11 @@ class UserRepository {
     {
         $user = User::find($id);
         $user->delete();
+    }
+
+    public function hasRole(int $userId, int $roleId): bool {
+        $userRoles = User::find($userId)->roles;
+        return $userRoles->contains(Role::find($roleId));
     }
 
     public function setRole(int $userId, int $roleId)

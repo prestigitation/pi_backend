@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Helpers\Enums\DashboardRoles;
 use App\Helpers\Enums\TeacherPositions;
 use App\Models\Role;
+use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
 
 class TeacherRepository
@@ -17,19 +18,7 @@ class TeacherRepository
     }
 
     public function loadAll() {
-        return User::ofRole(DashboardRoles::ROLE_TEACHER->value)
-                            ->leftJoin('teachers', 'users.id', '=', 'teachers.user_id')
-                            ->select([
-                                'teachers.avatar_path',
-                                'teachers.position',
-                                'users.id',
-                                'users.name',
-                                'users.surname',
-                                'users.patronymic',
-                                'users.phone',
-                                'users.email',
-                                'users.created_at'
-                            ]);
+        return Teacher::query();
     }
 
     public function getAll()
@@ -45,7 +34,7 @@ class TeacherRepository
     {
         $avatarPath = $file['avatar']->store('public/teachers');
         $avatarLink = $this->fileRepository->getFileLink($avatarPath); // cсылка на файл относительно сервера
-        DB::update('UPDATE teachers SET avatar_path = ? WHERE id = ?', [$avatarLink, $id]);
+        DB::update('UPDATE teachers SET avatar_path = ? WHERE user_id = ?', [$avatarLink, $id]);
     }
 
 

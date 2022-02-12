@@ -27,6 +27,7 @@
                 <thead>
                     <tr>
                         <slot name="table_header">
+                            <th class="text-capitalize align-middle text-center">ID</th>
                             <slot name="table_additional_headers" />
                             <th class="text-capitalize align-middle text-center">Фамилия</th>
                             <th class="text-capitalize align-middle text-center">Имя</th>
@@ -41,25 +42,50 @@
                 <tbody>
                     <slot name="table_body">
                         <tr v-for="user in users.data" :key="user.id">
+                            <td class="align-middle text-center">
+                                <slot name="table_content_id" :user="user">
+                                    {{user.id}}
+                                </slot>
+                            </td>
 
                             <slot name="table_additional_contents" :user="user" />
-                            <td class="text-capitalize align-middle text-center">{{user.surname}}</td>
-                            <td class="text-capitalize align-middle text-center">{{user.name}}</td>
-                            <td class="text-capitalize align-middle text-center">{{user.patronymic}}</td>
-                            <td class="text-capitalize align-middle text-center">
-                                <span class="badge badge-primary mx-1" v-for="role in user.roles" :key="role.id">
-                                    {{role.name}}
-                                </span>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_surname" :user="user">
+                                    {{user.surname}}
+                                </slot>
                             </td>
-                            <td class="align-middle text-center">{{user.email}}</td>
-                            <td class="text-capitalize align-middle text-center">{{user.created_at}}</td>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_name" :user="user">
+                                    {{user.name}}
+                                </slot>
+                            </td>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_patronymic" :user="user">
+                                    {{user.patronymic}}
+                                </slot>
+                            </td>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_roles" :user="user">
+                                    <roles-data :roles="user.roles"  />
+                                </slot>
+                            </td>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_email" :user="user">
+                                    {{user.email}}
+                                </slot>
+                            </td>
+                            <td class="align-middle text-center">
+                                <slot name="table_content_created_at" :user="user">
+                                    {{user.created_at}}
+                                </slot>
+                            </td>
                             <td class="text-capitalize align-middle text-center" @click.prevent="setCurrentRow">
                                 <slot name="table_actions">
-                                    <a href="#" @click="editModal(user)">
+                                    <a href="#" @click="editModal(user.user)">
                                         <i class="fa fa-edit blue"></i>
                                     </a>
                                     /
-                                    <a href="#" @click="deleteUser(user.id)">
+                                    <a href="#" @click="deleteUser(user.user_id)">
                                         <i class="fa fa-trash red"></i>
                                     </a>
                                 </slot>
@@ -102,8 +128,9 @@
 <script>
 import UserModal from './UserModal.vue';
 import { notificationMixin } from '../mixins/notificationMixin'
+import RolesData from './layout/RolesData.vue';
     export default {
-    components: { UserModal },
+    components: { UserModal, RolesData },
     mixins: [notificationMixin],
         data () {
             return {
@@ -222,6 +249,7 @@ import { notificationMixin } from '../mixins/notificationMixin'
                 setCurrentRow(e) {
                         // нахождение текущего пользователя по строке, на которой был совершен клик
                         let id = e?.target?.parentElement?.parentElement?.parentElement?.childNodes[0]?.innerText
+                        console.log(e);
                         if(id && !isNaN(parseInt(id))) {
                             if(this.table_data) {
                                 this.$emit('set_editing_id', this.findCurrentUser(this.table_data.data, id))

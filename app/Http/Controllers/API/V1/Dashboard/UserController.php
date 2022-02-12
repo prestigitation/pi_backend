@@ -10,7 +10,7 @@ use App\Http\Requests\Users\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Auth\RegisterController;
-
+use App\Http\Resources\UserResource;
 
 class UserController extends BaseController
 {
@@ -98,7 +98,7 @@ class UserController extends BaseController
     public function search(SearchUserRequest $request)
     {
         $users = $this->userRepository->search($request->validated());
-        if($users) return response()->json($users);
+        if($users) return response()->json(new UserResource($users));
         else return $this->sendError('Не удалось найти ни одного пользователя');
     }
 
@@ -119,8 +119,10 @@ class UserController extends BaseController
     {
         if(Gate::allows('setRole')) {
             try {
-                $this->userRepository->detachRole($userId, $roleId);
-                return $this->sendResponse(['message' => 'Роль была успешно отвязана']);
+                if($this->userRepository->hasRole($userId, $roleId)) {
+                    $this->userRepository->detachRole($userId, $roleId);
+                    return $this->sendResponse(['message' => 'Роль была успешно отвязана']);
+                } else return $this->sendError(null, 'Пользователь не имеет такой роли!');
             } catch (\Exception $e) {
                 return $this->sendError(null, 'Не удалось отвязать роль у пользователя');
             }

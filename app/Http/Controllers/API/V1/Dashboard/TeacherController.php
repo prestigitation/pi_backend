@@ -6,6 +6,7 @@ use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\Teachers\StoreTeacherAvatarRequest;
 use App\Http\Requests\Users\UserRequest;
 use App\Http\Resources\TeacherResource;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 
 use App\Repositories\TeacherRepository;

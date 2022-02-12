@@ -112,6 +112,7 @@ export default {
             $("#roles").modal("show")
         },
         setEditingUser(user) {
+            console.log(user);
             this.currentUser = user
         },
         attachRole() {

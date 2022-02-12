@@ -49,20 +49,21 @@ class User extends Authenticatable // implements MustVerifyEmail
      */
     protected $with = ['roles'];
 
-     /**
-     * Get the profile photo URL attribute.
-     *
-     * @return string
-     */
-    public function getPhotoAttribute()
-    {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower($this->email)) . '.jpg?s=200&d=mm';
-    }
-
     public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
+
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
+    public function teacher() {
+        return $this->belongsTo(Teacher::class);
+    }
+
 
     /**
      * Assigning User role
@@ -84,9 +85,9 @@ class User extends Authenticatable // implements MustVerifyEmail
         return $this->roles()->where('name', DashboardRoles::ROLE_USER)->exists();
     }
 
-    public function groups()
+    public function getPhotoAttribute()
     {
-        return $this->belongsToMany(Group::class);
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower($this->email)) . '.jpg?s=200&d=mm';
     }
 
 
