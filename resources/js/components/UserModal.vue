@@ -16,17 +16,19 @@
                 <form @submit.prevent="editmode ? emitUpdateUser() : emitCreateUser()">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Имя</label>
-                            <input v-model="form.name" type="text" name="name"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                            <has-error :form="form" field="name"></has-error>
-                        </div>
-                        <div class="form-group">
                             <label>Фамилия</label>
                             <input v-model="form.surname" type="text" name="surname"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('surname') }">
                             <has-error :form="form" field="name"></has-error>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Имя</label>
+                            <input v-model="form.name" type="text" name="name"
+                                class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                            <has-error :form="form" field="name"></has-error>
+                        </div>
+                        
                         <div class="form-group">
                             <label>Отчество</label>
                             <input v-model="form.patronymic" type="text" name="patronymic"

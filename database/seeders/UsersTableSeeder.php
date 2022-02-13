@@ -11,9 +11,17 @@ use App\Helpers\Enums\DashboardRoles;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Role;
+use App\Repositories\UserRepository;
 
 class UsersTableSeeder extends Seeder
 {
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     /**
      * Run the database seeds.
      *
@@ -30,6 +38,6 @@ class UsersTableSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => '12345678',
         ]);
-        $doe->roles()->attach(Role::where('name', DashboardRoles::ROLE_ADMIN->value)->first()->id);
+        $this->userRepository->setRole($doe->id, Role::where('name', DashboardRoles::ROLE_ADMIN->value)->first()->id);
     }
 }

@@ -13,7 +13,6 @@ class TeacherTest extends TestCase
      */
     public function test_example()
     {
-        //TODO: возможно, тест на наличие аватаров, если нет, дать путь на заглушку
         $this->assertTrue(true);
     }
 }

@@ -81,6 +81,7 @@
                             </td>
                             <td class="text-capitalize align-middle text-center" @click.prevent="setCurrentRow">
                                 <slot name="table_actions">
+                                    <!-- TODO: проверить, работает ли на таблице users, если нет- исправить-->
                                     <a href="#" @click="editModal(user.user)">
                                         <i class="fa fa-edit blue"></i>
                                     </a>

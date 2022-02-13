@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Helpers\Traits\EnumHelper;
+
 use App\Helpers\Enums\PaymentForms;
 
 class CreatePaymentFormsTable extends Migration
@@ -17,7 +19,7 @@ class CreatePaymentFormsTable extends Migration
     {
         Schema::create('payment_forms', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', PaymentForms::getValues(PaymentForms::cases()));
+            $table->enum('name', EnumHelper::getValues(PaymentForms::cases()));
             $table->timestamps();
         });
     }

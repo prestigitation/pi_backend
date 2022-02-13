@@ -109,7 +109,7 @@ class TeacherSeeder extends Seeder
                 'name' => "Елена",
                 'patronymic' => "Сергеевна",
                 'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
-                'avatar_path' => $this->fileRepository->getFileLink('teachers/garbuznyak.png'),
+                'avatar_path' => $this->fileRepository->getFileLink('teachers/garbuzniak.png'),
             ],
             [
                 'surname' => "Кардаш",
@@ -151,7 +151,7 @@ class TeacherSeeder extends Seeder
                 'name' => "Алёна",
                 'patronymic' => "Александровна",
                 'position' => TeacherPositions::POSITION_SENIOR_LABORANT->value,
-                'avatar_path' => $this->fileRepository->getFileLink('teachers/stanikovskia.png'),
+                'avatar_path' => $this->fileRepository->getFileLink('teachers/stankovskaya.png'),
             ],
             [
                 'surname' => "Пешкин",

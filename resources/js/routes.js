@@ -3,5 +3,6 @@ export default [
     { path: '/users', component: require('./components/Users.vue').default },
     { path: '/user/roles', component: require('./components/UserRoles.vue').default },
     { path: '/teachers', component: require('./components/Teachers.vue').default },
-    { path: '*', component: require('./components/NotFound.vue').default }
+    { path: '/directions', component: require('./components/Directions.vue').default },
+    { path: '*', component: require('./components/NotFound.vue').default },
 ];

@@ -9,9 +9,11 @@ class StudyForm extends Model
 {
     use HasFactory;
 
-    public function directions()
+    protected $with = ['time_form'];
+
+    public function direction()
     {
-        return $this->belongsToMany(Direction::class);
+        return $this->belongsTo(Direction::class);
     }
 
     public function paymentForms()

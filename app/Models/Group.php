@@ -9,6 +9,8 @@ class Group extends Model
 {
     use HasFactory;
 
+    protected $with = ['directions'];
+
     public function users()
     {
         return $this->hasMany(User::class);
