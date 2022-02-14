@@ -9,7 +9,14 @@ class Direction extends Model
 {
     use HasFactory;
 
-    protected $with = ['profile', 'studyForm', 'timeForm', 'paymentForm'];
+    protected $with = [
+        'profile',
+        'studyForm',
+        'timeForm',
+
+        'paymentForms',
+        'studyVariants'
+    ];
 
     public function groups()
     {
@@ -21,18 +28,18 @@ class Direction extends Model
         return $this->hasOne(Profile::class);
     }
 
-    public function studyForm()
-    {
-        return $this->hasOne(StudyForm::class);
-    }
 
-    public function paymentForm()
+    public function paymentForms()
     {
-        return $this->hasOne(PaymentForm::class);
+        return $this->hasMany(PaymentForm::class);
     }
 
     public function timeForm()
     {
-        return $this->hasOne(TimeForm::class);
+        return $this->hasMany(TimeForm::class);
+    }
+
+    public function studyVariants() {
+        return $this->hasMany(StudyVariant::class);
     }
 }

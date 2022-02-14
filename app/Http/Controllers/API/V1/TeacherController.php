@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Teachers\StoreTeacherAvatarRequest;
-use App\Http\Requests\Users\UserRequest;
 use App\Http\Resources\TeacherResource;
-use Illuminate\Http\Request;
 
 use App\Repositories\TeacherRepository;
-use App\Repositories\UserRepository;
 
 class TeacherController extends Controller
 {

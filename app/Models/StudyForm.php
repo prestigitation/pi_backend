@@ -9,7 +9,6 @@ class StudyForm extends Model
 {
     use HasFactory;
 
-    protected $with = ['time_form'];
 
     public function direction()
     {
@@ -19,10 +18,5 @@ class StudyForm extends Model
     public function paymentForms()
     {
         return $this->hasMany(PaymentForm::class);
-    }
-
-    public function timeForms()
-    {
-        return $this->hasMany(TimeForm::class);
     }
 }

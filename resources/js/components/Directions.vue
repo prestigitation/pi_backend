@@ -59,27 +59,26 @@
             <not-found></not-found>
         </div>
 
+        <direction-modal
+            id="addNew"
+            :editmode="editmode"
+            :form="form"
+        />
     </div>
     </div>
 </section>
 </template>
 
 <script>
+import DirectionModal from './DirectionModal.vue'
 export default {
     name: 'directions',
-    data() {
-        return {
-            form: new Form({
-                    id : '',
-                    name: '',
-                    code: '',
-                    profile: '',
-                    study_form: '',
-                    time_form: '',
-                    payment_form: '',
-                    password: '',
-                    email_verified_at: '',
-                })
+    components: {
+        DirectionModal
+    },
+    methods: {
+        newModal() {
+            $('#addNew').modal('show');
         }
     }
 }

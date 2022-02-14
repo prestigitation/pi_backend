@@ -31,6 +31,13 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
         'as' => 'teachers.get',
         'uses' => 'TeacherController@getAll'
     ]);
+    Route::apiResources([
+        'time_form' => 'TimeFormController',
+        'study_form' => 'StudyFormController',
+        'payment_form' => 'PaymentFormController',
+        'profile' => 'ProfileController',
+        'speciality' => 'SpecialityController',
+    ]);
 });
 
 Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {

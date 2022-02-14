@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class TimeForm extends Model
 {
     use HasFactory;
+
+    public function direction() {
+        return $this->belongsToMany(Direction::class);
+    }
+
+    public function studyVariant() {
+        return $this->belongsTo(StudyVariant::class);
+    }
 }
