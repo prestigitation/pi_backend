@@ -8,4 +8,5 @@ enum Specialities: string {
 
     case SPECIALITY_PI = 'Разработка программно-информационных систем';
     case SPECIALITY_IITO = 'Информационные технологии в образовании';
+    case SPECIALITY_IITVO = 'Информатика и информационные технологии в образовании';
 }

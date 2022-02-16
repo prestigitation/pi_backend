@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Enums\Profiles;
+use App\Helpers\Traits\EnumHelper;
 use App\Models\Profile;
 use Illuminate\Database\Seeder;
 
@@ -14,18 +16,9 @@ class ProfileSeeder extends Seeder
      */
     public function run()
     {
-        $profiles = [
-            [
-                'name' => 'Педагогическое образование'
-            ],
-            [
-                'name' => 'Программная инженерия'
-            ]
-        ];
-
-        foreach($profiles as $profile) {
+        foreach(EnumHelper::getValues(Profiles::cases()) as $profile) {
             Profile::create([
-                'name' => $profile['name'],
+                'name' => $profile
             ]);
         }
     }

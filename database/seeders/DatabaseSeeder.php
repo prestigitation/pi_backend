@@ -15,16 +15,17 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SpecialitySeeder::class,
-            StudyVariantSeeder::class,
             ProfileSeeder::class,
             StudyFormSeeder::class,
             TimeFormSeeder::class,
+            StudyVariantSeeder::class,
             PaymentFormSeeder::class,
             RoleSeeder::class,
             UsersTableSeeder::class,
             TeacherSeeder::class,
             DaySeeder::class,
-            PairNumberSeeder::class
+            PairNumberSeeder::class,
+            DirectionSeeder::class,
         ]);
     }
 }

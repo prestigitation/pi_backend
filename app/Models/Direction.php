@@ -34,11 +34,6 @@ class Direction extends Model
         return $this->hasMany(PaymentForm::class);
     }
 
-    public function timeForm()
-    {
-        return $this->hasMany(TimeForm::class);
-    }
-
     public function studyVariants() {
         return $this->hasMany(StudyVariant::class);
     }

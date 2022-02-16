@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TimeFormResource;
+
 use App\Repositories\TimeFormRepository;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,8 @@ class TimeFormController extends Controller
 {
     private $timeFormRepository;
 
-    public function __construct(TimeFormRepository $timeFormRepository) {
+    public function __construct(TimeFormRepository $timeFormRepository)
+    {
         $this->timeFormRepository = $timeFormRepository;
     }
 
@@ -22,7 +24,7 @@ class TimeFormController extends Controller
      */
     public function index()
     {
-        return new TimeFormResource($this->timeFormRepository->getAll()) ?? [];
+        return new TimeFormResource($this->timeFormRepository->getAll());
     }
 
     /**
@@ -69,4 +71,5 @@ class TimeFormController extends Controller
     {
         //
     }
+
 }

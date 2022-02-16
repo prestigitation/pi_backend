@@ -189,6 +189,7 @@ class TeacherSeeder extends Seeder
                     $this->userRepository->setRole($newUser->id, $roleId);
                 }
 
+                //TODO:refactor
                 DB::insert('INSERT INTO `teachers` (user_id, position, avatar_path) VALUES (?,?,?)', [$newUser->id, $teacher['position'], $teacher['avatar_path'] ?? null]);
             }
         }

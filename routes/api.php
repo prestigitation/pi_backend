@@ -37,6 +37,7 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
         'payment_form' => 'PaymentFormController',
         'profile' => 'ProfileController',
         'speciality' => 'SpecialityController',
+        'study_variant' => 'StudyVariantController',
     ]);
 });
 
@@ -58,6 +59,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
         'tag' => 'TagController',
         'group' => 'GroupController',
         'role' => 'RoleController',
-        'teacher' => 'TeacherController'
+        'teacher' => 'TeacherController',
+        'time_form' => 'TimeFormController',
+        'study_variant' => 'StudyVariantController',
     ]);
 });

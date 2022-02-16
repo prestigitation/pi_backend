@@ -60,6 +60,7 @@
         </div>
 
         <direction-modal
+            @close_direction_modal="closeModal"
             id="addNew"
             :editmode="editmode"
             :form="form"
@@ -79,6 +80,9 @@ export default {
     methods: {
         newModal() {
             $('#addNew').modal('show');
+        },
+        closeModal() {
+            $('#addNew').modal('toggle');
         }
     }
 }

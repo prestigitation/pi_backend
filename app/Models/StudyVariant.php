@@ -9,8 +9,16 @@ class StudyVariant extends Model
 {
     use HasFactory;
 
+    protected $with = ['timeForm'];
+
+    protected $casts = [
+        'months' => 'integer',
+        'years' => 'integer',
+        'time_form' => 'integer',
+    ];
+
     public function timeForm() {
-        return $this->hasOne(TimeForm::class);
+        return $this->belongsTo(TimeForm::class);
     }
 
     public function groups() {

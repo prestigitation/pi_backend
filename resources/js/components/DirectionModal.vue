@@ -44,9 +44,16 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" v-if="study_variants.length">
                             <label>Варианты обучения</label>
-                            <study-variant-create :time_forms="time_forms" />
+                            <button class="btn btn-primary" @click.prevent="addNewVariant">
+                                Добавить вариант обучения
+                            </button>
+                            <select name="type" v-model="form.study_variant" id="type" class="my-2 form-control">
+                                <option v-for="variant in study_variants" :key="variant.id" :value="variant.id">
+                                    {{variant.years}} г. {{variant.months}} мес. {{variant.time_form.name}}
+                                </option>
+                            </select>
                         </div>
 
                         <slot name="modal_additional_content"></slot>
@@ -78,11 +85,13 @@ export default {
                     study_form: 0,
                     speciality: 0,
                     profile: 0,
+                    study_variant: 0
                 }),
             study_forms: [],
             time_forms: [],
             profiles: [],
             specialities: [],
+            study_variants: [],
             editmode: false
         }
     },
@@ -93,9 +102,6 @@ export default {
         }
     },
     async mounted() {
-        await axios.get(process.env.MIX_API_PATH + 'time_form')
-            .then(({data}) => this.time_forms = data.data)
-            .catch(() => this.showFailMessage('Не удалось загрузить специальности'))
         await axios.get(process.env.MIX_API_PATH + 'study_form')
             .then(({data}) => this.study_forms = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить формы обучения'))
@@ -105,6 +111,15 @@ export default {
         await axios.get(process.env.MIX_API_PATH + 'speciality')
             .then(({data}) => this.specialities = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить специальности'))
+        await axios.get(process.env.MIX_API_PATH + 'study_variant')
+            .then(({data}) => this.study_variants = data.data)
+            .catch(() => this.showFailMessage('Не удалось загрузить варианты обучения'))
+    },
+    methods: {
+        addNewVariant() {
+            this.$emit('close_direction_modal')
+            this.$router.push('/study_variants')
+        }
     },
     mixins: [notificationMixin]
 }

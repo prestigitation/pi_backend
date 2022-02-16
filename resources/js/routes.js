@@ -4,5 +4,6 @@ export default [
     { path: '/user/roles', component: require('./components/UserRoles.vue').default },
     { path: '/teachers', component: require('./components/Teachers.vue').default },
     { path: '/directions', component: require('./components/Directions.vue').default },
+    { path: '/study_variants', component: require('./components/layout/StudyVariantCreate.vue').default },
     { path: '*', component: require('./components/NotFound.vue').default },
 ];
