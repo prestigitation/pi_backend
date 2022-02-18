@@ -13,7 +13,7 @@
 
                 <!-- <form @submit.prevent="createUser"> -->
 
-                <form @submit.prevent="editmode ? emitUpdateUser() : emitCreateUser()">
+                <form @submit.prevent="editmode ? updateDirection() : createDirection()">
                     <div class="modal-body">
 
                         <div class="form-group">
@@ -54,9 +54,40 @@
                                     Добавить вариант обучения
                                 </button>
                             </span>
-                            <select name="type" v-for="selectedVariants, index in form.study_variants" :key="selectedVariants" v-model="form.study_variants[index].id" id="type" class="my-2 form-control">
+                            <select
+                                name="type"
+                                v-for="selectedVariants, index in form.study_variants"
+                                :key="selectedVariants.id"
+                                v-model="form.study_variants[index].id"
+                                id="type"
+                                class="my-2 form-control"
+                            >
                                 <option v-for="variant in study_variants" :key="variant.id" :value="variant.id">
                                     {{variant.years}} г. {{variant.months}} мес. {{variant.time_form.name}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" v-if="payment_forms.length">
+                            <label>Формы оплаты</label>
+                            <span>
+                                <button class="btn btn-primary btn-sm" @click.prevent="addNewPaymentForm">
+                                    Создать форму оплаты
+                                </button>
+                                <button class="btn btn-success btn-sm my-1" @click.prevent="pushPaymentForm">
+                                    Добавить форму оплаты
+                                </button>
+                            </span>
+                            <select
+                                name="type"
+                                v-for="paymentForm, index in form.payment_forms"
+                                :key="paymentForm.id"
+                                v-model="form.payment_forms[index].id"
+                                id="type"
+                                class="my-2 form-control"
+                            >
+                                <option v-for="form in payment_forms" :key="form.id" :value="form.id">
+                                    {{form.name}}
                                 </option>
                             </select>
                         </div>
@@ -90,14 +121,16 @@ export default {
                     study_form: 0,
                     speciality: 0,
                     profile: 0,
-                    study_variants: [{}]
+
+                    study_variants: [{}],
+                    payment_forms: [{}]
                 }),
             study_forms: [],
             time_forms: [],
             profiles: [],
             specialities: [],
             study_variants: [],
-            editmode: false
+            payment_forms: [],
         }
     },
     props: {
@@ -110,6 +143,9 @@ export default {
         await axios.get(process.env.MIX_API_PATH + 'study_form')
             .then(({data}) => this.study_forms = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить формы обучения'))
+        await axios.get(process.env.MIX_API_PATH + 'payment_form')
+            .then(({data}) => this.payment_forms = data.data)
+            .catch(() => this.showFailMessage('Не удалось загрузить финансовые формы договора'))
         await axios.get(process.env.MIX_API_PATH + 'profile')
             .then(({data}) => this.profiles = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить профили подготовки'))
@@ -125,8 +161,23 @@ export default {
             this.$emit('close_direction_modal')
             this.$router.push('/study_variants')
         },
+        addNewPaymentForm() {
+            this.$emit('close_direction_modal')
+            this.$router.push('/payment_forms')
+        },
         pushVariant() {
             this.form.study_variants.push({id: 0})
+        },
+        pushPaymentForm() {
+            this.form.payment_forms.push({id: 0})
+        },
+        async createDirection() {
+            await axios.post(process.env.MIX_DASHBOARD_PATH + 'direction', this.form)
+                .then(() => {
+                    this.showSuccessMessage('Направление было успешно добавлено!')
+                    this.$emit('close_direction_modal')
+                })
+                .catch(() => this.showFailMessage('Не удалось добавить направление обучения'))
         }
     },
     mixins: [notificationMixin]

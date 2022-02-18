@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreDirectionRequest;
 use App\Http\Resources\DirectionResource;
 use App\Repositories\DirectionRepository;
 use Illuminate\Http\Request;
@@ -32,9 +33,15 @@ class DirectionController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreDirectionRequest $request)
     {
-        //
+        try {
+            $this->directionRepository->create($request->validated());
+            return $this->sendResponse(null, 'Направление было добавлено!');
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            return $this->sendError('Не удалось добавить направление');
+        }
     }
 
     /**

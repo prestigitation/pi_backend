@@ -136,12 +136,16 @@ export default {
         },
         closeModal() {
             $('#addNew').modal('toggle');
+            this.getDirection()
+        },
+        async getDirection() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'direction')
+                .then(({data}) => this.directions = data.data)
+                .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         }
     },
     async created() {
-        await axios.get(process.env.MIX_DASHBOARD_PATH + 'direction')
-            .then(({data}) => this.directions = data.data)
-            .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
+        await this.getDirection()
     }
 }
 </script>

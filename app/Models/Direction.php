@@ -9,6 +9,10 @@ class Direction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'code', 'profile_id', 'speciality_id', 'study_form_id'
+    ];
+
     protected $with = [
         'profile',
         'studyForm',

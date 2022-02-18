@@ -1,7 +1,7 @@
 <template>
 <div class="study__variant-wrapper">
     <div class="row">
-        <div class="col-3 mx-4 study__variant-button d-flex flex-column">
+        <div class="col-10 col-lg-3 mx-4 study__variant-button d-flex flex-column">
             <div class="h2 lead"> Добавить вариант обучения </div>
             <div class="mb-4">
                 <input class="form-control my-2" v-model="variants.years" placeholder="Введите количество лет">

@@ -62,6 +62,14 @@
               </p>
             </router-link>
           </li>
+          <li class="nav-item">
+            <router-link to="/study_variants" class="nav-link">
+              <i class="nav-icon fas fa-list-ol green"></i>
+              <p>
+                Варианты обучения
+              </p>
+            </router-link>
+          </li>
         </ul>
       </li>
 
