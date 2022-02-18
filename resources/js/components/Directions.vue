@@ -28,7 +28,6 @@
                     <tr>
                         <slot name="table_header">
                             <th class="align-middle text-center">ID</th>
-                            <th class="align-middle text-center">Наименование</th>
                             <th class="align-middle text-center">Код</th>
                             <th class="align-middle text-center">Профиль</th>
                             <th class="align-middle text-center">Квалификация</th>
@@ -39,17 +38,64 @@
                         </slot>
                     </tr>
                 </thead>
-                <tbody>
-                    xax
-
+                <tbody class="text-center">
+                    <tr v-for="direction in directions" :key="direction.id">
+                        <td>
+                            <span v-if="direction.id">
+                                {{direction.id}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.code">
+                                {{direction.code}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.profile.name">
+                                {{direction.profile.name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.speciality.name">
+                                {{direction.speciality.name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.study_variants.length">
+                                <span v-for="variant,index in direction.study_variants" :key="variant.id">
+                                    <span v-if="variant.years">{{variant.years}} г.</span>
+                                    <span v-if="variant.months">{{variant.months}} мес.</span>
+                                    <span v-if="variant.time_form.name">{{variant.time_form.name}}</span>
+                                    <span v-if="index !== direction.study_variants.length - 1">{{ ', ' }}</span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.study_form.name">
+                                {{direction.study_form.name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.payment_forms.length">
+                                <span v-for="payment, index in direction.payment_forms" :key="payment.id">
+                                    <span>{{payment.name}}</span>
+                                    <span v-if="index !== direction.payment_forms.length - 1">{{', '}}</span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="direction.created_at">
+                                {{direction.created_at}}
+                            </span>
+                        </td>
+                    </tr>
                 </tbody>
                 </table>
             </div>
             <!-- /.card-body -->
-            <!--<div class="card-footer">
-                <pagination :data="table_data ? table_data : users" @pagination-change-page="getResults"></pagination>
-                </div>
-            </div> -->
+            <div class="card-footer" v-if="directions.length">
+                <pagination :data="directions" @pagination-change-page="getResults"></pagination>
+            </div>
             <!-- /.card -->
         </div>
         </div>
@@ -72,10 +118,17 @@
 
 <script>
 import DirectionModal from './DirectionModal.vue'
+import { notificationMixin } from '../mixins/notificationMixin'
 export default {
     name: 'directions',
+    mixins: [notificationMixin],
     components: {
         DirectionModal
+    },
+    data() {
+        return {
+            directions: []
+        }
     },
     methods: {
         newModal() {
@@ -84,6 +137,11 @@ export default {
         closeModal() {
             $('#addNew').modal('toggle');
         }
+    },
+    async created() {
+        await axios.get(process.env.MIX_DASHBOARD_PATH + 'direction')
+            .then(({data}) => this.directions = data.data)
+            .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
     }
 }
 </script>

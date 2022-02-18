@@ -9,6 +9,10 @@ class PaymentForm extends Model
 {
     use HasFactory;
 
+    public function directions() {
+        return $this->belongsToMany(Direction::class);
+    }
+
     public function studyForms()
     {
         return $this->belongsToMany(StudyForm::class);

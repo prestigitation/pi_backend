@@ -12,29 +12,38 @@ class Direction extends Model
     protected $with = [
         'profile',
         'studyForm',
-        'timeForm',
+        'speciality',
 
         'paymentForms',
-        'studyVariants'
+        'studyVariants',
+        'groups'
     ];
+
+    public function studyForm() {
+        return $this->belongsTo(StudyForm::class);
+    }
+
+    public function speciality() {
+        return $this->belongsTo(Speciality::class);
+    }
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
+    }
 
     public function groups()
     {
         return $this->belongsToMany(Group::class);
     }
 
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
 
     public function paymentForms()
     {
-        return $this->hasMany(PaymentForm::class);
+        return $this->belongsToMany(PaymentForm::class);
     }
 
     public function studyVariants() {
-        return $this->hasMany(StudyVariant::class);
+        return $this->belongsToMany(StudyVariant::class);
     }
 }

@@ -105,20 +105,20 @@ class DirectionSeeder extends Seeder
         ];
 
         foreach($directions as $direction) {
-            $direction = Direction::create([
+            $dir = Direction::create([
                 'code' => $direction['code'],
                 'profile_id' => $direction['profile_id'],
                 'speciality_id' => $direction['speciality_id'],
                 'study_form_id' => $direction['study_form_id']
             ]);
-            if(isset($directions['study_variants'])) {
-                foreach($directions['study_variants'] as $studyVariant) {
-                    $direction->studyVariants()->attach($studyVariant);
+            if(isset($direction['study_variants'])) {
+                foreach($direction['study_variants'] as $studyVariant) {
+                    $dir->studyVariants()->attach($studyVariant);
                 }
             }
-            if(isset($directions['payment_forms'])) {
-                foreach($directions['payment_forms'] as $paymentForm) {
-                    $direction->paymentForms()->attach($paymentForm);
+            if(isset($direction['payment_forms'])) {
+                foreach($direction['payment_forms'] as $paymentForm) {
+                    $dir->paymentForms()->attach($paymentForm);
                 }
             }
         }

@@ -46,10 +46,15 @@
 
                         <div class="form-group" v-if="study_variants.length">
                             <label>Варианты обучения</label>
-                            <button class="btn btn-primary" @click.prevent="addNewVariant">
-                                Добавить вариант обучения
-                            </button>
-                            <select name="type" v-model="form.study_variant" id="type" class="my-2 form-control">
+                            <span>
+                                <button class="btn btn-primary btn-sm" @click.prevent="addNewVariant">
+                                    Создать вариант обучения
+                                </button>
+                                <button class="btn btn-success btn-sm my-1" @click.prevent="pushVariant">
+                                    Добавить вариант обучения
+                                </button>
+                            </span>
+                            <select name="type" v-for="selectedVariants, index in form.study_variants" :key="selectedVariants" v-model="form.study_variants[index].id" id="type" class="my-2 form-control">
                                 <option v-for="variant in study_variants" :key="variant.id" :value="variant.id">
                                     {{variant.years}} г. {{variant.months}} мес. {{variant.time_form.name}}
                                 </option>
@@ -85,7 +90,7 @@ export default {
                     study_form: 0,
                     speciality: 0,
                     profile: 0,
-                    study_variant: 0
+                    study_variants: [{}]
                 }),
             study_forms: [],
             time_forms: [],
@@ -119,6 +124,9 @@ export default {
         addNewVariant() {
             this.$emit('close_direction_modal')
             this.$router.push('/study_variants')
+        },
+        pushVariant() {
+            this.form.study_variants.push({id: 0})
         }
     },
     mixins: [notificationMixin]
