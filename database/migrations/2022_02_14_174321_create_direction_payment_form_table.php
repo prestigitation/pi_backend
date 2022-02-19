@@ -14,7 +14,7 @@ class CreateDirectionPaymentFormTable extends Migration
     public function up()
     {
         Schema::create('direction_payment_form', function (Blueprint $table) {
-            $table->id();
+            $table->id()->onDelete('cascade');
             $table->foreignId('direction_id')->constrained();
             $table->foreignId('payment_form_id')->constrained();
             $table->timestamps();

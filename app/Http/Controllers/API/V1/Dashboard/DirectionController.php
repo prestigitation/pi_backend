@@ -4,11 +4,10 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreDirectionRequest;
+use App\Http\Requests\Directions\StoreDirectionRequest;
+use App\Http\Requests\Directions\UpdateDirectionRequest;
 use App\Http\Resources\DirectionResource;
 use App\Repositories\DirectionRepository;
-use Illuminate\Http\Request;
 
 class DirectionController extends BaseController
 {
@@ -39,7 +38,6 @@ class DirectionController extends BaseController
             $this->directionRepository->create($request->validated());
             return $this->sendResponse(null, 'Направление было добавлено!');
         } catch(\Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Не удалось добавить направление');
         }
     }
@@ -62,9 +60,14 @@ class DirectionController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDirectionRequest $request, $id)
     {
-        //
+        try {
+            $this->directionRepository->update($request, $id);
+            return $this->sendResponse(null, 'Направление обучения было успешно изменено!');
+        } catch(\Exception $e) {
+            return $this->sendError('Не удалось изменить информацию о направлении обучения');
+        }
     }
 
     /**
@@ -73,8 +76,13 @@ class DirectionController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        //
+        try {
+            $this->directionRepository->delete($id);
+            return $this->sendResponse(null, 'Направление обучения было успешно удалено!');
+        } catch(\Exception $e) {
+            return $this->sendError('Не удалось удалить направление обучения');
+        }
     }
 }

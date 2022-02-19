@@ -115,16 +115,6 @@ export default {
     },
     data() {
         return {
-            form: new Form({
-                    code: '',
-
-                    study_form: 0,
-                    speciality: 0,
-                    profile: 0,
-
-                    study_variants: [{}],
-                    payment_forms: [{}]
-                }),
             study_forms: [],
             time_forms: [],
             profiles: [],
@@ -137,6 +127,13 @@ export default {
         editmode: {
             type: Boolean,
             default: () => false
+        },
+        form: {
+            type: Object,
+            default: () => {}
+        },
+        directionId: {
+            type: Number,
         }
     },
     async mounted() {
@@ -171,13 +168,22 @@ export default {
         pushPaymentForm() {
             this.form.payment_forms.push({id: 0})
         },
+        async updateDirection() {
+            await axios.put(process.env.MIX_DASHBOARD_PATH + `direction/${this.directionId}`, this.form).then(() => {
+                this.showSuccessMessage('Направление было успешно изменено')
+            }).catch(() => {
+                this.showFailMessage('Не удалось изменить данные о направлении')
+            }).finally(() => {
+                this.$emit('close_direction_modal')
+            })
+        },
         async createDirection() {
             await axios.post(process.env.MIX_DASHBOARD_PATH + 'direction', this.form)
                 .then(() => {
                     this.showSuccessMessage('Направление было успешно добавлено!')
                     this.$emit('close_direction_modal')
-                })
-                .catch(() => this.showFailMessage('Не удалось добавить направление обучения'))
+                }).catch(() => this.showFailMessage('Не удалось добавить направление обучения'))
+                .finally(() =>  this.$emit('close_direction_modal'))
         }
     },
     mixins: [notificationMixin]

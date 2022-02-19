@@ -14,7 +14,7 @@ class CreateDirectionsTable extends Migration
     public function up()
     {
         Schema::create('directions', function (Blueprint $table) {
-            $table->id();
+            $table->id()->onDelete('cascade');
 
             //код направления - 6.44.04.01
             $table->string('code')->max(20);

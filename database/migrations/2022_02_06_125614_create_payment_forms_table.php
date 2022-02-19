@@ -18,7 +18,7 @@ class CreatePaymentFormsTable extends Migration
     public function up()
     {
         Schema::create('payment_forms', function (Blueprint $table) {
-            $table->id();
+            $table->id()->onDelete('cascade');
             $table->enum('name', EnumHelper::getValues(PaymentForms::cases()));
             $table->timestamps();
         });

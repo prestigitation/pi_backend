@@ -35,6 +35,7 @@
                             <th class="align-middle text-center">Форма обучения</th>
                             <th class="align-middle text-center">Форма оплаты</th>
                             <th class="align-middle text-center">Cоздан</th>
+                            <th class="align-middle text-center">Действия</th>
                         </slot>
                     </tr>
                 </thead>
@@ -88,6 +89,15 @@
                                 {{direction.created_at}}
                             </span>
                         </td>
+                        <td>
+                            <a href="#" @click="editDirection(direction)">
+                                <i class="fa fa-edit blue"></i>
+                            </a>
+                            /
+                            <a href="#" @click="deleteDirection(direction.id)">
+                                <i class="fa fa-trash red"></i>
+                            </a>
+                        </td>
                     </tr>
                 </tbody>
                 </table>
@@ -110,6 +120,7 @@
             id="addNew"
             :editmode="editmode"
             :form="form"
+            :directionId="directionId"
         />
     </div>
     </div>
@@ -127,25 +138,62 @@ export default {
     },
     data() {
         return {
-            directions: []
+            directions: [],
+            editmode: false,
+            form: new Form({
+                code: '',
+
+                study_form: 0,
+                speciality: 0,
+                profile: 0,
+
+                study_variants: [{}],
+                payment_forms: [{}]
+            }),
+            directionId: null
         }
     },
     methods: {
         newModal() {
+            this.editmode = false
+            this.directionId = null
             $('#addNew').modal('show');
         },
         closeModal() {
             $('#addNew').modal('toggle');
-            this.getDirection()
+            this.getDirections()
         },
-        async getDirection() {
+        editDirection(direction) {
+            this.directionId = direction.id
+            this.editmode = true
+            this.form.fill(direction)
+            $('#addNew').modal('show');
+        },
+        async deleteDirection(directionId) {
+            Swal.fire({
+                        title: 'Удаление пользователя',
+                        text: "Вы действительно хотите удалить данное направление?",
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Да'
+                        }).then(async (result) => {
+                            if (result.value) {
+                                    this.form.delete(`direction/${directionId}`).then(async ()=>{
+                                        this.showSuccessMessage('Направление было успешно удалено!')
+                                        await this.getDirections();
+                                    })
+                            }
+                        })
+        },
+        async getDirections() {
             await axios.get(process.env.MIX_DASHBOARD_PATH + 'direction')
                 .then(({data}) => this.directions = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         }
     },
     async created() {
-        await this.getDirection()
+        await this.getDirections()
     }
 }
 </script>
