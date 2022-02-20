@@ -20,7 +20,8 @@ class Direction extends Model
 
         'paymentForms',
         'studyVariants',
-        'groups'
+        'groups',
+        'preparationExams'
     ];
 
     public function studyForm() {
@@ -49,5 +50,9 @@ class Direction extends Model
 
     public function studyVariants() {
         return $this->belongsToMany(StudyVariant::class);
+    }
+
+    public function preparationExams() {
+        return $this->belongsToMany(PreparationExam::class);
     }
 }

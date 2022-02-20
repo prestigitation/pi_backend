@@ -22,9 +22,12 @@ class DatabaseSeeder extends Seeder
             PaymentFormSeeder::class,
             RoleSeeder::class,
             UsersTableSeeder::class,
+            RegaliaSeeder::class,
+            EducationLevelSeeder::class,
             TeacherSeeder::class,
             DaySeeder::class,
             PairNumberSeeder::class,
+            PreparationExamSeeder::class,
             DirectionSeeder::class,
         ]);
     }

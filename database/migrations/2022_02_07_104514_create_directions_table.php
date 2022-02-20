@@ -28,6 +28,8 @@ class CreateDirectionsTable extends Migration
             // бакалавр/магистратура
             $table->foreignId('study_form_id')->constrained();
 
+            $table->text('description')->nullable();
+
             $table->timestamps();
         });
     }

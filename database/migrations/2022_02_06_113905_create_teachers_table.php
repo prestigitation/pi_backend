@@ -16,12 +16,21 @@ class CreateTeachersTable extends Migration
     public function up()
     {
 
-        //TODO: поле с информацией о полезных ссылках, ?ссылке на зум или дискорд и пароль от них(если требуется)
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('education_level_id')->constrained();
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()));
             $table->string('avatar_path')->nullable();
+            $table->string('education');
+            $table->string('proof_document_link')->nullable();
+            $table->text('dissertation_proof')->nullable();
+            $table->text('professional_interests')->nullable();
+            $table->smallInteger('publications_count');
+            $table->smallInteger('projects_count');
+            $table->smallInteger('conferences_count');
+            $table->smallInteger('diploma_projects_count');
+            $table->timestamps();
         });
     }
 
