@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import wysiwyg from "vue-wysiwyg";
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -95,6 +97,12 @@ Vue.filter('myDate', function(created) {
 });
 
 Vue.filter('yesno', value => (value ? '<i class="fas fa-check green"></i>' : '<i class="fas fa-times red"></i>'));
+
+
+
+import "vue-wysiwyg/dist/vueWysiwyg.css";
+Vue.use(wysiwyg, {})
+
 
 
 const app = new Vue({
