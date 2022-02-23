@@ -34,7 +34,7 @@
 
                         <div class="form-group">
                             <label>Текст новости</label>
-                            <wysiwyg v-model="form.content" />
+                            <wysiwyg v-model="form.description" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -85,7 +85,7 @@ export default {
                 this.$emit('close_direction_modal')
             })
         },
-        async createDirection() {
+        async createNews() {
             await axios.post(process.env.MIX_DASHBOARD_PATH + 'news', this.form)
                 .then(() => {
                     this.showSuccessMessage('Новость была успешно добавлена!')

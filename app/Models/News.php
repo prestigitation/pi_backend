@@ -10,11 +10,13 @@ class News extends Model
 
     protected $with = ['category'];
 
+    protected $fillable = ['title', 'description'];
+
     protected $table = 'news';
 
     use HasFactory;
 
     public function category() {
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
     }
 }

@@ -30,12 +30,23 @@
                             <th class="align-middle text-center">Заголовок</th>
                             <th class="align-middle text-center">Категория</th>
                             <th class="align-middle text-center">Текст статьи</th>
+                            <th class="align-middle text-center">Действия</th>
                         </slot>
                     </tr>
                 </thead>
                 <tbody class="text-center">
-                   <!-- <tr v-for="news_data in news" :key="news_data.id">
+                    <tr v-for="news_data in news" :key="news_data.id">
                         <td>
+                            {{news_data.id}}
+                        </td>
+                        <td>
+                            {{news_data.title}}
+                        </td>
+                        <td class="text-truncate">
+                            {{news_data.category.name}}
+                        </td>
+                        <td>
+                            {{news_data.description}}
                         </td>
                         <td>
                             <a href="#" @click="editNews(news_data)">
@@ -46,7 +57,7 @@
                                 <i class="fa fa-trash red"></i>
                             </a>
                         </td>
-                    </tr> -->
+                    </tr>
                 </tbody>
                 </table>
             </div>
@@ -90,7 +101,7 @@ export default {
             form: new Form({
                 title: '',
                 category_id: 1,
-                content: ''
+                description: ''
             }),
         }
     },
@@ -128,7 +139,7 @@ export default {
                         })
         },
         async getNews() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'news')
+            await axios.get(process.env.MIX_API_PATH + 'news')
                 .then(({data}) => this.news = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить новости'))
         }

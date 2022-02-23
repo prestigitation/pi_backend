@@ -38,7 +38,9 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
         'profile' => 'ProfileController',
         'speciality' => 'SpecialityController',
         'study_variant' => 'StudyVariantController',
+        'category' => 'CategoryController',
         'direction' => 'DirectionController',
+        'news' => 'NewsController'
     ]);
 });
 
@@ -64,5 +66,6 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
         'time_form' => 'TimeFormController',
         'study_variant' => 'StudyVariantController',
         'direction' => 'DirectionController',
+        'news' => 'NewsController'
     ]);
 });

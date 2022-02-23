@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreStudyVariantRequest;
 use App\Http\Resources\StudyVariantResource;
 use App\Repositories\StudyVariantRepository;
 use Illuminate\Http\Request;
