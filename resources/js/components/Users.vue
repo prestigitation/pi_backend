@@ -14,11 +14,12 @@
                     </h3>
 
                 <div class="card-tools">
-
-                <button type="button" class="btn btn-sm btn-primary" @click="newModal">
-                    <i class="fa fa-plus-square"></i>
-                    Добавить
-                </button>
+                <slot name="add_button">
+                    <button type="button" class="btn btn-sm btn-primary" @click="newModal">
+                        <i class="fa fa-plus-square"></i>
+                        Добавить
+                    </button>
+                </slot>
                 </div>
             </div>
             <!-- /.card-header -->

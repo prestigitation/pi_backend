@@ -29,6 +29,7 @@ class CreateDirectionsTable extends Migration
             $table->foreignId('study_form_id')->constrained();
 
             $table->text('description')->nullable();
+            $table->string('video_link')->nullable();
 
             $table->timestamps();
         });

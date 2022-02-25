@@ -119,6 +119,8 @@ class DirectionSeeder extends Seeder
                 'profile_id' => $direction['profile_id'],
                 'speciality_id' => $direction['speciality_id'],
                 'study_form_id' => $direction['study_form_id'],
+                'description' => $direction['description'] ?? null,
+                'video_link' => $direction['video_link'] ?? '#'
             ]);
             if(isset($direction['study_variants'])) {
                 foreach($direction['study_variants'] as $studyVariant) {

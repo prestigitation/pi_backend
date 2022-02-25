@@ -3,12 +3,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 d-flex flex-column justify-content-center">
-                <span class="title my-2">Просмотр ролей пользователей</span>
+                <span class="title my-2">
+                    <slot name="title">
+                        Просмотр ролей пользователей
+                    </slot>
+                </span>
                 <form method="POST" class="d-flex flex-column justify-content-center">
-                    <input type="text" v-model="user.id" class="form-control col-lg-3 my-2" aria-describedby="usersRoles" placeholder="Введите ID пользователя">
-                    <input type="text" v-model="user.name" class="form-control  col-lg-3 my-1" aria-describedby="usersRoles" placeholder="Введите имя пользователя">
-                    <input type="text" v-model="user.surname" class="form-control col-lg-3 my-1" aria-describedby="usersRoles" placeholder="Введите фамилию пользователя">
-                    <input type="text" v-model="user.patronymic" class="form-control col-lg-3 my-1" aria-describedby="usersRoles" placeholder="Введите отчество пользователя">
+                    <input type="text" v-model="user.id" class="form-control my-2" :class="{'col-lg-3': input_cut}" aria-describedby="usersRoles" placeholder="Введите ID пользователя">
+                    <input type="text" v-model="user.name" class="form-control my-1" :class="{'col-lg-3': input_cut}" aria-describedby="usersRoles" placeholder="Введите имя пользователя">
+                    <input type="text" v-model="user.surname" class="form-control my-1" :class="{'col-lg-3': input_cut}" aria-describedby="usersRoles" placeholder="Введите фамилию пользователя">
+                    <input type="text" v-model="user.patronymic" class="form-control my-1" :class="{'col-lg-3': input_cut}" aria-describedby="usersRoles" placeholder="Введите отчество пользователя">
                 </form>
             </div>
         </div>
@@ -17,13 +21,16 @@
             <span class="row d-flex justify-content-center lead h3 mb-2 title"> Результаты поиска по вашему запросу </span>
             <users :table_data="foundUsers" @set_editing_id="setEditingUser">
                 <span slot="table_actions">
-                    <button class="btn btn-success" @click.prevent="openUserRoles">
-                        Роли + x
-                    </button>
+                    <slot name="table_actions_content">
+                        <button class="btn btn-success" @click.prevent="openUserRoles">
+                            Роли + x
+                        </button>
+                    </slot>
                 </span>
                 <span slot="table_title">
                     Найденные пользователи
                 </span>
+                <template #add_button></template>
             </users>
         </div>
     </div>
@@ -88,6 +95,12 @@ export default {
             currentUser: undefined
         };
     },
+    props: {
+        input_cut: {
+            type: Boolean,
+            default: () => false
+        }
+    },
     created() {
         axios.get("role").then(({ data }) => {
             this.roles = data.data
@@ -112,8 +125,8 @@ export default {
             $("#roles").modal("show")
         },
         setEditingUser(user) {
-            console.log(user);
             this.currentUser = user
+            this.$emit('setCurrentUser', user)
         },
         attachRole() {
             axios.post(`user/${this.currentUser.id}/role/${this.attached_role}`).then((response) => {

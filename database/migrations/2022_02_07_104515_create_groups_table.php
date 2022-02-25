@@ -23,6 +23,8 @@ class CreateGroupsTable extends Migration
             $table->foreign('headman_id')->references('id')->on('users');
 
             $table->foreignId('direction_id')->constrained();
+
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
