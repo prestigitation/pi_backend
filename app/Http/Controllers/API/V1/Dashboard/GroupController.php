@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+use App\Http\Requests\Groups\StoreGroupRequest;
+use App\Http\Requests\Groups\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 
 class GroupController extends BaseController
 {
-    public function __construct()
-    {
+    private $groupRepository;
+    public function __construct(GroupRepository $groupRepository) {
         $this->middleware('auth:api');
+
+        $this->groupRepository = $groupRepository;
     }
     /**
      * Display a listing of the resource.
@@ -20,7 +25,7 @@ class GroupController extends BaseController
      */
     public function index()
     {
-        return new GroupResource(Group::all());
+        return new GroupResource($this->groupRepository->getAll());
     }
 
     /**
@@ -29,9 +34,15 @@ class GroupController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreGroupRequest $request)
     {
-        //
+        try {
+            $this->groupRepository->create($request->validated());
+            return $this->sendResponse(null, 'Группа была успешно добавлена!');
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            return $this->sendError('Не удалось добавить группу');
+        }
     }
 
     /**
@@ -52,9 +63,11 @@ class GroupController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateGroupRequest $request, $id)
     {
-        //
+        $this->groupRepository->update($request->validated(), $id);
+
+        return $this->sendResponse(null, 'Информация о группе была успешно обновлена!');
     }
 
     /**

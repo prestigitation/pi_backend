@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-
+use App\Http\Resources\DirectionResource;
+use App\Repositories\DirectionRepository;
 use Illuminate\Http\Request;
 
 class DirectionController extends Controller
 {
+    private $directionRepository;
+    public function __construct(DirectionRepository $directionRepository) {
+        $this->directionRepository = $directionRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +21,7 @@ class DirectionController extends Controller
      */
     public function index()
     {
-        //
+        return new DirectionResource($this->directionRepository->getAll());
     }
 
     /**

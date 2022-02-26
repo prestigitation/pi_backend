@@ -24,7 +24,9 @@ class CreateGroupsTable extends Migration
 
             $table->foreignId('direction_id')->constrained();
 
-            $table->boolean('is_active');
+            $table->foreignId('study_variant_id')->constrained();
+
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

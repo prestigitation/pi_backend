@@ -22,4 +22,6 @@ class Teacher extends Model
     public function regalias() {
         return $this->belongsToMany(Regalia::class);
     }
+
+    //TODO: subjects relation -> schedule
 }

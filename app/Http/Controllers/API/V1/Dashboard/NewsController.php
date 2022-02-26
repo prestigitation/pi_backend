@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\News\StoreNewsRequest;
+use App\Http\Requests\News\UpdateNewsRequest;
 use App\Repositories\NewsRepository;
 use Illuminate\Http\Request;
 
@@ -59,9 +60,11 @@ class NewsController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateNewsRequest $request, $id)
     {
-        //
+        $this->newsRepository->update($request->validated(), $id);
+
+        return $this->sendResponse(null, 'Информация о новости была успешно обновлена!');
     }
 
     /**

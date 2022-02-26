@@ -31,13 +31,36 @@
                             <th class="align-middle text-center">Куратор</th>
                             <th class="align-middle text-center">Староста</th>
                             <th class="align-middle text-center">Направление</th>
+                            <th class="align-middle text-center">Время и тип обучения</th>
+                            <th class="align-middle text-center">Обучается на данный момент</th>
+                            <th class="align-middle text-center">Действия</th>
                         </slot>
                     </tr>
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="group in groups" :key="group.id">
                         <td>
-                            {{group}}
+                            {{group.id}}
+                        </td>
+                        <td>
+                            {{group.name}}
+                        </td>
+                        <td>
+                            <user-name-data :user="group.curator" />
+                        </td>
+                        <td>
+                            <user-name-data :user="group.headman" />
+                        </td>
+                        <td>
+                            {{group.direction.code}} - {{group.direction.profile.name}}, {{group.direction.speciality.name}} - {{group.direction.study_form.name}}
+                        </td>
+                        <td>
+                            <span>{{group.study_variant.years}}г. </span>
+                            <span v-if="group.study_variant.months">{{group.study_variant.months}}мес.</span>
+                            <span>{{group.study_variant.time_form.name}}</span>
+                        </td>
+                        <td>
+                            {{group.is_active ? 'Да' : 'Нет'}}
                         </td>
                         <td>
                             <a href="#" @click="editGroup(group)">
@@ -65,10 +88,13 @@
 
         <group-modal
             @close_direction_modal="closeModal"
+            @set_headman="setHeadman"
+            @set_curator="setCurator"
             id="addNew"
             :editmode="editmode"
             :form="form"
-            :groupsId="groupsId"
+            :groupId="groupsId"
+            :directions="directions"
         />
     </div>
     </div>
@@ -78,22 +104,27 @@
 <script>
 import GroupModal from './GroupModal.vue'
 import { notificationMixin } from '../mixins/notificationMixin'
+import UserNameData from './layout/UserNameData.vue'
 export default {
     name: 'groups',
     mixins: [notificationMixin],
     components: {
-        GroupModal
-    },
+    GroupModal,
+    UserNameData
+},
     data() {
         return {
             groups: [],
+            directions: [],
             groupId: 1,
             editmode: false,
             form: new Form({
                 name: '',
-                curator_id: 1,
-                headman_id: 1,
+                curator_id: null,
+                headman_id: null,
                 direction_id: 1,
+                study_variant_id: 0,
+                is_active: false,
             }),
         }
     },
@@ -113,6 +144,12 @@ export default {
             this.form.fill(group)
             $('#addNew').modal('show');
         },
+        setHeadman(headman) {
+            this.form.headman_id = headman?.id
+        },
+        setCurator(curator) {
+            this.form.curator_id = curator?.id
+        },
         async deleteGroup(groupId) {
             Swal.fire({
                         title: 'Удаление группы',
@@ -131,13 +168,19 @@ export default {
                         })
         },
         async getGroups() {
-            await axios.get(process.env.MIX_API_PATH + 'group')
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'group')
                 .then(({data}) => this.groups = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить группы'))
+        },
+        async getDirections() {
+            await axios.get(process.env.MIX_API_PATH + 'direction')
+                .then(({data}) => this.directions = data.data)
+                .catch(() => this.showFailMessage('Не удалось загрузить направления'))
         }
     },
     async created() {
         await this.getGroups()
+        await this.getDirections()
     }
 }
 </script>

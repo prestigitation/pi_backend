@@ -76,7 +76,7 @@ export default {
             .catch(() => this.showFailMessage('Не удалось загрузить категории новостей'))
     },
     methods: {
-        async updateDirection() {
+        async updateNews() {
             await axios.put(process.env.MIX_DASHBOARD_PATH + `news/${this.newsId}`, this.form).then(() => {
                 this.showSuccessMessage('Новость была успешно изменена')
             }).catch(() => {

@@ -17,6 +17,10 @@ class StudyVariant extends Model
         'time_form' => 'integer',
     ];
 
+    public function group() {
+        return $this->belongsTo(Group::class);
+    }
+
     public function timeForm() {
         return $this->belongsTo(TimeForm::class);
     }

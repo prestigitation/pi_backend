@@ -9,19 +9,31 @@ class Group extends Model
 {
     use HasFactory;
 
-    protected $with = ['directions'];
+    protected $with = ['direction', 'curator', 'headman', 'studyVariant'];
+
+    public function studyVariant() {
+        return $this->belongsTo(StudyVariant::class);
+    }
+
+    public function curator() {
+        return $this->belongsTo(User::class,'curator_id', 'id');
+    }
+
+    public function headman() {
+        return $this->belongsTo(User::class,'headman_id', 'id');
+    }
+
+    public function direction() {
+        return $this->belongsTo(Direction::class);
+    }
 
     public function users()
     {
         return $this->hasMany(User::class);
     }
 
-    public function directions()
-    {
-        return $this->belongsToMany(Direction::class);
-    }
-
     public function schedule() {
         return $this->belongsToMany(Schedule::class);
     }
+
 }
