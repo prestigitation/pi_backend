@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
+
+    public function pair() {
+        return $this->belongsTo(Pair::class);
+    }
 }

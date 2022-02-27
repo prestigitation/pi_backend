@@ -6,7 +6,6 @@ use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\News\StoreNewsRequest;
 use App\Http\Requests\News\UpdateNewsRequest;
 use App\Repositories\NewsRepository;
-use Illuminate\Http\Request;
 
 class NewsController extends BaseController
 {

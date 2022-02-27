@@ -18,9 +18,7 @@
 
                         <div class="form-group">
                             <label>Название группы</label>
-                            <input v-model="form.name" type="text" name="name"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                            <has-error :form="form" field="name"></has-error>
+                            <input v-model="form.name" type="text" name="name" class="form-control">
                         </div>
 
                         <div class="form-group">
@@ -150,7 +148,6 @@ export default {
             await axios.post(process.env.MIX_DASHBOARD_PATH + 'group', this.form)
                 .then(() => {
                     this.showSuccessMessage('Группа была успешно добавлена!')
-                    this.$emit('close_direction_modal')
                 }).catch(() => this.showFailMessage('Не удалось добавить группу'))
                 .finally(() =>  this.$emit('close_direction_modal'))
         },

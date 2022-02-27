@@ -15,6 +15,10 @@ class Teacher extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function pair() {
+        return $this->belongsTo(Pair::class);
+    }
+
     public function educationLevel() {
         return $this->belongsTo(EducationLevel::class);
     }

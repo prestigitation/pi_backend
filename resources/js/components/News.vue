@@ -53,7 +53,7 @@
                                 <i class="fa fa-edit blue"></i>
                             </a>
                             /
-                            <a href="#" @click="deleteDirection(news_data.id)">
+                            <a href="#" @click="deleteNews(news_data.id)">
                                 <i class="fa fa-trash red"></i>
                             </a>
                         </td>
@@ -150,6 +150,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>

@@ -6,9 +6,17 @@ use App\Models\Group;
 
 class GroupRepository
 {
+    public function loadAll() {
+        return Group::query();
+    }
+
     public function getAll()
     {
-        return Group::all();
+        return $this->loadAll()->get();
+    }
+
+    public function getPaginated() {
+        return $this->loadAll()->paginate(10);
     }
 
     public function setGroupInfo(Group $group, array $data) {

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Schedule extends Model
 {
     protected $table = 'schedule';
+
+    protected $with = ['pairs', 'group', 'day'];
     use HasFactory;
 
     public function group() {
@@ -16,5 +18,13 @@ class Schedule extends Model
 
     public function day() {
         return $this->hasOne(Day::class);
+    }
+
+    public function pairNumber() {
+        return $this->hasOne(PairNumber::class);
+    }
+
+    public function pairs() {
+        return $this->hasMany(Pair::class);
     }
 }

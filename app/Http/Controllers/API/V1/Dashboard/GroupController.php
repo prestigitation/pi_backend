@@ -6,9 +6,7 @@ use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\Groups\StoreGroupRequest;
 use App\Http\Requests\Groups\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
-use App\Models\Group;
 use App\Repositories\GroupRepository;
-use Illuminate\Http\Request;
 
 class GroupController extends BaseController
 {
@@ -25,6 +23,10 @@ class GroupController extends BaseController
      */
     public function index()
     {
+        return new GroupResource($this->groupRepository->getPaginated());
+    }
+
+    public function getAll() {
         return new GroupResource($this->groupRepository->getAll());
     }
 
@@ -40,7 +42,6 @@ class GroupController extends BaseController
             $this->groupRepository->create($request->validated());
             return $this->sendResponse(null, 'Группа была успешно добавлена!');
         } catch(\Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Не удалось добавить группу');
         }
     }
@@ -65,9 +66,13 @@ class GroupController extends BaseController
      */
     public function update(UpdateGroupRequest $request, $id)
     {
-        $this->groupRepository->update($request->validated(), $id);
+        try {
+            $this->groupRepository->update($request->validated(), $id);
 
-        return $this->sendResponse(null, 'Информация о группе была успешно обновлена!');
+            return $this->sendResponse(null, 'Информация о группе была успешно обновлена!');
+        } catch (\Exception $e) {
+            return $this->sendError('Не удалось изменить информацию о группе');
+        }
     }
 
     /**

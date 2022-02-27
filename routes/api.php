@@ -46,14 +46,15 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
 
 Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {
     Route::get('tag/list', 'TagController@list');
-
+    Route::get('group/all', 'GroupController@getAll')->middleware('auth:api')->name('group.get_all');
+    Route::get('subject/all', 'SubjectController@getAll')->middleware('auth:api')->name('subject.get_all');
     Route::get('category/list', 'CategoryController@list');
 
     Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');
-    Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
     Route::post('user/search', 'UserController@search');
-
     Route::post('teacher/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
+
+    Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
 
 
     Route::apiResources([
@@ -66,6 +67,10 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
         'time_form' => 'TimeFormController',
         'study_variant' => 'StudyVariantController',
         'direction' => 'DirectionController',
-        'news' => 'NewsController'
+        'news' => 'NewsController',
+        'schedule' => 'ScheduleController',
+        'day' => 'DayController',
+        'pair_number' => 'PairNumberController',
+        'pair' => 'PairController',
     ]);
 });

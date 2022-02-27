@@ -33,7 +33,7 @@ class Group extends Model
     }
 
     public function schedule() {
-        return $this->belongsToMany(Schedule::class);
+        return $this->belongsTo(Schedule::class);
     }
 
 }
