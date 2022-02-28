@@ -40,22 +40,10 @@
                             <wysiwyg v-model="form.additional_info" />
                         </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" value="odd" type="radio" v-model="form.type" name="flexRadioDefault" id="flexRadioDefault1">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                В нечетную неделю
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" value="even" type="radio" v-model="form.type" name="flexRadioDefault" id="flexRadioDefault2">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                В четную неделю
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" :value="null" type="radio" v-model="form.type" name="flexRadioDefault" id="flexRadioDefault3">
-                            <label class="form-check-label" for="flexRadioDefault3">
-                                Без привязки к неделе
+                        <div class="form-check" v-for="type in types" :key="type.id">
+                            <input class="form-check-input" :value="type.id" type="radio" v-model="form.type_id" name="flexRadioDefault" :id='`flexRadioDefault${type.id}`'>
+                            <label class="form-check-label" :for='`flexRadioDefault${type.id}`'>
+                                {{type.name}}
                             </label>
                         </div>
                     </div>
@@ -84,6 +72,7 @@ export default {
             days: [],
             teachers: [],
             subjects: [],
+            types: []
         }
     },
     props: {
@@ -104,12 +93,18 @@ export default {
         await this.getDays()
         await this.getTeachers()
         await this.getSubjects()
+        await this.getTypes()
     },
     methods: {
         async getSubjects() {
             await axios.get(process.env.MIX_DASHBOARD_PATH + 'subject/all')
                 .then(({data}) => this.subjects = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить информацию о предметах'))
+        },
+        async getTypes() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'type/all')
+                .then(({data}) => this.types = data.data)
+                .catch(() => this.showFailMessage('Не удалось загрузить типы проведения пар'))
         },
         async updatePair() {
             await axios.put(process.env.MIX_DASHBOARD_PATH + `pair/${this.pairId}`, this.form).then(() => {

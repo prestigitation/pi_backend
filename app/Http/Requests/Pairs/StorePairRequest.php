@@ -24,13 +24,11 @@ class StorePairRequest extends FormRequest
      */
     public function rules()
     {
-        $typeRules = PairDateTypes::getValues(PairDateTypes::cases());
-        $typeString = implode(',', $typeRules); // получение правил для валидации типа проводимой пары : 'even,odd'
         return [
             'subject_id' => 'required|integer|exists:App\Models\Subject,id',
-            'teacher_id' => 'required|integer|exists:App\Models\Teacher,user_id',
+            'teacher_id' => 'required|integer|exists:App\Models\User,id',
             'audience' => 'required|string|max:30',
-            'type' => "in:$typeString|nullable",
+            'type_id' => "exists:App\Models\Type,id|nullable",
             'additional_info' => 'string'
         ];
     }

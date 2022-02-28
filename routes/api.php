@@ -48,6 +48,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('tag/list', 'TagController@list');
     Route::get('group/all', 'GroupController@getAll')->middleware('auth:api')->name('group.get_all');
     Route::get('subject/all', 'SubjectController@getAll')->middleware('auth:api')->name('subject.get_all');
+    Route::get('pair/all', 'PairController@getAll')->middleware('auth:api')->name('pair.get_all');
+    Route::get('type/all', 'TypeController@getAll')->middleware('auth:api')->name('type.get_all');
     Route::get('category/list', 'CategoryController@list');
 
     Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');

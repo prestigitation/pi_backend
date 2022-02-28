@@ -50,7 +50,7 @@
                         <td>
                             {{pair_data.audience}}
                         </td>
-                        <td>{{pair_data.type}}</td>
+                        <td>{{pair_data.type.name}}</td>
                         <td>{{pair_data.additional_info ? pair_data.additional_info : 'Нет информации'}}</td>
                         <td>
                             <a href="#" @click="editPair(pair_data)">
@@ -108,7 +108,7 @@ export default {
                 teacher_id: 1,
                 subject_id: 1,
                 audience: '',
-                type: '',
+                type_id: 1,
                 additional_info: ''
             }),
         }

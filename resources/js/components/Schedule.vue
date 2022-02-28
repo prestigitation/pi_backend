@@ -65,6 +65,8 @@
 
         <schedule-modal
             @close_schedule_data_modal="closeModal"
+            @add_pair="addPair"
+            @delete_pair="deletePair"
             id="addNew"
             :editmode="editmode"
             :form="form"
@@ -90,7 +92,9 @@ export default {
             editmode: false,
             form: new Form({
                 group_id: 1,
-                pair: 1
+                day_id: 1,
+                pair_number_id: 1,
+                pairs: []
             }),
             scheduleId: null
         }
@@ -104,6 +108,12 @@ export default {
         closeModal() {
             $('#addNew').modal('toggle');
             this.getSchedule()
+        },
+        addPair(pair) {
+            this.form.pairs.push(pair)
+        },
+        deletePair(index) {
+            this.form.pairs.splice(index, 1)
         },
         editschedule_data(schedule) {
             this.scheduleId = schedule.id

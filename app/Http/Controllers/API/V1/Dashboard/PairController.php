@@ -22,8 +22,11 @@ class PairController extends BaseController
      */
     public function index()
     {
-        $pairs = $this->pairRepository->getPaginated();
-        return new PairResource($pairs);
+        return new PairResource($this->pairRepository->getPaginated());
+    }
+
+    public function getAll() {
+        return new PairResource($this->pairRepository->getAll());
     }
 
     /**
@@ -38,7 +41,6 @@ class PairController extends BaseController
             $this->pairRepository->create($request->validated());
             return $this->sendResponse(null, 'Информация о паре была успешно добавлена!');
         } catch(\Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Не удалось добавить информацию о паре');
         }
     }

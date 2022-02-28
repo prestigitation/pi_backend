@@ -29,7 +29,7 @@ class PairRepository {
         $pair->additional_info =  $this->purifier::clean($data['additional_info']);
         $pair->teacher_id = $data['teacher_id'];
         $pair->audience = $data['audience'];
-        $pair->type = $data['type'] ?? null;
+        $pair->type_id = $data['type_id'] ?? null;
     }
 
     public function create(array $data)

@@ -39,7 +39,7 @@ class Direction extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class);
+        return $this->belongsTo(Group::class);
     }
 
 

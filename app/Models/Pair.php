@@ -9,10 +9,14 @@ class Pair extends Model
 {
     use HasFactory;
 
-    protected $with = ['teacher', 'subject'];
+    protected $with = ['teacher', 'subject', 'type'];
 
     public function teacher() {
         return $this->belongsTo(Teacher::class);
+    }
+
+    public function type() {
+        return $this->belongsTo(Type::class);
     }
 
     public function subject() {

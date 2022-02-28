@@ -18,8 +18,8 @@ class CreatePairsTable extends Migration
             $table->id();
             $table->foreignId('subject_id')->constrained();
             $table->foreignId('teacher_id')->constrained();
+            $table->foreignId('type_id')->constrained()->nullable(); // пара по четным или нечетным дням, либо же без разделения
             $table->string('audience');
-            $table->enum('type', PairDateTypes::getValues(PairDateTypes::cases()))->nullable(); // пара по четным или нечетным дням, либо же без разделения
             $table->string('additional_info')->nullable();
             $table->timestamps();
         });
