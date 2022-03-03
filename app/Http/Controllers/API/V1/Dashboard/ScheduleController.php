@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
-
+use App\Http\Requests\Schedule\StoreScheduleRequest;
+use App\Http\Requests\Schedule\UpdateScheduleRequest;
+use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
 
 class ScheduleController extends BaseController
 {
+    private $scheduleRepository;
+
+    public function __construct(ScheduleRepository $scheduleRepository) {
+        $this->scheduleRepository = $scheduleRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class ScheduleController extends BaseController
      */
     public function index()
     {
-        //
+        return $this->scheduleRepository->getPaginated();
     }
 
     /**
@@ -24,9 +32,14 @@ class ScheduleController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreScheduleRequest $request)
     {
-        //
+        try {
+            $this->scheduleRepository->create($request->validated());
+            return $this->sendResponse(null, 'Запись в расписании была успешно добавлена!');
+        } catch(\Exception $e) {
+            return $this->sendError('Не удалось добавить новую запись в расписании');
+        }
     }
 
     /**
@@ -47,9 +60,11 @@ class ScheduleController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateScheduleRequest $request, $id)
     {
-        //
+        $this->scheduleRepository->update($request->validated(), $id);
+
+        return $this->sendResponse(null, 'Информация о расписании была успешно обновлена!');
     }
 
     /**
