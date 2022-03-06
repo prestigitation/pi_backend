@@ -62,9 +62,13 @@ class ScheduleController extends BaseController
      */
     public function update(UpdateScheduleRequest $request, $id)
     {
-        $this->scheduleRepository->update($request->validated(), $id);
+        try {
+            $this->scheduleRepository->update($request->validated(), $id);
 
-        return $this->sendResponse(null, 'Информация о расписании была успешно обновлена!');
+            return $this->sendResponse(null, 'Информация о расписании была успешно обновлена!');
+        } catch (\Exception $e) {
+            return $this->sendError('Не удалось добавить новую запись в расписании');
+        }
     }
 
     /**
@@ -73,8 +77,12 @@ class ScheduleController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id, Request $request)
     {
-        //
+        try {
+            $this->scheduleRepository->delete($id);
+        } catch (\Exception $e) {
+            return $this->sendError('Запись в расписании не была удалена, возникла ошибка.');
+        }
     }
 }

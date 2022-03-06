@@ -98,7 +98,7 @@ export default {
     props: {
         input_cut: {
             type: Boolean,
-            default: () => false
+            default: () => true
         }
     },
     created() {
@@ -153,5 +153,4 @@ export default {
     mixins: [notificationMixin]
 }
 </script>
-<style lang="scss" scoped>
-</style>
+

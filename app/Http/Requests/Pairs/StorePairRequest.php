@@ -29,7 +29,7 @@ class StorePairRequest extends FormRequest
             'teacher_id' => 'required|integer|exists:App\Models\User,id',
             'audience' => 'required|string|max:30',
             'type_id' => "exists:App\Models\Type,id|nullable",
-            'additional_info' => 'string'
+            'additional_info' => 'string|nullable'
         ];
     }
 }

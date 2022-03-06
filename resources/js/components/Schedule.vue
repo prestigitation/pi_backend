@@ -36,13 +36,30 @@
                     </tr>
                 </thead>
                 <tbody class="text-center">
-                    <tr v-for="schedule_data in schedule" :key="schedule_data.id">
+                    <tr v-for="schedule_data in schedules" :key="schedule_data.id">
                         <td>
-                            <a href="#" @click="editschedule_data(schedule_data)">
+                            {{schedule_data.id}}
+                        </td>
+                        <td>
+                            {{schedule_data.group.name}}
+                        </td>
+                        <td>
+                            <pair-number-presenter :pairNumber="schedule_data.pair_number" />
+                        </td>
+                        <td>
+                            {{schedule_data.day.name}}
+                        </td>
+                        <td>
+                            <div v-for="pair in schedule_data.pairs">
+                                <pair-presenter :pair="pair" />
+                            </div>
+                        </td>
+                        <td>
+                            <a href="#" @click="editSchedule(schedule_data)">
                                 <i class="fa fa-edit blue"></i>
                             </a>
                             /
-                            <a href="#" @click="deleteschedule_data(schedule_data.id)">
+                            <a href="#" @click="deleteSchedule(schedule_data.id)">
                                 <i class="fa fa-trash red"></i>
                             </a>
                         </td>
@@ -52,7 +69,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer" v-if="schedules && schedules.length">
-                <pagination :data="schedule" @pagination-change-page="getResults"></pagination>
+                <pagination :data="schedules" @pagination-change-page="getResults"></pagination>
             </div>
             <!-- /.card -->
         </div>
@@ -80,12 +97,16 @@
 <script>
 import ScheduleModal from './ScheduleModal.vue'
 import { notificationMixin } from '../mixins/notificationMixin'
+import PairNumberPresenter from './layout/PairNumberPresenter.vue'
+import PairPresenter from './layout/PairPresenter.vue'
 export default {
     name: 'schedule',
     mixins: [notificationMixin],
     components: {
-        ScheduleModal
-    },
+    ScheduleModal,
+    PairNumberPresenter,
+    PairPresenter
+},
     data() {
         return {
             schedules: [],
@@ -115,7 +136,7 @@ export default {
         deletePair(index) {
             this.form.pairs.splice(index, 1)
         },
-        editschedule_data(schedule) {
+        editSchedule(schedule) {
             this.scheduleId = schedule.id
             this.editmode = true
             this.form.fill(schedule)

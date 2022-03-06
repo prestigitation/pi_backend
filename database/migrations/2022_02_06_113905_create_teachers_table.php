@@ -18,18 +18,19 @@ class CreateTeachersTable extends Migration
 
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->max(255)->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('education_level_id')->constrained();
-            $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()));
-            $table->string('avatar_path')->nullable();
-            $table->string('education');
-            $table->string('proof_document_link')->nullable();
+            $table->foreignId('education_level_id')->constrained()->nullable();
+            $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()))->nullable();
+            $table->string('avatar_path')->nullable()->max(255)->nullable();
+            $table->string('education')->max(255)->nullable();
+            $table->string('proof_document_link')->nullable()->max(255);
             $table->text('dissertation_proof')->nullable();
             $table->text('professional_interests')->nullable();
-            $table->smallInteger('publications_count');
-            $table->smallInteger('projects_count');
-            $table->smallInteger('conferences_count');
-            $table->smallInteger('diploma_projects_count');
+            $table->smallInteger('publications_count')->nullable();
+            $table->smallInteger('projects_count')->nullable();
+            $table->smallInteger('conferences_count')->nullable();
+            $table->smallInteger('diploma_projects_count')->nullable();
             $table->timestamps();
         });
     }

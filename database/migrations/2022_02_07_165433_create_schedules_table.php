@@ -15,10 +15,11 @@ class CreateSchedulesTable extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('group_id')->constrained();
             $table->foreignId('day_id')->constrained();
             $table->foreignId('pair_number_id')->constrained();
+            $table->softDeletes();
+            $table->unsignedBigInteger('deletion_author_id')->nullable(); //ID удалившего пользователя
             $table->timestamps();
         });
     }
@@ -30,6 +31,9 @@ class CreateSchedulesTable extends Migration
      */
     public function down()
     {
+        Schema::table("schedules", function ($table) {
+            $table->dropSoftDeletes();
+        });
         Schema::dropIfExists('schedules');
     }
 }

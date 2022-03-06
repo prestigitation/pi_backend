@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Schedule extends Model
 {
+    use HasFactory, SoftDeletes;
 
-    protected $with = ['pairs', 'group', 'day'];
-    use HasFactory;
+    protected $with = ['pairs', 'group', 'day', 'pairNumber'];
 
     public function group() {
         return $this->belongsTo(Group::class);

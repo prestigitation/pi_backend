@@ -21,7 +21,7 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function index()
     {
         $teachers = $this->teacherRepository->loadAll()->get();
         return new TeacherResource($teachers);

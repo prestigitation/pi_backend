@@ -46,6 +46,22 @@ class UserRepository {
         $user->delete();
     }
 
+    public function fillData(User $user, array $data) {
+        $user->name = $data['name'];
+        $user->surname = $data['surname'];
+        $user->patronymic = $data['patronymic'];
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+    }
+
+    public function create(array $data) {
+        $user = new User;
+        $this->fillData($user, $data);
+        $user->save();
+        return $user;
+    }
+
+
     public function hasRole(int $userId, int $roleId): bool {
         $userRoles = User::find($userId)->roles;
         return $userRoles->contains(Role::find($roleId));

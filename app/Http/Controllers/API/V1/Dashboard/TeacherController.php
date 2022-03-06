@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+
 use App\Http\Requests\Teachers\StoreTeacherAvatarRequest;
-use App\Http\Requests\Users\UserRequest;
+use App\Http\Requests\Teachers\StoreTeacherRequest;
+use App\Http\Requests\Teachers\UpdateTeacherRequest;
+
 use App\Http\Resources\TeacherResource;
-use App\Models\Teacher;
-use Illuminate\Http\Request;
 
 use App\Repositories\TeacherRepository;
 use App\Repositories\UserRepository;
@@ -40,9 +41,15 @@ class TeacherController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTeacherRequest $request) //TODO:  добавить поля об преподавателе - кол-во публикаций и тд
     {
-        //
+        try {
+            $this->teacherRepository->create($request->validated());
+            return $this->sendResponse(null, 'Преподаватель был успешно добавлен!');
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            return $this->sendError('Не удалось добавить преподавателя');
+        }
     }
 
     /**
@@ -63,9 +70,9 @@ class TeacherController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(UpdateTeacherRequest $request, $id)
     {
-        $this->userRepository->update($request, $id);
+        $this->teacherRepository->update($request->validated(), $id);
 
         return $this->sendResponse(null, 'Информация о преподавателе была успешно обновлена!');
     }

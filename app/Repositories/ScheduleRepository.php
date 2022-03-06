@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Schedule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleRepository {
     public function loadAll()
@@ -47,4 +49,11 @@ class ScheduleRepository {
         $this->fillPairs($schedule, $data['pairs']);
     }
 
+    public function delete(int $id) {
+        $schedule = Schedule::find($id);
+        $schedule->pairs()->detach();
+        $schedule->deletion_author_id = Auth::id();
+        $schedule->save();
+        $schedule->delete();
+    }
 }

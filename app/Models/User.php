@@ -77,17 +77,12 @@ class User extends Authenticatable // implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return $this->roles()->where('name', DashboardRoles::ROLE_ADMIN)->exists();
+        return $this->roles()->where('name', DashboardRoles::ROLE_ADMIN->value)->exists();
     }
 
     public function isUser()
     {
-        return $this->roles()->where('name', DashboardRoles::ROLE_USER)->exists();
-    }
-
-    public function getPhotoAttribute()
-    {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower($this->email)) . '.jpg?s=200&d=mm';
+        return $this->roles()->where('name', DashboardRoles::ROLE_USER->value)->exists();
     }
 
 
@@ -95,7 +90,7 @@ class User extends Authenticatable // implements MustVerifyEmail
     /**
 
         *Получение пользователей с заданными именем роли.
-
+        *@param $query
         *@param string $roleName
         *@return User[]
      */

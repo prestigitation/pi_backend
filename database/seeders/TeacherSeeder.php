@@ -7,6 +7,7 @@ use App\Helpers\Enums\EducationLevels;
 use App\Helpers\Enums\Regalias;
 use App\Repositories\FileRepository;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 use App\Helpers\Enums\TeacherPositions;
 use App\Models\EducationLevel;
@@ -340,6 +341,7 @@ class TeacherSeeder extends Seeder
                 $newTeacher->projects_count = $teacher['projects_count'];
                 $newTeacher->conferences_count = $teacher['conferences_count'];
                 $newTeacher->diploma_projects_count = $teacher['diploma_projects_count'];
+                $newTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
                 if(isset($teacher['education'])) $newTeacher->education = $teacher['education'];
                 if(isset($teacher['proof_document_link'])) $newTeacher->proof_document_link = $teacher['proof_document_link'];
                 if(isset($teacher['dissertation_proof'])) $newTeacher->dissertation_proof = $teacher['dissertation_proof'];

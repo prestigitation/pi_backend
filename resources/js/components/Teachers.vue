@@ -4,6 +4,7 @@
             entity="teacher"
             @set_editing_id="setEditingTeacher"
             @openAddModal="$router.push('/user/roles')"
+            :custom_form="form"
         >
 
             <span slot="entity_title">преподавателей</span>
@@ -17,6 +18,14 @@
                     :multiple="false"
                     class="form-control"
                     autocomplete="false">
+                </div>
+                <div class="form-group">
+                    <label>Образование</label>
+                    <select name="type" v-model="form.education_level_id" id="type" class="form-control">
+                        <option v-for="level in educationLevels" :key="level.id" :value="level.id">
+                            {{level.name}}
+                        </option>
+                    </select>
                 </div>
             </div>
 
@@ -69,17 +78,26 @@ export default {
     name: 'teachers',
     data() {
         return {
+            form: new Form({
+                id : '',
+                name: '',
+                surname: '',
+                patronymic: '',
+                email: '',
+                password: '', //TODO: композиция форм
+                education_level_id: 1
+            }),
             teacher: undefined,
+            educationLevels: []
         }
     },
     methods: {
         editTeacher(teacher) {
-            console.log(this.teacher);
             this.attachPhoto()
         },
         setEditingTeacher(teacher) {
-            console.log(teacher);
-            this.teacher = teacher
+            let mergedTeacher = Object.assign(this.form, teacher.user)
+            this.teacher = mergedTeacher
         },
         async attachPhoto() {
             let avatar = this.$refs.avatar.files[0]
@@ -90,10 +108,14 @@ export default {
                 .then((response) => this.showSuccessMessage(response.data.data.message))
                 .catch((error) => this.showFailMessage(error.response.data.data))
             }
+        },
+        async getEducationLevels() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'education_level/all').then(({data}) => this.educationLevels = data.data)
         }
+    },
+    async created() {
+        await this.getEducationLevels()
     },
     mixins: [notificationMixin]
 }
 </script>
-<style lang="scss" scoped>
-</style>

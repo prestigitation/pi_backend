@@ -82,8 +82,7 @@
                             </td>
                             <td class="text-capitalize align-middle text-center" @click.prevent="setCurrentRow">
                                 <slot name="table_actions">
-                                    <!-- TODO: проверить, работает ли на таблице users, если нет- исправить-->
-                                    <a href="#" @click="editModal(user.user)">
+                                    <a href="#" @click="editModal(getEditedUser(user))">
                                         <i class="fa fa-edit blue"></i>
                                     </a>
                                     /
@@ -116,7 +115,7 @@
                 @create_user="$props.create_user ? $props.create_user() : createUser()"
                 id="addNew"
                 :editmode="editmode"
-                :form="form"
+                :form="$props.custom_form ? $props.custom_form : form"
             >
                 <div slot="modal_additional_content">
                     <slot name="user_additional_content"></slot>
@@ -157,8 +156,7 @@ import RolesData from './layout/RolesData.vue';
                 },
                 updateUser(){
                     this.$Progress.start();
-                    // console.log('Editing data');
-                    this.form.put(`${this.$props.entity}/`+this.form.id)
+                    this.getCurrentForm().put(`${this.$props.entity}/`+this.form.id)
                     .then((response) => {
                         // success
                         $('#addNew').modal('hide');
@@ -183,13 +181,13 @@ import RolesData from './layout/RolesData.vue';
                     this.form.fill(user);
                 },
                 newModal() {
-                    if(this.$props.entity) {
+                    /*if(this.$props.entity) {
                         this.$emit('openAddModal')
-                    } else {
+                    } else {*/
                         this.editmode = false;
                         this.form.reset();
                         $('#addNew').modal('show');
-                    }
+                   //}
                 },
                 deleteUser(id){
                     Swal.fire({
@@ -223,11 +221,9 @@ import RolesData from './layout/RolesData.vue';
                     }
 
                     this.$Progress.finish();
-
                 },
                 createUser(){
-
-                this.form.post(`${this.$props.entity}`)
+                this.getCurrentForm().post(`${this.$props.entity}`)
                     .then((response)=>{
                         $('#addNew').modal('hide');
                         Toast.fire({
@@ -263,6 +259,16 @@ import RolesData from './layout/RolesData.vue';
                     },
                 findCurrentUser(data, userId) {
                     return data.filter(item => item.id === parseInt(userId))[0]
+                },
+                getCurrentForm() {
+                    // если была передана другая форма(из другого компонента), первым делом берем ее
+                    return this.$props.custom_form ? this.$props.custom_form : this.form
+                },
+                getEditedUser(user) {
+                    if(this.$props.entity === 'teacher' && user.user) {
+                        return user.user
+                    }
+                    return user
                 }
         },
         watch: {
@@ -284,6 +290,10 @@ import RolesData from './layout/RolesData.vue';
             },
             create_user: {
                 type: Function
+            },
+            custom_form: {
+                type: Object,
+                default: () => null
             }
         },
         mounted() {
