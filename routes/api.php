@@ -1,7 +1,4 @@
 <?php
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,22 +13,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::namespace('App\\Http\\Controllers\\API\V1')->group(function () {
-    Route::middleware('auth:api')->group(function() {
-        Route::apiResources([
-            'time_form' => 'TimeFormController',
-            'study_form' => 'StudyFormController',
-            'payment_form' => 'PaymentFormController',
-            'profile' => 'ProfileController',
-            'speciality' => 'SpecialityController',
-            'study_variant' => 'StudyVariantController',
-            'category' => 'CategoryController',
-            'direction' => 'DirectionController',
-            'news' => 'NewsController',
-            'schedule' => 'ScheduleController',
-            'teacher' => 'TeacherController'
-        ]);
-    });
+Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(function () {
+    Route::get('/schedule/filter', 'ScheduleController@filter');
+
+    Route::apiResources([
+        'time_form' => 'TimeFormController',
+        'study_form' => 'StudyFormController',
+        'payment_form' => 'PaymentFormController',
+        'profile' => 'ProfileController',
+        'speciality' => 'SpecialityController',
+        'study_variant' => 'StudyVariantController',
+        'category' => 'CategoryController',
+        'direction' => 'DirectionController',
+        'news' => 'NewsController',
+        'schedule' => 'ScheduleController',
+        'teacher' => 'TeacherController'
+    ]);
 });
 
 Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {

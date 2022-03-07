@@ -23,7 +23,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return new NewsResource($this->newsRepository->getAll());
+        return $this->newsRepository->getAll();
     }
 
     /**

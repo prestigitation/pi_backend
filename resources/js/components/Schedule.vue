@@ -9,7 +9,9 @@
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
-                            Таблица расписания
+                            <div>
+                                Таблица расписания
+                            </div>
                         </slot>
                     </h3>
 

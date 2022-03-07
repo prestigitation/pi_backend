@@ -21,7 +21,7 @@ class DirectionController extends Controller
      */
     public function index()
     {
-        return new DirectionResource($this->directionRepository->getAll());
+        return $this->directionRepository->getAll();
     }
 
     /**

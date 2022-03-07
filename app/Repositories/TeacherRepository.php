@@ -110,5 +110,9 @@ class TeacherRepository
             }
         }
     }
+
+    public function findBySlug(string $slug): Teacher {
+        return Teacher::where('slug', $slug)->first();
+    }
 }
 

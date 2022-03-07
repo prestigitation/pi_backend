@@ -2,13 +2,6 @@
 
 namespace App\Helpers\Traits;
 
-use Illuminate\Database\Eloquent\Model;
-
-use App\Helpers\Enums\Profiles;
-use App\Models\Profile;
-use stdClass;
-
-
 trait EnumHelper {
 
     public static function getNames(array $entities)

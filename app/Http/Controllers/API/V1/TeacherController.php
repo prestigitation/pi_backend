@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TeacherResource;
-
+use App\Models\Teacher;
 use App\Repositories\TeacherRepository;
 
 class TeacherController extends Controller
@@ -23,8 +23,11 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teachers = $this->teacherRepository->loadAll()->get();
-        return new TeacherResource($teachers);
+        return $this->teacherRepository->loadAll()->get();
+    }
+
+    public function findBySlug(string $slug): Teacher {
+        return $this->teacherRepository->findBySlug($slug);
     }
 
 }
