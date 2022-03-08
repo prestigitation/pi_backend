@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
+use App\Helpers\Classes\NestedRelationQueryHelper;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -73,25 +74,15 @@ class ScheduleRepository {
         $basicHelper->query('groups')
                     ->query('pair_numbers')
                     ->query('days');
-        dd($basicHelper);
+        $query = $basicHelper->getBuilder();
 
 
-        $query
-        ->when($data['groups'], function (Builder $query) use($data) {
-            foreach($data['groups'] as $group) {
-                $query->where('group_id', $group['id']);
-            }
-        })->when($data['days'], function (Builder $query) use($data) {
-            foreach($data['days'] as $day) {
-                $query->where('day_id', $day['id']);
-            }
-        })
-        ->when($data['pair_numbers'], function (Builder $query) use ($data) {
-            foreach($data['pair_numbers'] as $pairNumber) {
-                $query->where('pair_number_id', $pairNumber['id']);
-            }
-        })
-        ->when($data['pair_audiences'], function (Builder $query) use ($data) {
+        $nestedRelationHelper = new NestedRelationQueryHelper($query, $data);
+        $nestedRelationHelper->query('pair_subjects')
+                                ->query('pair_audiences');
+        dd($nestedRelationHelper->getBuilder()->get());
+
+        /*->when($data['pair_audiences'], function (Builder $query) use ($data) {
             foreach($data['pair_audiences'] as $pairAudience) {
                 $query->whereHas('pairs.audience', $pairAudience);
             }
@@ -108,9 +99,9 @@ class ScheduleRepository {
         })
         ->when($data['teachers'], function (Builder $query) use ($data) {
             foreach($data['teachers'] as $teacher) {
-                $query->whereHas('pairs.teacher_id', $teacher['id']);
+                $query->whereHas('pairs.teacher.id', $teacher['id']);
             }
-        });
+        });*/
 
         return $query->get();
     }

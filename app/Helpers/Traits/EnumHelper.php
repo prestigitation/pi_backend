@@ -19,8 +19,8 @@ trait EnumHelper {
      *
      * @return Eloquent $model
      */
-    public static function getEnumModel(mixed $model, mixed $nameValue)
+    public static function getEnumModel(mixed $model, mixed $nameValue, $property = 'name')
     {
-        return $model::where('name', $nameValue->value)->first();
+        return $model::where($property, $nameValue->value)->first();
     }
 }

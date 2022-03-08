@@ -13,4 +13,8 @@ class Pluralizer {
             return substr($str,0,-1);
         } else throw new \Exception("Переданная строка($str) не представлена во множественном числе!");
     }
+
+    function pluralize(string $str): string {
+        return $str.'s';
+    }
 }

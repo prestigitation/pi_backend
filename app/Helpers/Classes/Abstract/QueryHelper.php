@@ -1,15 +1,15 @@
 <?php
-namespace App\Helpers\Interfaces;
+namespace App\Helpers\Classes\Abstract;
 
 use Illuminate\Database\Eloquent\Builder;
 
-interface QueryHelperInterface {
+abstract class QueryHelper {
     /**
      * Фильтрация исходных данных по идентификатору $name
      * @param string $name
      * @return self
      */
-    public function query(string $name): self;
+    abstract public function query(string $name): self;
 
     /**
      * @param Illuminate\Database\Eloquent\Builder $query
@@ -21,5 +21,12 @@ interface QueryHelperInterface {
      * @param mixed $dataPart
      * Объект данных в массиве
      */
-    public function baseQuery(Builder $query, string $name, string $key, mixed $dataPart): void;
+    abstract protected function baseQuery(Builder $query, string $name, string $key, mixed $dataPart): void;
+
+
+    /**
+     * Вернуть экземпляр построителя запросов после проделанных операций
+     * @return Builder
+     */
+    abstract public function getBuilder(): Builder;
 }
