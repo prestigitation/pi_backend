@@ -1,9 +1,13 @@
 <?php
 namespace App\Helpers\Classes;
 
+use App\Helpers\Traits\QueryHelperTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class NestedRelationQueryHelper extends BasicQueryHelper {
+    use QueryHelperTrait;
+
+
     protected static $relationSeparator = '.';
 
     public function __construct(Builder $query, array $data) {
@@ -14,7 +18,7 @@ class NestedRelationQueryHelper extends BasicQueryHelper {
             foreach($filterProperties as $propertyName => $filterProperty) {
                 foreach($filterProperty as $key => $value) {
                     if(is_string($key)) {
-                        $relation = self::getPluralRelationName($propertyName);
+                        $relation = self::getPluralRelationName($propertyName, self::$relationSeparator);
                         parent::$query->whereHas($relation, function (Builder $q) use ($key, $value) {
                             $q->whereIn($key, $value);
                         });
@@ -37,18 +41,5 @@ class NestedRelationQueryHelper extends BasicQueryHelper {
 
     protected static function getQueryParamString(string $name, ?string $key): string {
         return str_replace('_', static::$relationSeparator, parent::$pluralizer->apluralize($name));
-    }
-
-    protected static function getRelatedParentName(string $relationName): string {
-        return substr($relationName, 0, stripos($relationName, '_'));
-    }
-
-    protected static function getRelatedChildName(string $relationName): string {
-        return substr($relationName, stripos($relationName, '_') + 1);
-    }
-
-    protected static function getPluralRelationName(string $relationName): string {
-        $parent = self::getRelatedParentName($relationName);
-        return parent::$pluralizer->pluralize($parent).self::$relationSeparator.self::getRelatedChildName($relationName);
     }
 }

@@ -12,6 +12,19 @@
                             <div>
                                 Таблица расписания
                             </div>
+                            <p class="mt-2">
+                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    Фильтрация +
+                                </button>
+                            </p>
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body">
+                                    <!--<div v-for="filter, index in filters" :key="index">
+                                        <span class="lead">{{filter.name}}:</span>
+                                    </div> -->
+                                    {{filters}}
+                                </div>
+                            </div>
                         </slot>
                     </h3>
 
@@ -42,16 +55,21 @@
                         <td>
                             {{schedule_data.id}}
                         </td>
-                        <td>
+                        <td class="link-primary">
                             {{schedule_data.group.name}}
                         </td>
                         <td>
-                            <pair-number-presenter :pairNumber="schedule_data.pair_number" />
+                            <pair-number-presenter
+                                :pairNumber="schedule_data.pair_number"
+                                @pair_number_click="addPairNumberToFilter"
+                                @pair_number_start_click="addPairStartTimeToFilter"
+                                @pair_number_end_click="addPairEndTimeToFilter"
+                            />
                         </td>
-                        <td>
+                        <td class="link-primary">
                             {{schedule_data.day.name}}
                         </td>
-                        <td>
+                        <td class="link-primary">
                             <div v-for="pair in schedule_data.pairs">
                                 <pair-presenter :pair="pair" />
                             </div>
@@ -69,11 +87,9 @@
                 </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
             <div class="card-footer" v-if="schedules && schedules.length">
                 <pagination :data="schedules" @pagination-change-page="getResults"></pagination>
             </div>
-            <!-- /.card -->
         </div>
         </div>
 
@@ -119,7 +135,8 @@ export default {
                 pair_number_id: 1,
                 pairs: []
             }),
-            scheduleId: null
+            scheduleId: null,
+            filters: []
         }
     },
     methods: {
@@ -166,6 +183,38 @@ export default {
                 .then(({data}) => this.schedules = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         },
+        getFilterTemplate(name, entity, query, values = undefined) {
+            let template = {
+                name,query,entity
+            }
+            if(values) {
+                template.values = values
+            }
+
+            return template
+        },
+        moveToFilter(template, addingValue) {
+            let matchedTemplate = this.filters.find((filter) => filter.entity === template.entity && filter.query === template.query)
+            if(!matchedTemplate) {
+                this.filters.push({...template, values: [addingValue]})
+            } else {
+                if(!matchedTemplate.values.find(element => element === addingValue)) {
+                    matchedTemplate.values.push(addingValue)
+                }
+            }
+        },
+        addPairStartTimeToFilter(startTime) {
+            let filterPartTemplate = this.getFilterTemplate('Дата начала','start', 'pair_number')
+            this.moveToFilter(filterPartTemplate, startTime)
+        },
+        addPairEndTimeToFilter(endTime) {
+            let filterPartTemplate = this.getFilterTemplate('Дата окончания','end', 'pair_number')
+            this.moveToFilter(filterPartTemplate, endTime)
+        },
+        addPairNumberToFilter(pairNumber) {
+            let filterPartTemplate = this.getFilterTemplate('Номер пары','number', 'pair_number')
+            this.moveToFilter(filterPartTemplate, pairNumber)
+        }
     },
     async created() {
         await this.getSchedule()
