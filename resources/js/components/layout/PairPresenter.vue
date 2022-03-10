@@ -4,17 +4,22 @@
         <span v-if="pair.type.marker_color" :style="{'color': pair.type.marker_color}">
             *
         </span>
-        <span>
-            {{pair.type.name ? pair.type.name : ''}} -
-        </span>
+        <a href="#" @click.prevent="$emit('pair_type_click', pair.type.name)" class="link-primary">
+            {{pair.type.name ? pair.type.name : ''}}
+        </a>
+        <span>-</span>
     </span>
-    <span>
-        {{pair.subject.name}} -
-    </span>
-    <user-name-data :user="pair.teacher.user" /> -
-    <span>
+    <a @click.prevent="$emit('pair_subject_click', pair.subject.name)" href="#" class="link-primary">
+        {{pair.subject.name}}
+    </a>
+    <span>-</span>
+    <a @click.prevent="$emit('pair_teacher_click', pair.teacher)" href="#" class="link-primary">
+        <user-name-data :user="pair.teacher.user" />
+    </a>
+    <span>-</span>
+    <a @click.prevent="$emit('pair_audience_click', pair.audience)" href="#" class="link-primary">
         {{pair.audience}} аудитория
-    </span>
+    </a>
 </span>
 </template>
 

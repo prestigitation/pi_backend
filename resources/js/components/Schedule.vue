@@ -12,17 +12,31 @@
                             <div>
                                 Таблица расписания
                             </div>
-                            <p class="mt-2">
-                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <p class="mt-4">
+                                <button class="btn btn-primary" type="button" @click.prevent="toggleFilterButton">
                                     Фильтрация +
                                 </button>
                             </p>
-                            <div class="collapse" id="collapseExample">
+                            <div class="collapse" id="filter__collapse">
                                 <div class="card card-body">
-                                    <!--<div v-for="filter, index in filters" :key="index">
-                                        <span class="lead">{{filter.name}}:</span>
-                                    </div> -->
+                                    <span class="title lead my-2">Критерии фильтрации</span>
                                     {{filters}}
+                                    <ul v-for="filter, index in filters" :key="index">
+                                        <li class="lead">
+                                            <span>{{filter.name}}:</span>
+                                            <span v-for="value in filter.criterias">
+                                                <span v-for="criteria, index in value">
+                                                    <span>{{criteria}}</span>
+                                                    <span v-show="filter.additionalInfo && filter.additionalInfo[index]">
+                                                        ( {{ filter.additionalInfo[index] }} )
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <div class="btn btn-success" @click.prevent="filterSchedule">
+                                        Отфильтровать
+                                    </div>
                                 </div>
                             </div>
                         </slot>
@@ -55,8 +69,10 @@
                         <td>
                             {{schedule_data.id}}
                         </td>
-                        <td class="link-primary">
-                            {{schedule_data.group.name}}
+                        <td>
+                            <a href="#" class="link-primary">
+                                {{schedule_data.group.name}}
+                            </a>
                         </td>
                         <td>
                             <pair-number-presenter
@@ -66,12 +82,20 @@
                                 @pair_number_end_click="addPairEndTimeToFilter"
                             />
                         </td>
-                        <td class="link-primary">
-                            {{schedule_data.day.name}}
+                        <td>
+                            <a href="#" class="link-primary">
+                                {{schedule_data.day.name}}
+                            </a>
                         </td>
-                        <td class="link-primary">
+                        <td>
                             <div v-for="pair in schedule_data.pairs">
-                                <pair-presenter :pair="pair" />
+                                <pair-presenter
+                                    :pair="pair"
+                                    @pair_type_click="addPairTypeToFilter"
+                                    @pair_subject_click="addPairSubjectToFilter"
+                                    @pair_teacher_click="addPairTeacherToFilter"
+                                    @pair_audience_click="addPairAudienceToFilter"
+                                />
                             </div>
                         </td>
                         <td>
@@ -136,7 +160,8 @@ export default {
                 pairs: []
             }),
             scheduleId: null,
-            filters: []
+            filters: [],
+            filterCollapseToggled: false,
         }
     },
     methods: {
@@ -183,24 +208,36 @@ export default {
                 .then(({data}) => this.schedules = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         },
-        getFilterTemplate(name, entity, query, values = undefined) {
+        getFilterTemplate(name, query = undefined, entity, additionalInfo = undefined) {
             let template = {
-                name,query,entity
+                name,entity,additionalInfo: [], criterias: {}
             }
-            if(values) {
-                template.values = values
+
+            if(additionalInfo) {
+                template.additionalInfo = [additionalInfo]
+            }
+
+            if(query) {
+                template.query = query
             }
 
             return template
         },
         moveToFilter(template, addingValue) {
-            let matchedTemplate = this.filters.find((filter) => filter.entity === template.entity && filter.query === template.query)
+            let matchedTemplate = this.filters.find((filter) =>
+            filter.entity === template.entity &&
+            filter.query === template.query &&
+            filter.criterias[template.query].length)
             if(!matchedTemplate) {
-                this.filters.push({...template, values: [addingValue]})
+                let queryObject = {...template }
+                queryObject['criterias'][template.query] = [addingValue]
+                this.filters.push(queryObject)
+            } else if(!matchedTemplate.criterias[template.query].find(element => element === addingValue)) {
+                matchedTemplate.criterias[template.query].push(addingValue)
+                this.filters.push(matchedTemplate)
             } else {
-                if(!matchedTemplate.values.find(element => element === addingValue)) {
-                    matchedTemplate.values.push(addingValue)
-                }
+                matchedTemplate.criterias = [addingValue]
+                this.filters.push(matchedTemplate)
             }
         },
         addPairStartTimeToFilter(startTime) {
@@ -208,16 +245,46 @@ export default {
             this.moveToFilter(filterPartTemplate, startTime)
         },
         addPairEndTimeToFilter(endTime) {
-            let filterPartTemplate = this.getFilterTemplate('Дата окончания','end', 'pair_number')
+            let filterPartTemplate = this.getFilterTemplate('Даты окончания','end', 'pair_number')
             this.moveToFilter(filterPartTemplate, endTime)
         },
         addPairNumberToFilter(pairNumber) {
-            let filterPartTemplate = this.getFilterTemplate('Номер пары','number', 'pair_number')
+            let filterPartTemplate = this.getFilterTemplate('Номера пар','number', 'pair_number')
             this.moveToFilter(filterPartTemplate, pairNumber)
-        }
+        },
+        addPairSubjectToFilter(subject) {
+            console.log(subject);
+            let filterPartTemplate = this.getFilterTemplate('Предметы','id', 'pair.subject')
+            this.moveToFilter(filterPartTemplate, subject)
+        },
+        addPairTeacherToFilter(teacher) {
+            let additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
+            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id', 'pair.teacher', additionalInfo)
+            this.moveToFilter(filterPartTemplate, teacher.id)
+        },
+        addPairAudienceToFilter(audience) {
+            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'pair.audience')
+            this.moveToFilter(filterPartTemplate, audience)
+        },
+        filterSchedule() {
+
+        },
+        toggleFilterButton() {
+            this.filterCollapseToggled = !this.filterCollapseToggled
+            if(this.filterCollapseToggled) {
+                $('#filter__collapse').collapse('show')
+            } else $('#filter__collapse').collapse('hide')
+        },
     },
     async created() {
         await this.getSchedule()
+    },
+    watch: {
+        filters : function (current, previous) {
+            if(current.length > 0 && !this.filterCollapseToggled) {
+                this.toggleFilterButton()
+            }
+        }
     }
 }
 </script>

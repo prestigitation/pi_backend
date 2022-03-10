@@ -1,10 +1,10 @@
 <template>
 <span>
-    <span class="link-primary" @click.prevent="$emit('pair_number_click', pairNumber.number)">{{pairNumber.number}}</span>
+    <a href="#" class="{'link-primary': showLinks}" @click.prevent="$emit('pair_number_click', pairNumber.number)">{{pairNumber.number}}</a>
     <span>пара - c </span>
-    <span class="link-primary" @click.prevent="$emit('pair_number_start_click', pairNumber.start)">{{pairNumber.start}}</span>
+    <a href="#" class="{'link-primary': showLinks}" @click.prevent="$emit('pair_number_start_click', pairNumber.start)">{{pairNumber.start}}</a>
     <span>до</span>
-    <span class="link-primary" @click.prevent="$emit('pair_number_end_click', pairNumber.end)">{{pairNumber.end}}</span>
+    <a href="#" :class="{'link-primary': showLinks}" @click.prevent="$emit('pair_number_end_click', pairNumber.end)">{{pairNumber.end}}</a>
 </span>
 </template>
 
@@ -14,6 +14,10 @@ export default {
         pairNumber: {
             type: Object,
             default: () => {}
+        },
+        showLinks: {
+            type: Boolean,
+            default : () => true
         }
     }
 }
