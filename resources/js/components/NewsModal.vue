@@ -71,7 +71,7 @@ export default {
         }
     },
     async mounted() {
-        await axios.get(process.env.MIX_API_PATH + 'category')
+        await axios.get(process.env.MIX_API_PATH + 'categories')
             .then(({data}) => this.categories = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить категории новостей'))
     },

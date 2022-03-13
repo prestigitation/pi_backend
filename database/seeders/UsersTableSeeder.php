@@ -36,7 +36,7 @@ class UsersTableSeeder extends Seeder
             'surname' => 'D',
             'patronymic' => 'oe',
             'email' => 'admin@gmail.com',
-            'password' => '12345678',
+            'password' => 'hD2PsU5pEnYJ',
         ]);
         $this->userRepository->setRole($doe->id, Role::where('name', DashboardRoles::ROLE_ADMIN->value)->first()->id);
     }

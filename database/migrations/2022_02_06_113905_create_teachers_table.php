@@ -19,7 +19,7 @@ class CreateTeachersTable extends Migration
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
             $table->string('slug')->max(255)->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreignId('education_level_id')->constrained()->nullable();
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()))->nullable();
             $table->string('avatar_path')->nullable()->max(255)->nullable();

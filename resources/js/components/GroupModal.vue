@@ -136,7 +136,7 @@ export default {
     },
     methods: {
         async updateGroup() {
-            await axios.put(process.env.MIX_DASHBOARD_PATH + `group/${this.groupId}`, this.form).then(() => {
+            await axios.put(process.env.MIX_DASHBOARD_PATH + `groups/${this.groupId}`, this.form).then(() => {
                 this.showSuccessMessage('Групппа была успешно изменена')
             }).catch(() => {
                 this.showFailMessage('Не удалось изменить данные о группе')
@@ -145,7 +145,7 @@ export default {
             })
         },
         async createGroup() {
-            await axios.post(process.env.MIX_DASHBOARD_PATH + 'group', this.form)
+            await axios.post(process.env.MIX_DASHBOARD_PATH + 'groups', this.form)
                 .then(() => {
                     this.showSuccessMessage('Группа была успешно добавлена!')
                 }).catch(() => this.showFailMessage('Не удалось добавить группу'))

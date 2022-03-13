@@ -20,22 +20,36 @@
                             <div class="collapse" id="filter__collapse">
                                 <div class="card card-body">
                                     <span class="title lead my-2">Критерии фильтрации</span>
-                                    {{filters}}
                                     <ul v-for="filter, index in filters" :key="index">
                                         <li class="lead">
                                             <span>{{filter.name}}:</span>
                                             <span v-for="value in filter.criterias">
                                                 <span v-for="criteria, index in value">
-                                                    <span>{{criteria}}</span>
-                                                    <span v-show="filter.additionalInfo && filter.additionalInfo[index]">
-                                                        ( {{ filter.additionalInfo[index] }} )
+                                                    <span v-if="filter.additionalInfo && filter.additionalInfo[index]">
+                                                        <span>
+                                                            {{ filter.additionalInfo[index] }}
+                                                        </span>
+                                                        <span v-if="index !== value.length - 1">
+                                                            ,
+                                                        </span>
+                                                    </span>
+                                                    <span v-else>
+                                                        <span>{{criteria}}</span>
+                                                        <span v-if="index !== value.length - 1">
+                                                            ,
+                                                        </span>
                                                     </span>
                                                 </span>
                                             </span>
                                         </li>
                                     </ul>
-                                    <div class="btn btn-success" @click.prevent="filterSchedule">
-                                        Отфильтровать
+                                    <div class="mx-auto">
+                                        <div class="btn btn-success" @click.prevent="filterSchedule">
+                                            Фильтрация
+                                        </div>
+                                        <div class="btn btn-warning" @click.prevent="resetFilter">
+                                            Сбросить фильтры
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +84,7 @@
                             {{schedule_data.id}}
                         </td>
                         <td>
-                            <a href="#" class="link-primary">
+                            <a @click.prevent="addGroupToFilter(schedule_data.group)" href="#" class="link-primary">
                                 {{schedule_data.group.name}}
                             </a>
                         </td>
@@ -83,7 +97,7 @@
                             />
                         </td>
                         <td>
-                            <a href="#" class="link-primary">
+                            <a @click.prevent="addDayToFilter(schedule_data.day)" href="#" class="link-primary">
                                 {{schedule_data.day.name}}
                             </a>
                         </td>
@@ -196,7 +210,7 @@ export default {
                         confirmButtonText: 'Да'
                         }).then(async (result) => {
                             if (result.value) {
-                                    this.form.delete(`schedule/${scheduleId}`).then(async ()=>{
+                                    this.form.delete(`schedules/${scheduleId}`).then(async ()=>{
                                         this.showSuccessMessage('Часть расписания была успешно удалена!')
                                         await this.getSchedule();
                                     })
@@ -204,7 +218,7 @@ export default {
                         })
         },
         async getSchedule() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedule')
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules')
                 .then(({data}) => this.schedules = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         },
@@ -226,48 +240,97 @@ export default {
         moveToFilter(template, addingValue) {
             let matchedTemplate = this.filters.find((filter) =>
             filter.entity === template.entity &&
-            filter.query === template.query &&
-            filter.criterias[template.query].length)
+            filter.query === template.query)
             if(!matchedTemplate) {
                 let queryObject = {...template }
                 queryObject['criterias'][template.query] = [addingValue]
                 this.filters.push(queryObject)
-            } else if(!matchedTemplate.criterias[template.query].find(element => element === addingValue)) {
-                matchedTemplate.criterias[template.query].push(addingValue)
-                this.filters.push(matchedTemplate)
-            } else {
+            } else if(matchedTemplate.criterias[template.query].length >= 0) {
+                // если фильтр с подобным критерием уже существует, добавляем в него текущий элемент
+                let templateIndex = this.filters.indexOf(matchedTemplate)
+                if(!matchedTemplate.criterias[template.query].includes(addingValue)) {
+                    matchedTemplate.criterias[template.query].push(addingValue)
+                    if(template.additionalInfo.length === 1) {
+                        matchedTemplate.additionalInfo.push(template.additionalInfo[0])
+                    }
+                    this.filters.splice(templateIndex, 1, matchedTemplate)
+                }
+            } else if(!matchedTemplate.criterias.length) {
+                //если нету критериев, т.е criterias представлен как массив значений
                 matchedTemplate.criterias = [addingValue]
+                if(template.additionalInfo.length === 1) {
+                    matchedTemplate.additionalInfo.push(template.additionalInfo[0])
+                }
                 this.filters.push(matchedTemplate)
             }
         },
         addPairStartTimeToFilter(startTime) {
-            let filterPartTemplate = this.getFilterTemplate('Дата начала','start', 'pair_number')
+            let filterPartTemplate = this.getFilterTemplate('Дата начала','start', 'pair_numbers')
             this.moveToFilter(filterPartTemplate, startTime)
         },
         addPairEndTimeToFilter(endTime) {
-            let filterPartTemplate = this.getFilterTemplate('Даты окончания','end', 'pair_number')
+            let filterPartTemplate = this.getFilterTemplate('Даты окончания','end', 'pair_numbers')
             this.moveToFilter(filterPartTemplate, endTime)
         },
+        addPairTypeToFilter(type) {
+            let additionalInfo = `${type.name}`
+            let filterPartTemplate = this.getFilterTemplate('Очередность проведения','id', 'pair_types', additionalInfo)
+            this.moveToFilter(filterPartTemplate, type.id)
+        },
         addPairNumberToFilter(pairNumber) {
-            let filterPartTemplate = this.getFilterTemplate('Номера пар','number', 'pair_number')
+            let filterPartTemplate = this.getFilterTemplate('Номера пар','number', 'pair_numbers')
             this.moveToFilter(filterPartTemplate, pairNumber)
         },
         addPairSubjectToFilter(subject) {
-            console.log(subject);
-            let filterPartTemplate = this.getFilterTemplate('Предметы','id', 'pair.subject')
-            this.moveToFilter(filterPartTemplate, subject)
+            let additionalInfo = `${subject.name}`
+            let filterPartTemplate = this.getFilterTemplate('Предметы','id', 'pair_subjects', additionalInfo)
+            this.moveToFilter(filterPartTemplate, subject.id)
         },
         addPairTeacherToFilter(teacher) {
             let additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
-            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id', 'pair.teacher', additionalInfo)
+            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id', 'pair_teachers', additionalInfo)
             this.moveToFilter(filterPartTemplate, teacher.id)
         },
+        addDayToFilter(day) {
+            let additionalInfo = `${day.name}`
+            let filterPartTemplate = this.getFilterTemplate('Дни недели','id', 'days', additionalInfo)
+            this.moveToFilter(filterPartTemplate, day.id)
+        },
         addPairAudienceToFilter(audience) {
-            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'pair.audience')
+            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'pair_audiences')
             this.moveToFilter(filterPartTemplate, audience)
         },
+        addGroupToFilter(group) {
+            let additionalInfo = `${group.name}`
+            let filterPartTemplate = this.getFilterTemplate('Группы', 'id', 'pair_audiences', additionalInfo)
+            this.moveToFilter(filterPartTemplate, group.id)
+        },
+        getFilter() {
+            let filterParams = {}
+            this.filters.forEach(filter => {
+                if(filter.entity) {
+                    filterParams[filter.entity] = filter.criterias
+                } else filterParams[filter.query] = filter.criterias[filter.query]
+            })
+            return filterParams
+        },
         filterSchedule() {
-
+            let filter = this.getFilter()
+            let form = new FormData()
+            form.append('filter_string', JSON.stringify(filter))
+            axios.post(process.env.MIX_API_PATH + 'schedules/filter', form)
+            .then(({data}) => {
+                this.schedules = data
+            }).catch(e => {
+                this.showFailMessage('Не удалось отфильтровать расписание!')
+            }).finally(() => {
+                this.toggleFilterButton()
+            })
+        },
+        async resetFilter() {
+            this.filters = []
+            await this.getSchedule()
+            this.toggleFilterButton()
         },
         toggleFilterButton() {
             this.filterCollapseToggled = !this.filterCollapseToggled

@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Helpers\Classes\BasicQueryHelper;
 use App\Helpers\Classes\NestedRelationQueryHelper;
 use App\Models\Schedule;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -72,36 +71,18 @@ class ScheduleRepository {
         }
         $basicHelper = new BasicQueryHelper($query, $data);
         $basicHelper->query('groups')
-                    ->query('pair_numbers')
                     ->query('days');
         $query = $basicHelper->getBuilder();
 
 
         $nestedRelationHelper = new NestedRelationQueryHelper($query, $data);
         $nestedRelationHelper->query('pair_subjects')
-                                ->query('pair_audiences');
-        dd($nestedRelationHelper->getBuilder()->get());
+                            ->query('pair_types')
+                            ->query('pair_teachers')
+                            ->query('pair_audiences')
+                            ->query('pair_numbers');
+        $query = $nestedRelationHelper->getBuilder();
 
-        /*->when($data['pair_audiences'], function (Builder $query) use ($data) {
-            foreach($data['pair_audiences'] as $pairAudience) {
-                $query->whereHas('pairs.audience', $pairAudience);
-            }
-        })
-        ->when($data['pair_subjects'], function (Builder $query) use ($data) {
-            foreach($data['pair_subjects'] as $pairSubject) {
-                $query->whereHas('pairs.subject.id', $pairSubject['id']);
-            }
-        })
-        ->when($data['pair_types'], function (Builder $query) use ($data) {
-            foreach($data['pair_types'] as $pairType) {
-                $query->whereHas('pairs.type.id', $pairType['id']);
-            }
-        })
-        ->when($data['teachers'], function (Builder $query) use ($data) {
-            foreach($data['teachers'] as $teacher) {
-                $query->whereHas('pairs.teacher.id', $teacher['id']);
-            }
-        });*/
 
         return $query->get();
     }

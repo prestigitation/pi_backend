@@ -14,56 +14,56 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(function () {
-    Route::get('/schedule/filter', 'ScheduleController@filter');
+    Route::post('/schedules/filter', 'ScheduleController@filter');
 
     Route::apiResources([
-        'time_form' => 'TimeFormController',
-        'study_form' => 'StudyFormController',
-        'payment_form' => 'PaymentFormController',
-        'profile' => 'ProfileController',
-        'speciality' => 'SpecialityController',
-        'study_variant' => 'StudyVariantController',
-        'category' => 'CategoryController',
-        'direction' => 'DirectionController',
+        'time_forms' => 'TimeFormController',
+        'study_forms' => 'StudyFormController',
+        'payment_forms' => 'PaymentFormController',
+        'profiles' => 'ProfileController',
+        'specialities' => 'SpecialityController',
+        'study_variants' => 'StudyVariantController',
+        'categories' => 'CategoryController',
+        'directions' => 'DirectionController',
         'news' => 'NewsController',
-        'schedule' => 'ScheduleController',
-        'teacher' => 'TeacherController'
+        'schedules' => 'ScheduleController',
+        'teachers' => 'TeacherController'
     ]);
 });
 
 Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {
     Route::middleware('auth:api')->group(function() {
     /* Роуты без пагинации, т.е на получение всех моделей */
-    Route::get('group/all', 'GroupController@getAll')->middleware('web')->name('group.get_all');
-    Route::get('subject/all', 'SubjectController@getAll')->middleware('web')->name('subject.get_all');
-    Route::get('pair/all', 'PairController@getAll')->middleware('web')->name('pair.get_all');
-    Route::get('type/all', 'TypeController@getAll')->middleware('web')->name('type.get_all');
-    Route::get('education_level/all', 'EducationLevelController@getAll')->middleware('web')->name('education_level.get_all');
+    Route::get('groups/all', 'GroupController@getAll')->middleware('web')->name('group.get_all');
+    Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subject.get_all');
+    Route::get('pairs/all', 'PairController@getAll')->middleware('web')->name('pair.get_all');
+    Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('type.get_all');
+    Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_level.get_all');
 
     /* Специфические роуты */
-    Route::post('user/{user_id}/role/{role_id}', 'UserController@attachRole');
-    Route::post('user/search', 'UserController@search');
-    Route::post('teacher/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
+    Route::post('users/{user_id}/role/{role_id}', 'UserController@attachRole');
+    Route::post('users/search', 'UserController@search');
+    Route::post('teachers/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
 
     /* Роуты на удаление */
-    Route::delete('user/{user_id}/role/{role_id}', 'UserController@detachRole');
+    Route::delete('users/{user_id}/roles/{role_id}', 'UserController@detachRole');
 
 
         Route::apiResources([
-            'user' => 'UserController',
-            'category' => 'CategoryController',
-            'tag' => 'TagController',
-            'group' => 'GroupController',
-            'role' => 'RoleController',
-            'teacher' => 'TeacherController',
-            'time_form' => 'TimeFormController',
-            'study_variant' => 'StudyVariantController',
-            'direction' => 'DirectionController',
+            'users' => 'UserController',
+            'categories' => 'CategoryController',
+            'tags' => 'TagController',
+            'groups' => 'GroupController',
+            'roles' => 'RoleController',
+            'teachers' => 'TeacherController',
+            'time_forms' => 'TimeFormController',
+            'study_variants' => 'StudyVariantController',
+            'directions' => 'DirectionController',
             'news' => 'NewsController',
-            'schedule' => 'ScheduleController',
-            'day' => 'DayController',
-            'pair_number' => 'PairNumberController',
-            'pair' => 'PairController',
+            'schedules' => 'ScheduleController',
+            'days' => 'DayController',
+            'pair_numbers' => 'PairNumberController',
+            'pairs' => 'PairController',
         ]);
     });
 });

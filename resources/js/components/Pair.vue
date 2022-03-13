@@ -139,7 +139,7 @@ export default {
                         confirmButtonText: 'Да'
                         }).then(async (result) => {
                             if (result.value) {
-                                    this.form.delete(`pair/${pairId}`).then(async ()=>{
+                                    this.form.delete(`pairs/${pairId}`).then(async ()=>{
                                         this.showSuccessMessage('Информация о паре была успешно удалена!')
                                         await this.getPairs();
                                     })
@@ -147,7 +147,7 @@ export default {
                         })
         },
         async getPairs() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'pair')
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'pairs')
                 .then(({data}) => this.pairs = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить информацию о парах'))
         }

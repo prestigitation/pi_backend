@@ -179,7 +179,7 @@ export default {
                         confirmButtonText: 'Да'
                         }).then(async (result) => {
                             if (result.value) {
-                                    this.form.delete(`direction/${directionId}`).then(async ()=>{
+                                    this.form.delete(`directions/${directionId}`).then(async ()=>{
                                         this.showSuccessMessage('Направление было успешно удалено!')
                                         await this.getDirections();
                                     })
@@ -187,7 +187,7 @@ export default {
                         })
         },
         async getDirections() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'direction')
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'directions')
                 .then(({data}) => this.directions = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
         }
@@ -197,7 +197,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

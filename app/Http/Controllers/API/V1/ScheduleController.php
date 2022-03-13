@@ -32,8 +32,9 @@ class ScheduleController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return Schedule[] | \Illuminate\Http\Response
      */
-    public function filter(FilterScheduleRequest $request) {
-            $validated = $request->validated();
+    public function filter(Request $request) {
+            $filterScheduleRequest = new FilterScheduleRequest;
+            $validated = Validator::validate(json_decode($request->request->get('filter_string'), true), $filterScheduleRequest->rules());
             if(!count($validated)) {
                 return new Response('Вы не указали ни одного параметра фильтрации', 400);
             }

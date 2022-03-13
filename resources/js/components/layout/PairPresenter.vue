@@ -4,12 +4,12 @@
         <span v-if="pair.type.marker_color" :style="{'color': pair.type.marker_color}">
             *
         </span>
-        <a href="#" @click.prevent="$emit('pair_type_click', pair.type.name)" class="link-primary">
+        <a href="#" @click.prevent="$emit('pair_type_click', pair.type)" class="link-primary">
             {{pair.type.name ? pair.type.name : ''}}
         </a>
         <span>-</span>
     </span>
-    <a @click.prevent="$emit('pair_subject_click', pair.subject.name)" href="#" class="link-primary">
+    <a @click.prevent="$emit('pair_subject_click', pair.subject)" href="#" class="link-primary">
         {{pair.subject.name}}
     </a>
     <span>-</span>

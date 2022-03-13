@@ -137,19 +137,19 @@ export default {
         }
     },
     async mounted() {
-        await axios.get(process.env.MIX_API_PATH + 'study_form')
+        await axios.get(process.env.MIX_API_PATH + 'study_forms')
             .then(({data}) => this.study_forms = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить формы обучения'))
-        await axios.get(process.env.MIX_API_PATH + 'payment_form')
+        await axios.get(process.env.MIX_API_PATH + 'payment_forms')
             .then(({data}) => this.payment_forms = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить финансовые формы договора'))
-        await axios.get(process.env.MIX_API_PATH + 'profile')
+        await axios.get(process.env.MIX_API_PATH + 'profiles')
             .then(({data}) => this.profiles = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить профили подготовки'))
-        await axios.get(process.env.MIX_API_PATH + 'speciality')
+        await axios.get(process.env.MIX_API_PATH + 'specialities')
             .then(({data}) => this.specialities = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить специальности'))
-        await axios.get(process.env.MIX_API_PATH + 'study_variant')
+        await axios.get(process.env.MIX_API_PATH + 'study_variants')
             .then(({data}) => this.study_variants = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить варианты обучения'))
     },
@@ -169,7 +169,7 @@ export default {
             this.form.payment_forms.push({id: 0})
         },
         async updateDirection() {
-            await axios.put(process.env.MIX_DASHBOARD_PATH + `direction/${this.directionId}`, this.form).then(() => {
+            await axios.put(process.env.MIX_DASHBOARD_PATH + `directions/${this.directionId}`, this.form).then(() => {
                 this.showSuccessMessage('Направление было успешно изменено')
             }).catch(() => {
                 this.showFailMessage('Не удалось изменить данные о направлении')
@@ -178,7 +178,7 @@ export default {
             })
         },
         async createDirection() {
-            await axios.post(process.env.MIX_DASHBOARD_PATH + 'direction', this.form)
+            await axios.post(process.env.MIX_DASHBOARD_PATH + 'directions', this.form)
                 .then(() => {
                     this.showSuccessMessage('Направление было успешно добавлено!')
                     this.$emit('close_direction_modal')

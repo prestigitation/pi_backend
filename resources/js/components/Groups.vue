@@ -160,7 +160,7 @@ export default {
                         confirmButtonText: 'Да'
                         }).then(async (result) => {
                             if (result.value) {
-                                    this.form.delete(`group/${groupId}`).then(async ()=>{
+                                    this.form.delete(`groups/${groupId}`).then(async ()=>{
                                         this.showSuccessMessage('Группа была успешно удалена!')
                                         await this.getGroups();
                                     })
@@ -168,12 +168,12 @@ export default {
                         })
         },
         async getGroups() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'group')
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'groups')
                 .then(({data}) => this.groups = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить группы'))
         },
         async getDirections() {
-            await axios.get(process.env.MIX_API_PATH + 'direction')
+            await axios.get(process.env.MIX_API_PATH + 'directions')
                 .then(({data}) => this.directions = data.data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления'))
         }
@@ -184,7 +184,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
