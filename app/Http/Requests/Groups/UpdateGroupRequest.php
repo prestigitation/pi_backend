@@ -29,7 +29,8 @@ class UpdateGroupRequest extends FormRequest
             'headman_id' => 'required|integer|exists:App\Models\User,id',
             'direction_id' => 'required|integer|exists:App\Models\Direction,id',
             'study_variant_id' => 'required|integer|exists:App\Models\StudyVariant,id',
-            'is_active' => 'required|boolean'
+            'is_active' => 'required|boolean',
+            'users' => 'nullable|array'
         ];
     }
 }

@@ -110,7 +110,7 @@ export default {
             await axios.put(process.env.MIX_DASHBOARD_PATH + `pairs/${this.pairId}`, this.form).then(() => {
                 this.showSuccessMessage('Пара была успешно изменена')
             }).catch(() => {
-                this.showFailMessage('Не удалось изменить данные о пара')
+                this.showFailMessage('Не удалось изменить данные о паре')
             }).finally(() => {
                 this.$emit('close_direction_modal')
             })
@@ -134,7 +134,7 @@ export default {
         },
         async getTeachers() {
             await axios.get(process.env.MIX_API_PATH + 'teachers')
-                .then(({data}) => this.teachers = data.data)
+                .then(({data}) => this.teachers = data)
                 .catch(() => this.showFailMessage('Не удалось загрузить преподавателей'))
         }
     },

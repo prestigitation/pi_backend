@@ -9,7 +9,7 @@ class Group extends Model
 {
     use HasFactory;
 
-    protected $with = ['direction', 'curator', 'headman', 'studyVariant'];
+    protected $with = ['direction', 'curator', 'headman', 'studyVariant', 'users'];
 
     public function studyVariant() {
         return $this->belongsTo(StudyVariant::class);

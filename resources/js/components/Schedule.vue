@@ -43,6 +43,12 @@
                                             </span>
                                         </li>
                                     </ul>
+                                    <div class="form-check my-3">
+                                        <input class="form-check-input" v-model="form.deleted" type="checkbox" :value="form.deleted" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Включая удаленные записи
+                                        </label>
+                                    </div>
                                     <div class="mx-auto">
                                         <div class="btn btn-success" @click.prevent="filterSchedule">
                                             Фильтрация
@@ -171,7 +177,8 @@ export default {
                 group_id: 1,
                 day_id: 1,
                 pair_number_id: 1,
-                pairs: []
+                pairs: [],
+                deleted: false
             }),
             scheduleId: null,
             filters: [],
@@ -220,11 +227,14 @@ export default {
         async getSchedule() {
             await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules')
                 .then(({data}) => this.schedules = data.data)
-                .catch(() => this.showFailMessage('Не удалось загрузить направления обучения'))
+                .catch(() => this.showFailMessage('Не удалось загрузить расписание'))
         },
         getFilterTemplate(name, query = undefined, entity, additionalInfo = undefined) {
             let template = {
-                name,entity,additionalInfo: [], criterias: {}
+                name,
+                entity,
+                additionalInfo: [],
+                criterias: {}
             }
 
             if(additionalInfo) {
@@ -302,7 +312,7 @@ export default {
         },
         addGroupToFilter(group) {
             let additionalInfo = `${group.name}`
-            let filterPartTemplate = this.getFilterTemplate('Группы', 'id', 'pair_audiences', additionalInfo)
+            let filterPartTemplate = this.getFilterTemplate('Группы', 'id', 'groups', additionalInfo)
             this.moveToFilter(filterPartTemplate, group.id)
         },
         getFilter() {
@@ -312,6 +322,8 @@ export default {
                     filterParams[filter.entity] = filter.criterias
                 } else filterParams[filter.query] = filter.criterias[filter.query]
             })
+            filterParams.deleted = this.form.deleted
+
             return filterParams
         },
         filterSchedule() {
@@ -329,6 +341,7 @@ export default {
         },
         async resetFilter() {
             this.filters = []
+            this.form.deleted = false
             await this.getSchedule()
             this.toggleFilterButton()
         },

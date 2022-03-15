@@ -103,7 +103,7 @@ export default {
     },
     methods: {
         async updateSchedule() {
-            await axios.put(process.env.MIX_DASHBOARD_PATH + `schedule/${this.scheduleId}`, this.form).then(() => {
+            await axios.put(process.env.MIX_DASHBOARD_PATH + `schedules/${this.scheduleId}`, this.form).then(() => {
                 this.showSuccessMessage("Групппа была успешно изменена");
             }).catch(() => {
                 this.showFailMessage("Не удалось изменить данные о группе");
@@ -112,29 +112,29 @@ export default {
             });
         },
         async createSchedule() {
-            await axios.post(process.env.MIX_DASHBOARD_PATH + "schedule", this.form)
+            await axios.post(process.env.MIX_DASHBOARD_PATH + "schedules", this.form)
                 .then(() => {
                 this.showSuccessMessage("Запись была успешно добавлена!");
             }).catch(() => this.showFailMessage("Не удалось добавить запись в расписании"))
-                .finally(() => this.$emit("close_direction_modal"));
+                .finally(() => { this.$emit("close_direction_modal") });
         },
         async getGroups() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + "group/all")
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "groups/all")
                 .then(({ data }) => this.groups = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить группы"));
         },
         async getDays() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + "day")
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "days")
                 .then(({ data }) => this.days = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить данные о времени обучения"));
         },
         async getPairNumbers() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + "pair_number")
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "pair_numbers")
                 .then(({ data }) => this.pairNumbers = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить данные о расписании для пар"));
         },
         async getPairs() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + "pair/all")
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "pairs/all")
                 .then(({ data }) => this.pairs = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить данные о парах"));
         },

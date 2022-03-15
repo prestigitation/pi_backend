@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Group;
+use App\Models\User;
 
 class GroupRepository
 {
@@ -26,6 +27,13 @@ class GroupRepository
         $group->is_active = $data['is_active'];
         $group->curator_id = $data['curator_id'];
         $group->study_variant_id = $data['study_variant_id'];
+        if(isset($data['users']) && count($data['users'])) {
+            foreach($data['users'] as $user) {
+                $userId = User::find($user['id']);
+                $group->users()->detach();
+                $group->users()->attach($userId);
+            }
+        }
     }
 
     public function create(array $data) {

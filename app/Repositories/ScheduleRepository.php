@@ -64,7 +64,7 @@ class ScheduleRepository {
 
     public function filter(array $data) {
         $query = null;
-        if(isset($data['deleted'])) {
+        if(isset($data['deleted']) && $data['deleted'] === true) {
             $query = Schedule::withTrashed();
         } else {
             $query = Schedule::query();

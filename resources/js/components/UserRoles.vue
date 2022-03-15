@@ -117,7 +117,7 @@ export default {
                 formData.append("surname", this.user.surname);
             if (this.user.patronymic)
                 formData.append("patronymic", this.user.patronymic);
-            axios.post("user/search", formData).then(({ data }) => {
+            axios.post(process.env.MIX_DASHBOARD_PATH + "users/search", formData).then(({ data }) => {
                 this.foundUsers = data
             });
         },
@@ -129,7 +129,7 @@ export default {
             this.$emit('setCurrentUser', user)
         },
         attachRole() {
-            axios.post(`user/${this.currentUser.id}/role/${this.attached_role}`).then((response) => {
+            axios.post(`users/${this.currentUser.id}/roles/${this.attached_role}`).then((response) => {
                 this.showSuccessMessage(response.data.data.message)
             }).catch((error) => {
                 this.showFailMessage(error.response.data.data)
@@ -139,7 +139,7 @@ export default {
             })
         },
         detachRole() {
-            axios.delete(`user/${this.currentUser.id}/role/${this.attached_role}`).then((response) => {
+            axios.delete(`users/${this.currentUser.id}/roles/${this.attached_role}`).then((response) => {
                 this.showSuccessMessage(response.data.data.message)
             }).catch((error) => {
                 this.showFailMessage(error.response.data.data)

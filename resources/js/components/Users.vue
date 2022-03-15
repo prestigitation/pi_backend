@@ -156,8 +156,7 @@ import RolesData from './layout/RolesData.vue';
                 },
                 updateUser(){
                     this.$Progress.start();
-                    this.getCurrentForm().put(`${this.$props.entity}/`+this.form.id)
-                    .then((response) => {
+                    this.getCurrentForm().put(`${this.$props.entity}/`+this.form.id).then((response) => {
                         // success
                         $('#addNew').modal('hide');
                         Toast.fire({
@@ -242,14 +241,16 @@ import RolesData from './layout/RolesData.vue';
                     })
                 },
                 setNewData(data) {
-                    console.log(data);
+
                 },
                 setCurrentRow(e) {
                         // нахождение текущего пользователя по строке, на которой был совершен клик
                         let id = e?.target?.parentElement?.parentElement?.parentElement?.childNodes[0]?.innerText
-                        console.log(e);
                         if(id && !isNaN(parseInt(id))) {
-                            if(this.table_data) {
+                            if(this.$props.entity === 'teachers') {
+                                this.$emit('set_editing_id', this.users.data.find(teacher => teacher.user.id == id))
+                            }
+                            else if(this.table_data) {
                                 this.$emit('set_editing_id', this.findCurrentUser(this.table_data.data, id))
                             }
                             else if(this.users) {
@@ -258,14 +259,14 @@ import RolesData from './layout/RolesData.vue';
                         }
                     },
                 findCurrentUser(data, userId) {
-                    return data.filter(item => item.id === parseInt(userId))[0]
+                    return data.find(item => item.id === parseInt(userId))
                 },
                 getCurrentForm() {
                     // если была передана другая форма(из другого компонента), первым делом берем ее
                     return this.$props.custom_form ? this.$props.custom_form : this.form
                 },
                 getEditedUser(user) {
-                    if(this.$props.entity === 'teacher' && user.user) {
+                    if(this.$props.entity === 'teachers' && user.user) {
                         return user.user
                     }
                     return user

@@ -94,7 +94,7 @@
             :editmode="editmode"
             :form="form"
             :groupId="groupsId"
-            :directions="directions"
+            :directions.sync="directions"
         />
     </div>
     </div>
@@ -125,6 +125,7 @@ export default {
                 direction_id: 1,
                 study_variant_id: 0,
                 is_active: false,
+                users: []
             }),
         }
     },
@@ -174,7 +175,7 @@ export default {
         },
         async getDirections() {
             await axios.get(process.env.MIX_API_PATH + 'directions')
-                .then(({data}) => this.directions = data.data)
+                .then(({data}) => this.directions = data)
                 .catch(() => this.showFailMessage('Не удалось загрузить направления'))
         }
     },

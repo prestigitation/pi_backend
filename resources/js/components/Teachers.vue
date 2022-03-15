@@ -1,10 +1,11 @@
 <template>
     <div>
         <users
-            entity="teacher"
+            entity="teachers"
             @set_editing_id="setEditingTeacher"
             @openAddModal="$router.push('/user/roles')"
             :custom_form="form"
+            :update_user="updateTeacher"
         >
 
             <span slot="entity_title">преподавателей</span>
@@ -26,6 +27,30 @@
                             {{level.name}}
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Количество публикаций</label>
+                    <input v-model="form.publications_count" type="text" name="publications_count" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Количество конференций</label>
+                    <input v-model="form.conferences_count" type="text" name="conferences_count" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Количество проектов</label>
+                    <input v-model="form.projects_count" type="text" name="projects_count" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Количество дипломных проектов</label>
+                    <input v-model="form.diploma_projects_count" type="text" name="projects_count" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Профессиональные интересы</label>
+                    <wysiwyg v-model="form.professional_interests" />
+                </div>
+                <div class="form-group">
+                    <label>Защита диссертации</label>
+                    <wysiwyg v-model="form.dissertation_proof" />
                 </div>
             </div>
 
@@ -84,10 +109,17 @@ export default {
                 surname: '',
                 patronymic: '',
                 email: '',
-                password: '', //TODO: композиция форм
-                education_level_id: 1
+                password: '',
+                dissertation_proof: '',
+	            professional_interests: '',
+                education_level_id: 1,
+                diploma_projects_count: null,
+                projects_count: null,
+                conferences_count: null,
+                publications_count: null,
             }),
             teacher: undefined,
+            teachers: [],
             educationLevels: []
         }
     },
@@ -99,22 +131,35 @@ export default {
             let mergedTeacher = Object.assign(this.form, teacher.user)
             this.teacher = mergedTeacher
         },
+        async updateTeacher() {
+            let teacher = this.teachers.find(teacher => teacher.user.id === this.teacher.id)
+            await axios.put(process.env.MIX_DASHBOARD_PATH + 'teachers/' + teacher.id, this.teacher)
+                .then(() => {
+                    this.showSuccessMessage('Информация была успешно обновлена!')
+                    this.getTeachers()
+                })
+                .catch(() => this.showFailMessage('Не удалось обновить информацию о преподавателе'))
+        },
         async attachPhoto() {
             let avatar = this.$refs.avatar.files[0]
             if(avatar) {
                 let formData = new FormData()
                 formData.append('avatar', avatar)
-                await axios.post(`teacher/${this.teacher.id}/avatar`, formData)
+                await axios.post(`teachers/${this.teacher.id}/avatar`, formData)
                 .then((response) => this.showSuccessMessage(response.data.data.message))
                 .catch((error) => this.showFailMessage(error.response.data.data))
             }
         },
         async getEducationLevels() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'education_level/all').then(({data}) => this.educationLevels = data.data)
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'education_levels/all').then(({data}) => this.educationLevels = data.data)
+        },
+        async getTeachers() {
+            await axios.get(process.env.MIX_API_PATH + 'teachers').then(({data}) => this.teachers = data)
         }
     },
     async created() {
         await this.getEducationLevels()
+        await this.getTeachers()
     },
     mixins: [notificationMixin]
 }

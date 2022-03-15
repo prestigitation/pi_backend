@@ -31,7 +31,6 @@ class NestedRelationQueryHelper extends BasicQueryHelper {
                         if(is_string($key)) {
                             $relation = self::getPluralRelationName($propertyName, self::$relationSeparator);
                             if(in_array($propertyName, self::$nonRelationFields)) {
-                                //dd(self::camelize($propertyName), $key, $value);
                                 parent::$query->whereHas(self::camelize($propertyName), function (Builder $q) use ($key, $value) {
                                     $q->whereIn($key, ...array_values($value));
                                 });
