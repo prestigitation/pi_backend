@@ -1,19 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Dashboard;
+namespace App\Http\Controllers\API\V1;
 
-use App\Http\Controllers\API\V1\Dashboard\BaseController;
-use App\Http\Resources\SubjectResource;
-use App\Repositories\SubjectRepository;
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 
-class SubjectController extends BaseController
+class QAController extends Controller
 {
-    private $subjectRepository;
-
-    public function __construct(SubjectRepository $subjectRepository) {
-        $this->subjectRepository = $subjectRepository;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -21,11 +15,7 @@ class SubjectController extends BaseController
      */
     public function index()
     {
-        return new SubjectResource($this->subjectRepository->getPaginated());
-    }
-
-    public function getAll() {
-        return new SubjectResource($this->subjectRepository->getAll());
+        //
     }
 
     /**

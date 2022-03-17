@@ -28,7 +28,7 @@ class StoreScheduleRequest extends FormRequest
             'day_id' => 'required|exists:App\Models\Day,id',
             'pair_number_id' => 'required|exists:App\Models\PairNumber,id',
             'pairs' => 'required|array',
-            'pairs.*.id' => 'integer|exists:App\Models\Pair,id'
+            'pairs.*.id' => 'integer|exists:App\Models\Pair,id|distinct'
         ];
     }
 }

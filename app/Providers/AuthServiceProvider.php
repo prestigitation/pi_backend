@@ -43,20 +43,10 @@ class AuthServiceProvider extends ServiceProvider
          * Defining the user Roles
          */
         Gate::define('isAdmin', function (User $user) {
-            // if ($user->isAdmin()) {
-            //     return true;
-            // }
-
-            // for simplicity
             return $user->isAdmin();
         });
 
         Gate::define('isUser', function (User $user) {
-            // if ($user->isUser()) {
-            //     return true;
-            // }
-
-            // for simplicity
             return $user->isUser();
         });
 
@@ -64,6 +54,19 @@ class AuthServiceProvider extends ServiceProvider
             $roles = [
                 DashboardRoles::ROLE_ADMIN,
                 DashboardRoles::ROLE_OWNER,
+            ];
+            return count(array_intersect(
+                EnumHelper::getNames($user->roles->toArray()),
+                EnumHelper::getValues($roles)
+            ));
+        });
+
+        Gate::define('accessQA', function (User $user) {
+            $roles = [
+                DashboardRoles::ROLE_ADMIN,
+                DashboardRoles::ROLE_OWNER,
+                DashboardRoles::ROLE_LABORANT,
+                DashboardRoles::ROLE_TEACHER,
             ];
             return count(array_intersect(
                 EnumHelper::getNames($user->roles->toArray()),

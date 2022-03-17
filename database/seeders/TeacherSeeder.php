@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 use App\Helpers\Enums\TeacherPositions;
 use App\Models\EducationLevel;
+use App\Models\ForeignTeacher;
 use App\Models\Regalia;
 use App\Models\Teacher;
 use App\Models\User;
@@ -302,55 +303,77 @@ class TeacherSeeder extends Seeder
                 'conferences_count' => 432,
                 'diploma_projects_count' => 345,
                 'education_level_id' => $highEducation
-            ]
+            ],
+
+
+
+
+            // преподаватели с других кафедр
+            [
+                'surname' => "Никитина",
+                'name' => "Татьяна",
+                'patronymic' => "Ивановна",
+                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'foreign' => true
+            ],
             ];
 
             foreach($teachers as $teacher) {
-                $newUser = User::create([
-                    'name' => $teacher['name'],
-                    'surname' => $teacher['surname'],
-                    'patronymic' => $teacher['patronymic'],
-                    'email' => $faker->unique()->safeEmail,
-                    'password' => Hash::make('123')
-                ]);
+                if(isset($teacher['foreign']) && $teacher['foreign'] === true) { // если это преподаватель с другой кафедры, заносим в отдельную таблицу
+                    $foreignTeacher = new ForeignTeacher;
+                    $foreignTeacher->name = $teacher['name'];
+                    $foreignTeacher->surname = $teacher['surname'];
+                    $foreignTeacher->patronymic = $teacher['patronymic'];
+                    $foreignTeacher->position = $teacher['position'];
+                    $foreignTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
+                    $foreignTeacher->save();
+                } else { // в ином случае создаем пользователя под каждого преподавателя
+                    $newUser = User::create([
+                        'name' => $teacher['name'],
+                        'surname' => $teacher['surname'],
+                        'patronymic' => $teacher['patronymic'],
+                        'email' => $faker->unique()->safeEmail,
+                        'password' => Hash::make('123')
+                    ]);
 
-                if(isset($teacher['additional_info']['role'])) {
-                    foreach($teacher['additional_info']['role'] as $role) {
-                        $additionalTeacherRoleId =  $this->teacherRepository->switchRoles($role);
-                        $this->userRepository->setRole($newUser->id, $additionalTeacherRoleId);
+                    if(isset($teacher['additional_info']['role'])) {
+                        foreach($teacher['additional_info']['role'] as $role) {
+                            $additionalTeacherRoleId =  $this->teacherRepository->switchRoles($role);
+                            $this->userRepository->setRole($newUser->id, $additionalTeacherRoleId);
+                        }
                     }
-                }
 
-                $teacherRoleId = $this->teacherRepository->switchRoles(null);
+                    $teacherRoleId = $this->teacherRepository->switchRoles(null);
 
-                $this->userRepository->setRole($newUser->id, $teacherRoleId);
+                    $this->userRepository->setRole($newUser->id, $teacherRoleId);
 
-                $roleId = $this->teacherRepository->switchRoles($teacher['position']);
+                    $roleId = $this->teacherRepository->switchRoles($teacher['position']);
 
-                if(in_array($teacher['position'], $additionalTeachersRoles)) {
-                    // если преподаватель имеет дополнительный функционал(инженер, лаборант), привязываем еще 1 роль
-                    $this->userRepository->setRole($newUser->id, $roleId);
-                }
+                    if(in_array($teacher['position'], $additionalTeachersRoles)) {
+                        // если преподаватель имеет дополнительный функционал(инженер, лаборант), привязываем еще 1 роль
+                        $this->userRepository->setRole($newUser->id, $roleId);
+                    }
 
-                $newTeacher = new Teacher;
-                $newTeacher->user()->associate($newUser->id);
-                $newTeacher->position = $teacher['position'];
-                $newTeacher->avatar_path = $teacher['avatar_path'];
-                $newTeacher->education_level_id = $teacher['education_level_id'];
-                $newTeacher->publications_count = $teacher['publications_count'];
-                $newTeacher->projects_count = $teacher['projects_count'];
-                $newTeacher->conferences_count = $teacher['conferences_count'];
-                $newTeacher->diploma_projects_count = $teacher['diploma_projects_count'];
-                $newTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
-                if(isset($teacher['education'])) $newTeacher->education = $teacher['education'];
-                if(isset($teacher['proof_document_link'])) $newTeacher->proof_document_link = $teacher['proof_document_link'];
-                if(isset($teacher['dissertation_proof'])) $newTeacher->dissertation_proof = $teacher['dissertation_proof'];
-                if(isset($teacher['professional_interests'])) $newTeacher->professional_interests = $teacher['professional_interests'];
-                $newTeacher->save();
+                    $newTeacher = new Teacher;
+                    $newTeacher->user()->associate($newUser->id);
+                    $newTeacher->position = $teacher['position'];
+                    $newTeacher->avatar_path = $teacher['avatar_path'];
+                    $newTeacher->education_level_id = $teacher['education_level_id'];
+                    $newTeacher->publications_count = $teacher['publications_count'];
+                    $newTeacher->projects_count = $teacher['projects_count'];
+                    $newTeacher->conferences_count = $teacher['conferences_count'];
+                    $newTeacher->diploma_projects_count = $teacher['diploma_projects_count'];
+                    $newTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
+                    if(isset($teacher['education'])) $newTeacher->education = $teacher['education'];
+                    if(isset($teacher['proof_document_link'])) $newTeacher->proof_document_link = $teacher['proof_document_link'];
+                    if(isset($teacher['dissertation_proof'])) $newTeacher->dissertation_proof = $teacher['dissertation_proof'];
+                    if(isset($teacher['professional_interests'])) $newTeacher->professional_interests = $teacher['professional_interests'];
+                    $newTeacher->save();
 
-                if(isset($teacher['additional_info']['regalias'])) {
-                    foreach($teacher['additional_info']['regalias'] as $regalia) {
-                        $newTeacher->regalias()->attach($regalia);
+                    if(isset($teacher['additional_info']['regalias'])) {
+                        foreach($teacher['additional_info']['regalias'] as $regalia) {
+                            $newTeacher->regalias()->attach($regalia);
+                        }
                     }
                 }
             }

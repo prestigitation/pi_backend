@@ -14,4 +14,12 @@ class Subject extends Model
     public function pair() {
         return $this->belongsTo(Pair::class);
     }
+
+    public function foreignTeachers() {
+        return $this->morphedByMany(ForeignTeacher::class, 'subjectable');
+    }
+
+    public function teachers() {
+        return $this->morphedByMany(ForeignTeacher::class, 'subjectable');
+    }
 }

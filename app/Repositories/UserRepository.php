@@ -14,6 +14,7 @@ class UserRepository {
         return new UserResource(User::paginate(10));
     }
 
+
     public function search(array $validatedSearch)
     {
         $userQuery = User::with(['roles']);

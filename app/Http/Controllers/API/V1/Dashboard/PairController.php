@@ -41,6 +41,7 @@ class PairController extends BaseController
             $this->pairRepository->create($request->validated());
             return $this->sendResponse(null, 'Информация о паре была успешно добавлена!');
         } catch(\Exception $e) {
+            dd($e->getMessage());
             return $this->sendError('Не удалось добавить информацию о паре');
         }
     }

@@ -19,7 +19,7 @@ class CreatePairsTable extends Migration
             $table->foreignId('teacher_id')->constrained();
             $table->foreignId('type_id')->constrained()->nullable(); // пара по четным или нечетным дням, либо же без разделения
             $table->string('audience');
-            $table->string('additional_info')->nullable();
+            $table->string('additional_info')->max(255)->nullable();
             $table->timestamps();
         });
     }

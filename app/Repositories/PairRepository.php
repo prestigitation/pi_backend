@@ -28,6 +28,7 @@ class PairRepository {
         $pair->subject_id = $data['subject_id'];
         $pair->additional_info =  $this->purifier::clean($data['additional_info']);
         $pair->teacher_id = $data['teacher_id'];
+        //TODO: привязка предмета к преподавателю, при помощи полиморфной связи
         $pair->audience = $data['audience'];
         $pair->type_id = $data['type_id'] ?? null;
     }

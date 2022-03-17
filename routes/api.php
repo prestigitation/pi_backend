@@ -27,7 +27,8 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(f
         'directions' => 'DirectionController',
         'news' => 'NewsController',
         'schedules' => 'ScheduleController',
-        'teachers' => 'TeacherController'
+        'teachers' => 'TeacherController',
+        'questions' => 'QAController'
     ]);
 });
 
