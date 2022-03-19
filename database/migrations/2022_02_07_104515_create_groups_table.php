@@ -15,7 +15,7 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->max(20);
             $table->unsignedBigInteger('curator_id');
             $table->foreign('curator_id')->references('id')->on('users');
             // староста

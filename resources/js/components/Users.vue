@@ -9,7 +9,7 @@
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
-                            Список <slot name="entity_title">пользователей</slot>
+                            Список <slot name="entity_title">преподавателей</slot>
                         </slot>
                     </h3>
 
@@ -119,6 +119,15 @@
             >
                 <div slot="modal_additional_content">
                     <slot name="user_additional_content"></slot>
+                </div>
+                <div slot="email">
+                    <slot name="email"></slot>
+                </div>
+                <div slot="password">
+                    <slot name="password"></slot>
+                </div>
+                <div slot="additional_title_info">
+                    <slot name="additional_title_info"></slot>
                 </div>
             </user-modal>
         </slot>

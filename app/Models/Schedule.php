@@ -10,7 +10,7 @@ class Schedule extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $with = ['pairs', 'group', 'day', 'pairNumber'];
+    protected $with = ['group', 'day', 'pairNumber'];
 
     public function group() {
         return $this->belongsTo(Group::class);
@@ -24,7 +24,4 @@ class Schedule extends Model
         return $this->belongsTo(PairNumber::class);
     }
 
-    public function pairs() {
-        return $this->belongsToMany(Pair::class);
-    }
 }

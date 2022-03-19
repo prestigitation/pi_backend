@@ -14,10 +14,12 @@ class TeacherRepository
     private $userRepository;
     private $fileRepository;
     private $purifier;
-    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, Purify $purifier) {
+    private $foreignTeacherRepository;
+    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, Purify $purifier, ForeignTeacherRepository $foreignTeacherRepository) {
         $this->fileRepository = $fileRepository;
         $this->userRepository = $userRepository;
         $this->purifier = $purifier;
+        $this->foreignTeacherRepository = $foreignTeacherRepository;
     }
 
     public function loadAll() {
@@ -98,11 +100,15 @@ class TeacherRepository
     }
 
 
-    public function setAvatar(int $id, mixed $file)
+    public function setAvatar(int $id, mixed $file, string $path = 'teachers')
     {
-        $avatarPath = $file['avatar']->store('public/teachers');
+        $avatarPath = $file['avatar']->store("public/$path");
         $avatarLink = $this->fileRepository->getFileLink($avatarPath); // cсылка на файл относительно сервера
-        DB::update('UPDATE teachers SET avatar_path = ? WHERE user_id = ?', [$avatarLink, $id]);
+        if($path === 'teachers') {
+            DB::update('UPDATE teachers SET avatar_path = ? WHERE user_id = ?', [$avatarLink, $id]);
+        } else if ($path === 'foreign_teachers') {
+            DB::update('UPDATE foreign_teachers SET avatar_path = ? WHERE id = ?', [$avatarLink, $id]);
+        }
     }
 
 
@@ -130,6 +136,12 @@ class TeacherRepository
 
     public function findBySlug(string $slug): Teacher {
         return Teacher::where('slug', $slug)->first();
+    }
+
+    public function getAllIncludingForeign() {
+        $foreignTeachers = $this->foreignTeacherRepository->get()->toArray();
+        $teachers = $this->loadAll()->get()->toArray();
+        return array_merge($teachers, $foreignTeachers);
     }
 }
 

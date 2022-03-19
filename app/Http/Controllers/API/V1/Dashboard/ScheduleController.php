@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\Schedule\StoreScheduleRequest;
 use App\Http\Requests\Schedule\UpdateScheduleRequest;
+use App\Models\Schedule;
 use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,7 @@ class ScheduleController extends BaseController
             $this->scheduleRepository->create($request->validated());
             return $this->sendResponse(null, 'Запись в расписании была успешно добавлена!');
         } catch(\Exception $e) {
+            dd($e->getMessage());
             return $this->sendError('Не удалось добавить новую запись в расписании');
         }
     }

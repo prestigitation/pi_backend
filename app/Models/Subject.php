@@ -22,4 +22,8 @@ class Subject extends Model
     public function teachers() {
         return $this->morphedByMany(ForeignTeacher::class, 'subjectable');
     }
+
+    public function schedules() {
+        return $this->belongsToMany(Schedule::class);
+    }
 }

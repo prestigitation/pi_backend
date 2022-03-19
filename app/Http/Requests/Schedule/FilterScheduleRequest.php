@@ -26,11 +26,11 @@ class FilterScheduleRequest extends FormRequest
         return [
             'groups' => 'nullable|array|min:1',
             'days' => 'nullable|array|min:1',
-            'pair_numbers' => 'nullable|array|min:1',
-            'pair_teachers' => 'nullable|array|min:1',
-            'pair_audiences' => 'nullable|array|min:1',
-            'pair_types' => 'nullable|array|min:1',
-            'pair_subjects' => 'nullable|array|min:1',
+            'audience' => 'nullable|array|min:1',
+            'pair_number' => 'nullable|array|min:1',
+            'type' => 'nullable|array|min:1',
+            'teacher' => 'nullable|array|min:1',
+            'subject' => 'nullable|array|min:1',
             'deleted' => 'nullable|boolean'
         ];
     }

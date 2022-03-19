@@ -35,16 +35,20 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(f
 Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboard')->group(function() {
     Route::middleware('auth:api')->group(function() {
     /* Роуты без пагинации, т.е на получение всех моделей */
-    Route::get('groups/all', 'GroupController@getAll')->middleware('web')->name('group.get_all');
-    Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subject.get_all');
-    Route::get('pairs/all', 'PairController@getAll')->middleware('web')->name('pair.get_all');
-    Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('type.get_all');
-    Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_level.get_all');
+    Route::get('groups/all', 'GroupController@getAll')->middleware('web')->name('groups.get_all');
+    Route::get('foreign_teachers/all', 'ForeignTeacherController@getAll')->middleware('web')->name('foreign_teachers.get_all');
+    Route::get('teachers/all', 'TeacherController@getAllIncludingForeign')->middleware('web')->name('teachers.get_all');
+    Route::get('audiences/all', 'AudienceController@getAll')->middleware('web')->name('audiences.get_all');
+    Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subjects.get_all');
+    Route::get('positions/all', 'PositionController@getAll')->middleware('web')->name('positions.get_all');
+    Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('types.get_all');
+    Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_levels.get_all');
 
     /* Специфические роуты */
     Route::post('users/{user_id}/role/{role_id}', 'UserController@attachRole');
     Route::post('users/search', 'UserController@search');
     Route::post('teachers/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
+    Route::post('foreign_teachers/{id}/avatar', 'ForeignTeacherController@changeAvatar')->middleware('auth:api')->name('foreign_teacher.store_avatar');
 
     /* Роуты на удаление */
     Route::delete('users/{user_id}/roles/{role_id}', 'UserController@detachRole');
@@ -65,6 +69,7 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
             'days' => 'DayController',
             'pair_numbers' => 'PairNumberController',
             'pairs' => 'PairController',
+            'foreign_teachers' => 'ForeignTeacherController',
         ]);
     });
 });

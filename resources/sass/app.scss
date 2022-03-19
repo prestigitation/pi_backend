@@ -72,3 +72,10 @@
         max-height: 125px;
     }
 }
+
+.schedule {
+    &__pair {
+        margin: 20px;
+        background: rgb(0, 132, 255);
+    }
+}

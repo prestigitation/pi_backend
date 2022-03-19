@@ -33,12 +33,16 @@ class ScheduleController extends Controller
      * @return Schedule[] | \Illuminate\Http\Response
      */
     public function filter(Request $request) {
-            $filterScheduleRequest = new FilterScheduleRequest;
-            $validated = Validator::validate(json_decode($request->request->get('filter_string'), true), $filterScheduleRequest->rules());
-            if(!count($validated)) {
-                return new Response('Вы не указали ни одного параметра фильтрации', 400);
+            try {
+                $filterScheduleRequest = new FilterScheduleRequest;
+                $validated = Validator::validate(json_decode($request->request->get('filter_string'), true), $filterScheduleRequest->rules());
+                if(!count($validated)) {
+                    return new Response('Вы не указали ни одного параметра фильтрации', 400);
+                }
+                return $this->scheduleRepository->filter($validated);
+            } catch(\Exception $e) {
+                dd($e->getMessage());
             }
-            return $this->scheduleRepository->filter($validated);
     }
 
     /**

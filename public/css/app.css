@@ -70656,3 +70656,8 @@ body.swal2-toast-column .swal2-toast .swal2-validation-message {
   max-height: 125px;
 }
 
+.schedule__pair {
+  margin: 20px;
+  background: #0084ff;
+}
+

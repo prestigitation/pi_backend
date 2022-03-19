@@ -9,6 +9,15 @@ class Group extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'headman_id',
+        'curator_id',
+        'study_variant_id',
+        'is_active',
+        'direction_id'
+    ];
+
     protected $with = ['direction', 'curator', 'headman', 'studyVariant', 'users'];
 
     public function studyVariant() {

@@ -5,6 +5,7 @@
                 <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" v-show="!editmode">Cоздание пользователя</h5>
+                    <slot name="additional_title_info" />
                     <h5 class="modal-title" v-show="editmode">Редактирование информации о пользователе</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -21,33 +22,37 @@
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('surname') }">
                             <has-error :form="form" field="name"></has-error>
                         </div>
-                        
+
                         <div class="form-group">
                             <label>Имя</label>
                             <input v-model="form.name" type="text" name="name"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
                             <has-error :form="form" field="name"></has-error>
                         </div>
-                        
+
                         <div class="form-group">
                             <label>Отчество</label>
                             <input v-model="form.patronymic" type="text" name="patronymic"
                                 class="form-control" :class="{ 'is-invalid': form.errors.has('patronymic') }">
                             <has-error :form="form" field="name"></has-error>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input v-model="form.email" type="text" name="email"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
-                            <has-error :form="form" field="email"></has-error>
-                        </div>
+                        <slot name="email">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input v-model="form.email" type="text" name="email"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+                                <has-error :form="form" field="email"></has-error>
+                            </div>
+                        </slot>
 
-                        <div class="form-group">
-                            <label>Пароль</label>
-                            <input v-model="form.password" type="password" name="password"
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
-                            <has-error :form="form" field="password"></has-error>
-                        </div>
+                        <slot name="password">
+                            <div class="form-group">
+                                <label>Пароль</label>
+                                <input v-model="form.password" type="password" name="password"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" autocomplete="false">
+                                <has-error :form="form" field="password"></has-error>
+                            </div>
+                        </slot>
 
                         <slot name="modal_additional_content"></slot>
                     </div>

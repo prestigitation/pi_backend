@@ -9,7 +9,7 @@ use App\Http\Requests\Teachers\StoreTeacherRequest;
 use App\Http\Requests\Teachers\UpdateTeacherRequest;
 
 use App\Http\Resources\TeacherResource;
-
+use App\Models\ForeignTeacher;
 use App\Repositories\TeacherRepository;
 use App\Repositories\UserRepository;
 
@@ -41,13 +41,12 @@ class TeacherController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTeacherRequest $request) //TODO:  добавить поля об преподавателе - кол-во публикаций и тд
+    public function store(StoreTeacherRequest $request)
     {
         try {
             $this->teacherRepository->create($request->validated());
             return $this->sendResponse(null, 'Преподаватель был успешно добавлен!');
         } catch(\Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Не удалось добавить преподавателя');
         }
     }
@@ -87,11 +86,10 @@ class TeacherController extends BaseController
     {
         try {
             $this->userRepository->delete($id);
-           // DB::delete('DELETE FROM `teachers` WHERE user_id = ?', [$id]);
-            $this->sendResponse(null, 'Пользователь был успешно удален!');
+            $this->sendResponse(null, 'Преподаватель был успешно удален!');
+            //TODO: rework
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            return $this->sendError(null,'Не удалось удалить пользователя');
+            return $this->sendError(null,'Не удалось удалить преподавателя');
         }
     }
 
@@ -99,7 +97,11 @@ class TeacherController extends BaseController
         try {
             $this->teacherRepository->setAvatar($id, $request->validated());
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            return $this->sendError(null,'Не удалось добавить изображение');
         }
+    }
+
+    public function getAllIncludingForeign() {
+        return $this->teacherRepository->getAllIncludingForeign();
     }
 }

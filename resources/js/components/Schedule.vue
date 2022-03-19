@@ -108,7 +108,7 @@
                             </a>
                         </td>
                         <td>
-                            <div v-for="pair in schedule_data.pairs">
+                            <div v-for="pair in JSON.parse(schedule_data.regularity)">
                                 <pair-presenter
                                     :pair="pair"
                                     @pair_type_click="addPairTypeToFilter"
@@ -143,6 +143,8 @@
         </div>
 
         <schedule-modal
+            @delete_schedule_entry="deleteScheduleEntryByIndex"
+            @add_pair_to_schedule="addPair"
             @close_schedule_data_modal="closeModal"
             @add_pair="addPair"
             @delete_pair="deletePair"
@@ -206,6 +208,9 @@ export default {
             this.editmode = true
             this.form.fill(schedule)
             $('#addNew').modal('show');
+        },
+        deleteScheduleEntryByIndex(index) {
+            this.form.pairs.splice(index, 1)
         },
         async deleteSchedule(scheduleId) {
             Swal.fire({
@@ -284,21 +289,27 @@ export default {
         },
         addPairTypeToFilter(type) {
             let additionalInfo = `${type.name}`
-            let filterPartTemplate = this.getFilterTemplate('Очередность проведения','id', 'pair_types', additionalInfo)
+            let filterPartTemplate = this.getFilterTemplate('Очередность проведения','id' ,'type', additionalInfo)
             this.moveToFilter(filterPartTemplate, type.id)
         },
         addPairNumberToFilter(pairNumber) {
-            let filterPartTemplate = this.getFilterTemplate('Номера пар','number', 'pair_numbers')
+            let filterPartTemplate = this.getFilterTemplate('Номера пар','number', 'pair_number')
             this.moveToFilter(filterPartTemplate, pairNumber)
         },
         addPairSubjectToFilter(subject) {
             let additionalInfo = `${subject.name}`
-            let filterPartTemplate = this.getFilterTemplate('Предметы','id', 'pair_subjects', additionalInfo)
+            let filterPartTemplate = this.getFilterTemplate('Предметы','id' ,'subject', additionalInfo)
             this.moveToFilter(filterPartTemplate, subject.id)
         },
         addPairTeacherToFilter(teacher) {
-            let additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
-            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id', 'pair_teachers', additionalInfo)
+            let additionalInfo
+            if(teacher.user) {
+                additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
+            } else {
+                additionalInfo = `${teacher.surname} ${teacher.name} ${teacher.patronymic}`
+            }
+
+            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id' ,'teacher', additionalInfo)
             this.moveToFilter(filterPartTemplate, teacher.id)
         },
         addDayToFilter(day) {
@@ -307,8 +318,8 @@ export default {
             this.moveToFilter(filterPartTemplate, day.id)
         },
         addPairAudienceToFilter(audience) {
-            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'pair_audiences')
-            this.moveToFilter(filterPartTemplate, audience)
+            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'name', 'audience' ,'regularity')
+            this.moveToFilter(filterPartTemplate, audience.name)
         },
         addGroupToFilter(group) {
             let additionalInfo = `${group.name}`
@@ -325,6 +336,12 @@ export default {
             filterParams.deleted = this.form.deleted
 
             return filterParams
+        },
+        addPair(pair) {
+            if(this.form.pairs) {
+                this.form.pairs.push(pair)
+            } else this.form.pairs = [pair]
+
         },
         filterSchedule() {
             let filter = this.getFilter()

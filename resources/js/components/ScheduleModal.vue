@@ -41,25 +41,58 @@
                         </div>
 
                         <span class="form-group">
-                            <label>Прикрепить пары</label>
-                            <span class="pair__selector">
-                                <select v-model="selectedPair" name="type" id="type" class="form-control">
-                                    <option v-for="pair in pairs" :key="pair.id" :value="pair.id">
-                                        <pair-presenter :pair="pair" />
+                            <span class="btn btn-primary" @click.prevent="addPairToSchedule">
+                                Прикрепить пару +
+                            </span>
+                            <div v-for="pair, index in form.pairs" :key="index">
+                                <hr style="border: 5px solid black;">
+                                <div class="btn btn-danger d-block w-50 mx-auto my-2" @click.prevent="deleteScheduleEntry(index)">
+                                    Удалить эту запись
+                                </div>
+                                <label>Выберите преподавателя</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" v-model="form.pairs[index].is_foreign" id="checkbox">
+                                    <label class="form-check-label" for="checkbox">
+                                        Преподаватели с других кафедр
+                                    </label>
+                                </div>
+                                <span v-show="form.pairs[index].is_foreign">
+                                    <select name="teacher" v-model="form.pairs[index].teacher_id" id="teacher" class="form-control">
+                                        <option v-for="teacher in foreignTeachers" :key="teacher.id" :value="teacher.id">
+                                            <user-name-data :user="teacher" />
+                                        </option>
+                                    </select>
+                                </span>
+                                <span v-show="!form.pairs[index].is_foreign">
+                                    <select name="teacher" v-model="form.pairs[index].teacher_id" id="teacher" class="form-control">
+                                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                                            <user-name-data :user="teacher.user ? teacher.user : teacher" />
+                                        </option>
+                                    </select>
+                                </span>
+
+                                <label>Выберите предмет</label>
+                                <select name="type" v-model="form.pairs[index].type_id" id="type" class="form-control">
+                                    <option v-for="type in types" :key="type.id" :value="type.id">
+                                        {{type.name}}
                                     </option>
                                 </select>
-                                <svg class="pair__button" @click.prevent="addPair" width="20" height="20" fill="green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M432 256c0 17.69-14.33 32.01-32 32.01H256v144c0 17.69-14.33 31.99-32 31.99s-32-14.3-32-31.99v-144H48c-17.67 0-32-14.32-32-32.01s14.33-31.99 32-31.99H192v-144c0-17.69 14.33-32.01 32-32.01s32 14.32 32 32.01v144h144C417.7 224 432 238.3 432 256z"/></svg>
-                            </span>
-
-                            <ul class="list-group mt-2" v-if="form.pairs.length">
-                                <li class="list-group-item pair__wrapper" v-for="pair, index in form.pairs" :key="pair.id">
-                                    <pair-presenter :pair="pair" />
-                                    <span class="pair__button" @click.prevent="deletePair(index)">
-                                        <svg width="20" height="20" fill="red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M400 288h-352c-17.69 0-32-14.32-32-32.01s14.31-31.99 32-31.99h352c17.69 0 32 14.3 32 31.99S417.7 288 400 288z"/></svg>
-                                    </span>
-                                </li>
-                            </ul>
-
+                                <label>Выберите аудиторию проведения пары</label>
+                                <select name="audience" v-model="form.pairs[index].audience_id" id="audience" class="form-control">
+                                    <option v-for="audience in audiences" :key="audience.id" :value="audience.id">
+                                        {{audience.name}} (Вместимость: {{audience.capacity}} чел.)
+                                    </option>
+                                </select>
+                                <label>Выберите предмет</label>
+                                <select name="subject" v-model="form.pairs[index].subject_id" id="subject" class="form-control">
+                                    <option v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                                        {{subject.name}}
+                                    </option>
+                                </select>
+                                <label>Добавьте дополнительную информацию(опционально)</label>
+                                <wysiwyg v-model="form.pairs[index].additional_info" />
+                                <hr style="border: 3px solid black;">
+                            </div>
                         </span>
 
                     </div>
@@ -77,6 +110,7 @@
 <script>
 import {notificationMixin} from '../mixins/notificationMixin'
 import PairPresenter from './layout/PairPresenter.vue'
+import UserNameData from './layout/UserNameData.vue'
 export default {
     name: "group-modal",
     data() {
@@ -86,6 +120,12 @@ export default {
             groups: [],
             pairs: [],
             selectedPair: 1,
+            teachers: [],
+            foreignTeachers: [],
+            types: [],
+            audiences: [],
+            subjects: [],
+            is_foreign: false,
         };
     },
     props: {
@@ -107,8 +147,8 @@ export default {
                 this.showSuccessMessage("Групппа была успешно изменена");
             }).catch(() => {
                 this.showFailMessage("Не удалось изменить данные о группе");
-            }).finally(() => {
-                this.$emit("close_direction_modal");
+            }).finally(async () => {
+                this.$emit("close_schedule_data_modal");
             });
         },
         async createSchedule() {
@@ -123,6 +163,31 @@ export default {
                 .then(({ data }) => this.groups = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить группы"));
         },
+        async getTeachers() {
+            await axios.get(process.env.MIX_API_PATH + "teachers")
+                .then(({ data }) => this.teachers = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить преподавателей"));
+        },
+        async getForeignTeachers() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "foreign_teachers/all")
+                .then(({ data }) => this.foreignTeachers = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить преподавателей с других кафедр"));
+        },
+        async getAudiences() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "audiences/all")
+                .then(({ data }) => this.audiences = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить информацию об аудиториях"));
+        },
+        async getSubjects() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "subjects/all")
+                .then(({ data }) => this.subjects = data.data)
+                .catch(() => this.showFailMessage("Не удалось загрузить информацию об предметах"));
+        },
+        async getTypes() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "types/all")
+                .then(({ data }) => this.types = data.data)
+                .catch(() => this.showFailMessage("Не удалось загрузить очередность недель"));
+        },
         async getDays() {
             await axios.get(process.env.MIX_DASHBOARD_PATH + "days")
                 .then(({ data }) => this.days = data.data)
@@ -133,10 +198,18 @@ export default {
                 .then(({ data }) => this.pairNumbers = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить данные о расписании для пар"));
         },
-        async getPairs() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + "pairs/all")
-                .then(({ data }) => this.pairs = data.data)
-                .catch(() => this.showFailMessage("Не удалось загрузить данные о парах"));
+        addPairToSchedule() {
+            this.$emit('add_pair_to_schedule', {
+                type_id: '',
+                subject_id: '',
+                teacher_id: '',
+                audience_id: '',
+                additional_info: '',
+                is_foreign: this.is_foreign
+            })
+        },
+        deleteScheduleEntry(index) {
+            this.$emit('delete_schedule_entry', index)
         },
         findCurrentPair(id) {
             return this.pairs.filter(pair => pair.id === id)[0]
@@ -149,13 +222,17 @@ export default {
         }
     },
     async created() {
-        await this.getGroups();
-        await this.getDays();
-        await this.getPairNumbers();
-        await this.getPairs();
+        await this.getGroups()
+        await this.getDays()
+        await this.getPairNumbers()
+        await this.getTeachers()
+        await this.getForeignTeachers()
+        await this.getTypes()
+        await this.getAudiences()
+        await this.getSubjects()
     },
     mixins: [notificationMixin],
-    components: { PairPresenter }
+    components: { PairPresenter, UserNameData }
 }
 </script>
 

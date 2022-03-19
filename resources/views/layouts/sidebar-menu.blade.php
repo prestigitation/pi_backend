@@ -54,6 +54,23 @@
             </router-link>
         </li>
 
+        <li class="nav-item">
+            <router-link to="/subjects" class="nav-link">
+              <i class="nav-icon fas fa-list-ol green"></i>
+              <p>
+                Предметы
+              </p>
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/study_variants" class="nav-link">
+              <i class="nav-icon fas fa-list-ol green"></i>
+              <p>
+                Варианты обучения
+              </p>
+            </router-link>
+          </li>
+
 
       <li class="nav-item has-treeview">
         <a href="#" class="nav-link">
@@ -66,34 +83,19 @@
         <ul class="nav nav-treeview">
 
           <li class="nav-item">
-            <router-link to="/user/roles" class="nav-link">
+            <router-link to="/user/roles" class="nav-link list-group-item">
               <i class="nav-icon fas fa-list-ol green"></i>
               <p>
                 Роли
               </p>
             </router-link>
           </li>
+
           <li class="nav-item">
-            <router-link to="/subjects" class="nav-link">
+            <router-link to="/foreign_teachers" class="nav-link list-group-item">
               <i class="nav-icon fas fa-list-ol green"></i>
               <p>
-                Предметы
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/pairs" class="nav-link">
-              <i class="nav-icon fas fa-list-ol green"></i>
-              <p>
-                Пары
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/study_variants" class="nav-link">
-              <i class="nav-icon fas fa-list-ol green"></i>
-              <p>
-                Варианты обучения
+                Преподаватели других кафедр
               </p>
             </router-link>
           </li>

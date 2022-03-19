@@ -41,10 +41,6 @@ class StudyVariantSeeder extends Seeder
             ],
             [
                 'years' => 4,
-                'time_form_id' => $full
-            ],
-            [
-                'years' => 4,
                 'months' => 8,
                 'time_form_id' => $dist
             ],

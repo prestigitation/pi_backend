@@ -14,11 +14,11 @@
     </a>
     <span>-</span>
     <a @click.prevent="$emit('pair_teacher_click', pair.teacher)" href="#" class="link-primary">
-        <user-name-data :user="pair.teacher.user" />
+        <user-name-data :user="pair.teacher.user ? pair.teacher.user : pair.teacher" />
     </a>
     <span>-</span>
     <a @click.prevent="$emit('pair_audience_click', pair.audience)" href="#" class="link-primary">
-        {{pair.audience}} аудитория
+        {{pair.audience.name}} аудитория
     </a>
 </span>
 </template>
@@ -35,6 +35,6 @@ export default {
             type: Object,
             default: () => {}
         }
-    }
+    },
 }
 </script>

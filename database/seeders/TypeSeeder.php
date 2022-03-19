@@ -18,7 +18,7 @@ class TypeSeeder extends Seeder
             [
                 'name' => 'Без привязки к неделе',
                 'marker_color' => null,
-                'value' => 'none'
+                'value' => 'regular'
             ],
             [
                 'name' => 'Четная неделя',

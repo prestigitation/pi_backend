@@ -8,6 +8,6 @@ export default [
     { path: '/news', component: require('./components/News.vue').default },
     { path: '/study_variants', component: require('./components/layout/StudyVariantCreate.vue').default },
     { path: '/groups', component: require('./components/Groups.vue').default },
-    { path: '/pairs', component: require('./components/Pair.vue').default },
+    { path: '/foreign_teachers', component: require('./components/ForeignTeachers.vue').default },
     { path: '*', component: require('./components/NotFound.vue').default },
 ];

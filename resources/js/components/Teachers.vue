@@ -8,6 +8,7 @@
             :update_user="updateTeacher"
         >
 
+
             <span slot="entity_title">преподавателей</span>
 
             <div slot="user_additional_content">
@@ -20,38 +21,38 @@
                     class="form-control"
                     autocomplete="false">
                 </div>
-                <div class="form-group">
-                    <label>Образование</label>
-                    <select name="type" v-model="form.education_level_id" id="type" class="form-control">
-                        <option v-for="level in educationLevels" :key="level.id" :value="level.id">
-                            {{level.name}}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Количество публикаций</label>
-                    <input v-model="form.publications_count" type="text" name="publications_count" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Количество конференций</label>
-                    <input v-model="form.conferences_count" type="text" name="conferences_count" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Количество проектов</label>
-                    <input v-model="form.projects_count" type="text" name="projects_count" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Количество дипломных проектов</label>
-                    <input v-model="form.diploma_projects_count" type="text" name="projects_count" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Профессиональные интересы</label>
-                    <wysiwyg v-model="form.professional_interests" />
-                </div>
-                <div class="form-group">
-                    <label>Защита диссертации</label>
-                    <wysiwyg v-model="form.dissertation_proof" />
-                </div>
+                    <div class="form-group">
+                        <label>Образование</label>
+                        <select name="type" v-model="form.education_level_id" id="type" class="form-control">
+                            <option v-for="level in educationLevels" :key="level.id" :value="level.id">
+                                {{level.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Количество публикаций</label>
+                        <input v-model="form.publications_count" type="text" name="publications_count" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Количество конференций</label>
+                        <input v-model="form.conferences_count" type="text" name="conferences_count" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Количество проектов</label>
+                        <input v-model="form.projects_count" type="text" name="projects_count" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Количество дипломных проектов</label>
+                        <input v-model="form.diploma_projects_count" type="text" name="projects_count" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Профессиональные интересы</label>
+                        <wysiwyg v-model="form.professional_interests" />
+                    </div>
+                    <div class="form-group">
+                        <label>Защита диссертации</label>
+                        <wysiwyg v-model="form.dissertation_proof" />
+                    </div>
             </div>
 
             <span slot="table_additional_headers">
@@ -120,7 +121,7 @@ export default {
             }),
             teacher: undefined,
             teachers: [],
-            educationLevels: []
+            educationLevels: [],
         }
     },
     methods: {
