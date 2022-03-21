@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+use App\Http\Requests\Audiences\StoreAudienceRequest;
+use App\Http\Requests\Audiences\UpdateAudienceRequest;
 use App\Repositories\AudienceRepository;
 use Illuminate\Http\Request;
 
@@ -33,9 +35,13 @@ class AudienceController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreAudienceRequest $request)
     {
-        //
+        try {
+            $this->audienceRepository->create($request->validated());
+        } catch (\Exception $e) {
+            $this->sendError('Не удалось добавить аудиторию');
+        }
     }
 
     /**
@@ -46,7 +52,7 @@ class AudienceController extends BaseController
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -56,9 +62,13 @@ class AudienceController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAudienceRequest $request, $id)
     {
-        //
+        try {
+            $this->audienceRepository->update($request->validated(), $id);
+        } catch (\Exception $e) {
+            $this->sendError('Не удалось изменить данные об аудитории');
+        }
     }
 
     /**
@@ -69,6 +79,10 @@ class AudienceController extends BaseController
      */
     public function destroy($id)
     {
-        //
+        try {
+            $this->audienceRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->sendError('Не удалось удалить данные об аудитории');
+        }
     }
 }

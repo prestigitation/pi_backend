@@ -15,4 +15,5 @@ class AudienceRepository extends BaseRepository {
     {
         return Audience::class;
     }
+
 }

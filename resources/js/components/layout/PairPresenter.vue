@@ -20,6 +20,12 @@
     <a @click.prevent="$emit('pair_audience_click', pair.audience)" href="#" class="link-primary">
         {{pair.audience.name}} аудитория
     </a>
+    <span v-if="pair.study_process">
+        <span>-</span>
+        <a @click.prevent="$emit('pair_process_click', pair.study_process)" href="#" class="link-primary">
+            {{pair.study_process.name}}
+        </a>
+    </span>
 </span>
 </template>
 

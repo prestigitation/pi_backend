@@ -12,5 +12,4 @@ enum Days: string {
     case DAY_THURSDAY = 'Четверг';
     case DAY_FRIDAY = 'Пятница';
     case DAY_SATURDAY = 'Суббота';
-    case DAY_SUNDAY = 'Воскресенье';
 }

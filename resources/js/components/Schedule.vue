@@ -108,14 +108,22 @@
                             </a>
                         </td>
                         <td>
-                            <div v-for="pair in JSON.parse(schedule_data.regularity)">
-                                <pair-presenter
-                                    :pair="pair"
-                                    @pair_type_click="addPairTypeToFilter"
-                                    @pair_subject_click="addPairSubjectToFilter"
-                                    @pair_teacher_click="addPairTeacherToFilter"
-                                    @pair_audience_click="addPairAudienceToFilter"
-                                />
+                            <div v-if="JSON.parse(schedule_data.regularity).length">
+                                <div v-for="pair in JSON.parse(schedule_data.regularity)">
+                                    <pair-presenter
+                                        :pair="pair"
+                                        @pair_process_click="addPairProcessToFilter"
+                                        @pair_type_click="addPairTypeToFilter"
+                                        @pair_subject_click="addPairSubjectToFilter"
+                                        @pair_teacher_click="addPairTeacherToFilter"
+                                        @pair_audience_click="addPairAudienceToFilter"
+                                    />
+                                </div>
+                            </div>
+                            <div v-else>
+                                <a class="link-primary" href="#" @click.prevent="addEmptyRegularityToFilter">
+                                    Нет предметов
+                                </a>
                             </div>
                         </td>
                         <td>
@@ -230,8 +238,10 @@ export default {
                         })
         },
         async getSchedule() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules')
-                .then(({data}) => this.schedules = data.data)
+            //await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules')
+            await axios.get(process.env.MIX_API_PATH + 'schedules')
+                //.then(({data}) => this.schedules = data.data)
+                .then(({data}) => this.schedules = data)
                 .catch(() => this.showFailMessage('Не удалось загрузить расписание'))
         },
         getFilterTemplate(name, query = undefined, entity, additionalInfo = undefined) {
@@ -287,6 +297,11 @@ export default {
             let filterPartTemplate = this.getFilterTemplate('Даты окончания','end', 'pair_numbers')
             this.moveToFilter(filterPartTemplate, endTime)
         },
+        addPairProcessToFilter(process) {
+            let additionalInfo = process.name
+            let filterPartTemplate = this.getFilterTemplate('Формат учебного процесса','id' ,'study_process', additionalInfo ? additionalInfo : 'Без идентификации формата проведения')
+            this.moveToFilter(filterPartTemplate, process.id)
+        },
         addPairTypeToFilter(type) {
             let additionalInfo = `${type.name}`
             let filterPartTemplate = this.getFilterTemplate('Очередность проведения','id' ,'type', additionalInfo)
@@ -297,15 +312,18 @@ export default {
             this.moveToFilter(filterPartTemplate, pairNumber)
         },
         addPairSubjectToFilter(subject) {
-            let additionalInfo = `${subject.name}`
-            let filterPartTemplate = this.getFilterTemplate('Предметы','id' ,'subject', additionalInfo)
-            this.moveToFilter(filterPartTemplate, subject.id)
+            let additionalInfo = subject?.name
+            let filterPartTemplate = this.getFilterTemplate('Предметы','id' ,'subject', additionalInfo ? additionalInfo : 'Без предметов')
+            this.moveToFilter(filterPartTemplate, subject.id ? subject.id: 0)
+        },
+        addEmptyRegularityToFilter() {
+            this.addPairSubjectToFilter(0)
         },
         addPairTeacherToFilter(teacher) {
             let additionalInfo
             if(teacher.user) {
                 additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
-            } else {
+            } else if(teacher) {
                 additionalInfo = `${teacher.surname} ${teacher.name} ${teacher.patronymic}`
             }
 
@@ -318,7 +336,7 @@ export default {
             this.moveToFilter(filterPartTemplate, day.id)
         },
         addPairAudienceToFilter(audience) {
-            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'name', 'audience' ,'regularity')
+            let filterPartTemplate = this.getFilterTemplate('Аудитории', 'name', 'audience' , audience.name)
             this.moveToFilter(filterPartTemplate, audience.name)
         },
         addGroupToFilter(group) {

@@ -37,7 +37,9 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     /* Роуты без пагинации, т.е на получение всех моделей */
     Route::get('groups/all', 'GroupController@getAll')->middleware('web')->name('groups.get_all');
     Route::get('foreign_teachers/all', 'ForeignTeacherController@getAll')->middleware('web')->name('foreign_teachers.get_all');
+    Route::get('study_processes/all', 'StudyProcessController@getAll')->middleware('web')->name('study_processes.get_all');
     Route::get('teachers/all', 'TeacherController@getAllIncludingForeign')->middleware('web')->name('teachers.get_all');
+    Route::get('pair_formats/all', 'PairFormatController@getAll')->middleware('web')->name('pair_formats.get_all');
     Route::get('audiences/all', 'AudienceController@getAll')->middleware('web')->name('audiences.get_all');
     Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subjects.get_all');
     Route::get('positions/all', 'PositionController@getAll')->middleware('web')->name('positions.get_all');
@@ -70,6 +72,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
             'pair_numbers' => 'PairNumberController',
             'pairs' => 'PairController',
             'foreign_teachers' => 'ForeignTeacherController',
+            'audiences' => 'AudienceController',
+            'study_processes' => 'StudyProcessController'
         ]);
     });
 });

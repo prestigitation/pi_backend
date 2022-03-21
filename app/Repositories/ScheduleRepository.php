@@ -3,15 +3,16 @@
 namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
-use App\Helpers\Classes\NestedRelationQueryHelper;
 use App\Models\Audience;
 use App\Models\ForeignTeacher;
+use App\Models\PairFormat;
 use App\Models\Schedule;
+use App\Models\StudyProcess;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Type;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Purify\Purify;
@@ -32,7 +33,10 @@ class ScheduleRepository {
     }
 
     public function getAll() {
-        return $this->loadAll()->get();
+        return $this->loadAll()
+        ->orderBy('group_id', 'asc')
+        ->orderBy('day_id', 'asc')
+        ->orderBy('pair_number_id', 'asc')->get();
     }
 
     public function fillPairs(array $pairs) {
@@ -44,11 +48,24 @@ class ScheduleRepository {
                 $result[$index]['teacher'] = Teacher::findOrFail($pair['teacher_id']);
             }
 
-            $result[$index]['audience'] = Audience::findOrFail($pair['audience_id']);
-            $result[$index]['subject'] = Subject::findOrFail($pair['subject_id']);
-            $result[$index]['type'] = Type::findOrFail($pair['type_id']);
-            if($pair['additional_info']) {
+            $result[$index]['audience'] = Audience::find($pair['audience_id']);
+            $result[$index]['subject'] = Subject::find($pair['subject_id']);
+            $result[$index]['type'] = Type::find($pair['type_id']);
+
+            if(isset($pair['additional_info'])) {
                 $result[$index]['additional_info'] = $this->purifier->clean($pair['additional_info']);
+            }
+
+            if(isset($pair['start_date_info'])) {
+                $result[$index]['start_date_info'] = $this->purifier->clean($pair['start_date_info']);
+            }
+
+            if(isset($pair['format'])) {
+                $result[$index]['format'] = PairFormat::find($pair['format_id']);
+            }
+
+            if(isset($pair['study_process_id'])) {
+                $result[$index]['study_process'] = StudyProcess::find($pair['study_process_id']);
             }
         }
         return $result;
@@ -58,7 +75,7 @@ class ScheduleRepository {
         $schedule->day_id = $data['day_id'];
         $schedule->group_id = $data['group_id'];
         $schedule->pair_number_id = $data['pair_number_id'];
-        $schedule->regularity = collect($this->fillPairs($data['pairs']))->toJson(); //json_encode($this->fillPairs($data['pairs']));
+        $schedule->regularity = collect($this->fillPairs($data['pairs']))->toJson() ?? null; //json_encode($this->fillPairs($data['pairs']));
     }
 
     public function create(array $data)
@@ -93,7 +110,8 @@ class ScheduleRepository {
             'audience' => ['id', 'name'],
             'subject' => ['id', 'name'],
             'teacher' => ['id'],
-            'type' => ['id']
+            'type' => ['id'],
+            'study_process' => ['id']
         ];
 
 
@@ -101,14 +119,19 @@ class ScheduleRepository {
             if(is_array($params)) {
                 foreach($params as $key => $criteria) {
                     if(isset($allowedFields[$name])) {
-                        $models = DB::table($name.'s')->whereIn($key, $criteria)->select($key)->get();
-                        foreach($models as $i => $model) {
-                            $queryString = '';
-                            $queryString .= "json_contains(`regularity`,'".json_encode([[$name => $model]])."')";
-                            if($i === 0) {
-                                $query->whereRaw($queryString);
-                            } else {
-                                $query->orWhereRaw($queryString);
+                        if(in_array(0, $criteria)) {
+                            $query->whereJsonLength('regularity', 0);
+                            break;
+                        } else {
+                            $models = DB::table(Str::plural($name))->whereIn($key, $criteria)->select($key)->get();
+                            foreach($models as $i => $model) {
+                                $queryString = '';
+                                $queryString .= "json_contains(`regularity`,'".json_encode([[$name => $model]])."')";
+                                if($i === 0) {
+                                    $query->whereRaw($queryString);
+                                } else {
+                                    $query->orWhereRaw($queryString);
+                                }
                             }
                         }
                     }

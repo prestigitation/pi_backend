@@ -33,6 +33,9 @@ class UpdateScheduleRequest extends FormRequest
             'pairs.*.subject_id' => 'integer|exists:App\Models\Subject,id',
             'pairs.*.teacher_id' => 'integer|exists:App\Models\Teacher,id',
             'pairs.*.type_id' => 'integer|exists:App\Models\Type,id',
+            'pairs.*.start_date_info' => 'string|max:20',
+            'pairs.*.format_id' => 'nullable|integer|exists:App\Models\PairFormat,id',
+            'pairs.*.study_process' => 'nullable|array'
         ];
     }
 }

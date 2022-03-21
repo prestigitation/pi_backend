@@ -71,12 +71,14 @@
                                     </select>
                                 </span>
 
-                                <label>Выберите предмет</label>
+                                <label>Выберите очередность проведения</label>
                                 <select name="type" v-model="form.pairs[index].type_id" id="type" class="form-control">
                                     <option v-for="type in types" :key="type.id" :value="type.id">
                                         {{type.name}}
                                     </option>
                                 </select>
+
+
                                 <label>Выберите аудиторию проведения пары</label>
                                 <select name="audience" v-model="form.pairs[index].audience_id" id="audience" class="form-control">
                                     <option v-for="audience in audiences" :key="audience.id" :value="audience.id">
@@ -89,8 +91,34 @@
                                         {{subject.name}}
                                     </option>
                                 </select>
-                                <label>Добавьте дополнительную информацию(опционально)</label>
-                                <wysiwyg v-model="form.pairs[index].additional_info" />
+
+                                <div class="form-group">
+                                    <label>Выберите формат обучения(опционально)</label>
+                                    <select name="type" v-model="form.pairs[index].study_process_id" id="type" class="form-control">
+                                        <option v-for="process in processes" :key="process.id" :value="process.id">
+                                            {{process.name}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Выберите формат проведения пары(опционально)</label>
+                                    <select name="type" v-model="form.pairs[index].format_id" id="type" class="form-control">
+                                        <option v-for="format in formats" :key="format.id" :value="format.id">
+                                            {{format.name}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Добавьте дополнительную информацию(опционально)</label>
+                                    <input v-model="form.pairs[index].additional_info" type="text" name="additional_info" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Добавьте информацию о дате начала пар(опционально)</label>
+                                    <input v-model="form.pairs[index].start_date_info" type="text" name="additional_info" class="form-control">
+                                </div>
                                 <hr style="border: 3px solid black;">
                             </div>
                         </span>
@@ -125,6 +153,8 @@ export default {
             types: [],
             audiences: [],
             subjects: [],
+            formats: [],
+            processes: [],
             is_foreign: false,
         };
     },
@@ -198,6 +228,16 @@ export default {
                 .then(({ data }) => this.pairNumbers = data.data)
                 .catch(() => this.showFailMessage("Не удалось загрузить данные о расписании для пар"));
         },
+        async getFormats() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "pair_formats/all")
+                .then(({ data }) => this.formats = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить данные о форматах работы на паре"));
+        },
+        async getStudyProcesses() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "study_processes/all")
+                .then(({ data }) => this.processes = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить данные о проведении пар"));
+        },
         addPairToSchedule() {
             this.$emit('add_pair_to_schedule', {
                 type_id: '',
@@ -205,6 +245,9 @@ export default {
                 teacher_id: '',
                 audience_id: '',
                 additional_info: '',
+                start_date_info: '',
+                format_id: '',
+                study_process_id: '',
                 is_foreign: this.is_foreign
             })
         },
@@ -230,6 +273,8 @@ export default {
         await this.getTypes()
         await this.getAudiences()
         await this.getSubjects()
+        await this.getFormats()
+        await this.getStudyProcesses()
     },
     mixins: [notificationMixin],
     components: { PairPresenter, UserNameData }

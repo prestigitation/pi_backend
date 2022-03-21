@@ -17,9 +17,11 @@ class DaySeeder extends Seeder
      */
     public function run()
     {
-        foreach(EnumHelper::getValues(Days::cases()) as $day) {
+        foreach(EnumHelper::getValues(Days::cases()) as $index => $day) {
             Day::create([
-                'name' => $day
+                'name' => $day,
+                'study_process_id' => $index % 2 === 0 ? 1 : 2
+                //выставляем дистанционку или аудиторное обучение для дня
             ]);
         }
     }

@@ -31,7 +31,8 @@ class FilterScheduleRequest extends FormRequest
             'type' => 'nullable|array|min:1',
             'teacher' => 'nullable|array|min:1',
             'subject' => 'nullable|array|min:1',
-            'deleted' => 'nullable|boolean'
+            'deleted' => 'nullable|boolean',
+            'study_process' => 'nullable|array|min:1'
         ];
     }
 }

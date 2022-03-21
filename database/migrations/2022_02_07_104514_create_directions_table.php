@@ -18,7 +18,6 @@ class CreateDirectionsTable extends Migration
 
             //код направления - 6.44.04.01
             $table->string('code')->max(20);
-            //TODO: языки обучения, см. макет
             //профиль - Информационные технологий в образовании
             $table->foreignId('profile_id')->constrained();
 
@@ -29,6 +28,7 @@ class CreateDirectionsTable extends Migration
             $table->foreignId('study_form_id')->constrained();
 
             $table->text('description')->nullable();
+            $table->string('language')->max(255)->nullable();
             $table->string('video_link')->nullable();
 
             $table->timestamps();
