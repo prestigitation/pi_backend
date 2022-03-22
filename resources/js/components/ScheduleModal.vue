@@ -210,7 +210,7 @@ export default {
         },
         async getSubjects() {
             await axios.get(process.env.MIX_DASHBOARD_PATH + "subjects/all")
-                .then(({ data }) => this.subjects = data.data)
+                .then(({ data }) => this.subjects = data)
                 .catch(() => this.showFailMessage("Не удалось загрузить информацию об предметах"));
         },
         async getTypes() {

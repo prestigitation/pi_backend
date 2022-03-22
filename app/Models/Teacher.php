@@ -9,7 +9,7 @@ class Teacher extends Model
 {
     use HasFactory;
 
-    protected $with = ['user', 'educationLevel', 'regalias'];
+    protected $with = ['user', 'educationLevel', 'regalias', 'subjects'];
 
     public function user() {
         return $this->belongsTo(User::class);

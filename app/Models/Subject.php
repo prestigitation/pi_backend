@@ -11,6 +11,10 @@ class Subject extends Model
 
     protected $fillable = ['name'];
 
+    //protected $with = ['teachers', 'foreignTeachers'];
+
+
+
     public function pair() {
         return $this->belongsTo(Pair::class);
     }
@@ -20,7 +24,7 @@ class Subject extends Model
     }
 
     public function teachers() {
-        return $this->morphedByMany(ForeignTeacher::class, 'subjectable');
+        return $this->morphedByMany(Teacher::class, 'subjectable');
     }
 
     public function schedules() {

@@ -1,6 +1,7 @@
 export default [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/audiences', component: require('./components/Audience.vue').default },
+    { path: '/subjects', component: require('./components/Subject.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
     { path: '/user/roles', component: require('./components/UserRoles.vue').default },
     { path: '/teachers', component: require('./components/Teachers.vue').default },

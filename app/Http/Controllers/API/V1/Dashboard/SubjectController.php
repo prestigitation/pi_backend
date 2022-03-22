@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+use App\Http\Requests\Subjects\StoreSubjectRequest;
+use App\Http\Requests\Subjects\UpdateSubjectRequest;
 use App\Http\Resources\SubjectResource;
 use App\Repositories\SubjectRepository;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class SubjectController extends BaseController
     }
 
     public function getAll() {
-        return new SubjectResource($this->subjectRepository->getAll());
+        return $this->subjectRepository->getAll();
     }
 
     /**
@@ -34,9 +36,13 @@ class SubjectController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSubjectRequest $request)
     {
-        //
+        try {
+            $this->subjectRepository->create($request->validated());
+        } catch(\Exception $e) {
+            return $this->sendError('Не удалось добавить предмет');
+        }
     }
 
     /**
@@ -57,9 +63,13 @@ class SubjectController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateSubjectRequest $request, $id)
     {
-        //
+        try {
+            $this->subjectRepository->updateCustom($request->validated(), $id);
+        } catch(\Exception $e) {
+            return $this->sendError('Не удалось изменить данные о предмете');
+        }
     }
 
     /**

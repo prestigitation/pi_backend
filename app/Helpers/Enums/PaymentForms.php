@@ -7,7 +7,6 @@ enum PaymentForms: string {
     use EnumHelper;
 
 
-    //TODO: has Many
     case PAYMENT_BUDGET = 'бюджет';
     case PAYMENT_CONTRACT = 'договор';
 }

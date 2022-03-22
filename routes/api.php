@@ -73,7 +73,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
             'pairs' => 'PairController',
             'foreign_teachers' => 'ForeignTeacherController',
             'audiences' => 'AudienceController',
-            'study_processes' => 'StudyProcessController'
+            'study_processes' => 'StudyProcessController',
+            'subjects' => 'SubjectController'
         ]);
     });
 });
