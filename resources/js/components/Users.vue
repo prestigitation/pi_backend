@@ -34,7 +34,6 @@
                             <th class="text-capitalize align-middle text-center">Имя</th>
                             <th class="text-capitalize align-middle text-center">Отчество</th>
                             <th class="text-capitalize align-middle text-center">Роли</th>
-                            <th class=" align-middle text-center">Email</th>
                             <th class="text-capitalize align-middle text-center">Cоздан</th>
                             <th class="text-capitalize align-middle text-center">Действия</th>
                         </slot>
@@ -70,11 +69,11 @@
                                     <roles-data :roles="user.roles"  />
                                 </slot>
                             </td>
-                            <td class="align-middle text-center">
                                 <slot name="table_content_email" :user="user">
-                                    {{user.email}}
+                                    <td class="align-middle text-center" v-if="user.email">
+                                        {{user.email}}
+                                    </td>
                                 </slot>
-                            </td>
                             <td class="align-middle text-center">
                                 <slot name="table_content_created_at" :user="user">
                                     {{user.created_at}}

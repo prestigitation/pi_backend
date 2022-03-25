@@ -15,9 +15,9 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string('nsp')->max(255);
-            $table->string('email')->max(255);
-            $table->text('question');
+            $table->string('nsp')->max(75);
+            $table->string('email')->max(30);
+            $table->string('question')->max(75);
             $table->text('answer')->nullable();
             $table->timestamps();
         });

@@ -69,9 +69,9 @@
                 {{teacher.patronymic}}
             </template>
 
-            <template #table_content_email = "{user: teacher}">
-
+            <template #table_content_email>
             </template>
+
 
             <template #table_content_created_at = "{user: teacher}">
                 {{teacher.created_at}}
