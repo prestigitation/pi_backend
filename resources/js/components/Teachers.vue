@@ -34,6 +34,10 @@
                         <input v-model="form.publications_count" type="text" name="publications_count" class="form-control">
                     </div>
                     <div class="form-group">
+                        <label>Ссылка для проведения пар(оцпицонально)</label>
+                        <input v-model="form.study_link" type="text" name="study_link" class="form-control">
+                    </div>
+                    <div class="form-group">
                         <label>Количество конференций</label>
                         <input v-model="form.conferences_count" type="text" name="conferences_count" class="form-control">
                     </div>
@@ -109,6 +113,7 @@ export default {
                 name: '',
                 surname: '',
                 patronymic: '',
+                study_link: '',
                 email: '',
                 password: '',
                 dissertation_proof: '',

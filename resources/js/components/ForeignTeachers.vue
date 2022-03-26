@@ -22,14 +22,20 @@
                     class="form-control"
                     autocomplete="false">
                 </div>
-                    <div class="form-group">
-                        <label>Должность</label>
-                        <select name="type" v-model="form.position" id="type" class="form-control">
-                            <option v-for="position, index in positions" :key="index" :value="position">
+
+                <div class="form-group">
+                    <label>Должность</label>
+                    <select name="type" v-model="form.position" id="type" class="form-control">
+                        <option v-for="position, index in positions" :key="index" :value="position">
                                 {{position}}
-                            </option>
-                        </select>
-                    </div>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ссылка для проведения пар(оцпицонально)</label>
+                    <input v-model="form.study_link" type="text" name="study_link" class="form-control">
+                </div>
             </div>
 
             <template #table_header>
@@ -97,7 +103,8 @@ export default {
                 name: '',
                 surname: '',
                 patronymic: '',
-                position: ''
+                position: '',
+                study_link: ''
             }),
             positions: []
         }
