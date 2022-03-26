@@ -24,6 +24,7 @@ class CreateTeachersTable extends Migration
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()))->nullable();
             $table->string('avatar_path')->nullable()->max(255)->nullable();
             $table->string('education')->max(255)->nullable();
+            $table->string('study_link')->max(255)->nullable();
             $table->string('proof_document_link')->nullable()->max(255);
             $table->text('dissertation_proof')->nullable();
             $table->text('professional_interests')->nullable();

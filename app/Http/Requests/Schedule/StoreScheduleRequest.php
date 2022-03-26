@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Schedule;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class StoreScheduleRequest extends FormRequest
 {

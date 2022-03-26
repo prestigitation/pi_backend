@@ -46,9 +46,9 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('positions/all', 'PositionController@getAll')->middleware('web')->name('positions.get_all');
     Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('types.get_all');
     Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_levels.get_all');
-
+    Route::get('header_info', 'DashboardController@getHeaderInfo')->middleware('web')->name('header_info.get');;
     /* Специфические роуты */
-    Route::post('users/{user_id}/role/{role_id}', 'UserController@attachRole');
+    Route::post('users/{user_id}/roles/{role_id}', 'UserController@attachRole');
     Route::post('users/search', 'UserController@search');
     Route::post('teachers/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
     Route::post('foreign_teachers/{id}/avatar', 'ForeignTeacherController@changeAvatar')->middleware('auth:api')->name('foreign_teacher.store_avatar');

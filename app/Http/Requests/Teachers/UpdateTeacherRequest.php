@@ -30,6 +30,7 @@ class UpdateTeacherRequest extends FormRequest
             'email' => 'required|string|email',
             'password' => 'nullable|string|min:6|max:255',
             'education_level_id' => 'required|exists:App\Models\EducationLevel,id',
+            'study_link' => 'nullable|string|max:255',
             'education' => 'nullable|string|max:255',
             'proof_document_link' => 'nullable|string|max:255',
             'dissertation_proof' => 'nullable|string|max:255',

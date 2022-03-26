@@ -21,6 +21,7 @@ class CreateForeignTeachersTable extends Migration
             $table->string('surname')->max(255);
             $table->string('patronymic')->max(255);
             $table->string('slug')->max(255)->nullable();
+            $table->string('study_link')->max(255)->nullable();
             $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()))->nullable();
             $table->string('avatar_path')->nullable()->max(255)->nullable();
             $table->timestamps();

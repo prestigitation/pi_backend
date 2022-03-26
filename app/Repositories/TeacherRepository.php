@@ -78,6 +78,10 @@ class TeacherRepository
             $teacher->diploma_projects_count = $data['diploma_projects_count'];
         }
 
+        if(isset($data['study_link'])) {
+            $teacher->study_link = $data['study_link'];
+        }
+
         return $teacher;
     }
 

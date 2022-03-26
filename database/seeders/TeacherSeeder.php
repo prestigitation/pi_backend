@@ -73,6 +73,7 @@ class TeacherSeeder extends Seeder
                         Regalia::where('name', Regalias::REGALIA_DEPARTMENT_OWNER->value)->first()->id,
                     ]
                 ],
+                'study_link' => 'study_link_here',
                 'publications_count' => 5432,
                 'projects_count' => 876,
                 'conferences_count' => 432,
@@ -314,7 +315,8 @@ class TeacherSeeder extends Seeder
                 'name' => "Татьяна",
                 'patronymic' => "Ивановна",
                 'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
-                'foreign' => true
+                'foreign' => true,
+                'study_link' => 'study_link_here',
             ],
             ];
 
@@ -326,6 +328,9 @@ class TeacherSeeder extends Seeder
                     $foreignTeacher->patronymic = $teacher['patronymic'];
                     $foreignTeacher->position = $teacher['position'];
                     $foreignTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
+                    if(isset(($teacher['study_link']))) {
+                        $foreignTeacher->study_link = $teacher['study_link'];
+                    }
                     $foreignTeacher->save();
                 } else { // в ином случае создаем пользователя под каждого преподавателя
                     $newUser = User::create([
@@ -368,6 +373,7 @@ class TeacherSeeder extends Seeder
                     if(isset($teacher['proof_document_link'])) $newTeacher->proof_document_link = $teacher['proof_document_link'];
                     if(isset($teacher['dissertation_proof'])) $newTeacher->dissertation_proof = $teacher['dissertation_proof'];
                     if(isset($teacher['professional_interests'])) $newTeacher->professional_interests = $teacher['professional_interests'];
+                    if(isset($teacher['study_link'])) $newTeacher->study_link = $teacher['study_link'];
                     $newTeacher->save();
 
                     if(isset($teacher['additional_info']['regalias'])) {

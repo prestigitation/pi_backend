@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             PreparationExamSeeder::class,
             DirectionSeeder::class,
             GroupSeeder::class,
+            ScheduleSeeder::class
         ]);
     }
 }

@@ -79,3 +79,14 @@
         background: rgb(0, 132, 255);
     }
 }
+
+.dashboard {
+    &__link:hover {
+        cursor: pointer;
+    }
+    &__info {
+        &-box {
+            height: 100px !important;
+        }
+    }
+}

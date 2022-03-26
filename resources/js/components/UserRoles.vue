@@ -102,7 +102,7 @@ export default {
         }
     },
     created() {
-        axios.get("role").then(({ data }) => {
+        axios.get("roles").then(({ data }) => {
             this.roles = data.data
         });
     },

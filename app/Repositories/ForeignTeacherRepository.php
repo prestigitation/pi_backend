@@ -25,6 +25,9 @@ class ForeignTeacherRepository extends BaseRepository {
         $foreignTeacher->patronymic = $data['patronymic'];
         $foreignTeacher->slug = Str::slug($data['surname']. ' '.$data['name'].' '.$data['patronymic']);
         $foreignTeacher->position = $data['position'];
+        if(isset($data['study_link'])) {
+            $foreignTeacher->study_link = $data['study_link'];
+        }
         $foreignTeacher->save();
     }
 }

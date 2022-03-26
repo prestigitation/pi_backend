@@ -29,6 +29,7 @@ class StoreTeacherRequest extends FormRequest
             'patronymic' => 'required|string|max:255|min:2',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|max:255',
+            'study_link' => 'nullable|string|max:255',
             'education_level_id' => 'required|exists:App\Models\EducationLevel,id',
             'education' => 'nullable|string|max:255',
             'proof_document_link' => 'nullable|string|max:255',

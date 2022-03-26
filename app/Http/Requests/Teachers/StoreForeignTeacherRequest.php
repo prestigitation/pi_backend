@@ -27,7 +27,8 @@ class StoreForeignTeacherRequest extends FormRequest
             'name' => 'required|string|max:255|min:2',
             'surname' => 'required|string|max:255|min:2',
             'patronymic' => 'required|string|max:255|min:2',
-            'position' => 'required|string|max:255|min:2'
+            'position' => 'required|string|max:255|min:2',
+            'study_link' => 'nullable|string|max:255',
         ];
     }
 }
