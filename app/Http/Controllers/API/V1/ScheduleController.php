@@ -4,11 +4,18 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Schedule\FilterScheduleRequest;
+use App\Models\Schedule;
 use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use App\Helpers\Classes\ScheduleFiller;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Request as FacadesRequest;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ScheduleController extends Controller
 {
@@ -43,6 +50,30 @@ class ScheduleController extends Controller
             } catch(\Exception $e) {
                 dd($e->getMessage());
             }
+    }
+
+    /**
+     * Скачать расписание. По умолчанию, затрагиваются все столбцы расписания
+     * @return resource
+     */
+    public function downloadSchedule(Request $request) {
+        $fileName = $request->file_name ?? 'Расписание';
+        $file = public_path("sch/$fileName.xlsx");
+        if(isset($request->filter)) {
+            $schedule = $this->scheduleRepository->filter(json_decode($request->filter));
+        } else $schedule = Schedule::all();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $scheduleFiller = new ScheduleFiller($sheet);
+        $scheduleFiller->fillSchedule();
+        try {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($file);
+                return response()->download($file)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     /**

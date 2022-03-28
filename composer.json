@@ -17,6 +17,7 @@
         "laravel/telescope": "^4.7",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.1",
+        "phpoffice/phpspreadsheet": "^1.22",
         "prettus/l5-repository": "^2.8",
         "stevebauman/purify": "^4.0"
     },

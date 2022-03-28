@@ -10,7 +10,8 @@
                     <h3 class="card-title">
                         <slot name="table_title">
                             <div>
-                                Таблица расписания
+                                <span>Таблица расписания</span>
+                                <span class="btn btn-success" @click.prevent="openScheduleModal">Скачать расписание</span>
                             </div>
                             <p class="mt-4">
                                 <button class="btn btn-primary" type="button" @click.prevent="toggleFilterButton">
@@ -161,6 +162,11 @@
             :form="form"
             :scheduleId="scheduleId"
         />
+
+        <schedule-download-modal
+            id="scheduleDownload"
+            :filterQuery.sync="filterQuery"
+        />
     </div>
     </div>
 </section>
@@ -171,14 +177,16 @@ import ScheduleModal from './ScheduleModal.vue'
 import { notificationMixin } from '../mixins/notificationMixin'
 import PairNumberPresenter from './layout/PairNumberPresenter.vue'
 import PairPresenter from './layout/PairPresenter.vue'
+import ScheduleDownloadModal from './ScheduleDownloadModal.vue'
 export default {
-    name: 'schedule',
-    mixins: [notificationMixin],
-    components: {
-    ScheduleModal,
-    PairNumberPresenter,
-    PairPresenter
-},
+        name: 'schedule',
+        mixins: [notificationMixin],
+        components: {
+        ScheduleModal,
+        PairNumberPresenter,
+        PairPresenter,
+        ScheduleDownloadModal
+    },
     data() {
         return {
             schedules: [],
@@ -190,16 +198,29 @@ export default {
                 pairs: [],
                 deleted: false
             }),
+            filterQuery: null,
             scheduleId: null,
             filters: [],
             filterCollapseToggled: false,
         }
     },
     methods: {
+        showModal(name = 'addNew') {
+            $(`#${name}`).modal('show');
+        },
+        toggleModal(name = 'addNew') {
+            $(`#${name}`).modal('toggle');
+        },
         newModal() {
             this.editmode = false
             this.scheduleId = null
-            $('#addNew').modal('show');
+            this.showModal()
+        },
+        openScheduleModal() {
+            this.showModal('scheduleDownload')
+        },
+        closeScheduleModal() {
+            this.toggleModal('scheduleDownload')
         },
         closeModal() {
             $('#addNew').modal('toggle');
@@ -363,6 +384,7 @@ export default {
         },
         filterSchedule() {
             let filter = this.getFilter()
+            this.filterQuery = filter
             let form = new FormData()
             form.append('filter_string', JSON.stringify(filter))
             axios.post(process.env.MIX_API_PATH + 'schedules/filter', form)
@@ -376,6 +398,7 @@ export default {
         },
         async resetFilter() {
             this.filters = []
+            this.filterQuery = null
             this.form.deleted = false
             await this.getSchedule()
             this.toggleFilterButton()

@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(function () {
-    Route::post('/schedules/filter', 'ScheduleController@filter');
+    Route::post('/schedules/filter', 'ScheduleController@filter')->name('schedule.filter');
+    Route::post('/schedules/download', 'ScheduleController@downloadSchedule')->name('schedule.download');
 
     Route::apiResources([
         'time_forms' => 'TimeFormController',
