@@ -25,9 +25,9 @@
 
                 <div class="form-group">
                     <label>Должность</label>
-                    <select name="type" v-model="form.position" id="type" class="form-control">
-                        <option v-for="position, index in positions" :key="index" :value="position">
-                                {{position}}
+                    <select name="type" v-model="form.teacher_position_id" id="type" class="form-control">
+                        <option v-for="position, index in positions" :key="position.id" :value="position.id">
+                                {{position.name}}
                         </option>
                     </select>
                 </div>
@@ -84,7 +84,7 @@
             </template>
 
             <template #table_content_roles = "{user: teacher}">
-                {{teacher.position}}
+                {{teacher.teacher_position.name}}
             </template>
         </users>
     </div>
@@ -103,7 +103,7 @@ export default {
                 name: '',
                 surname: '',
                 patronymic: '',
-                position: '',
+                teacher_position_id: '',
                 study_link: ''
             }),
             positions: []

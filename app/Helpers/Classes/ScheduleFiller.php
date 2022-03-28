@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Classes;
 
+use App\Models\Day;
+use App\Models\Group;
 use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ScheduleFiller {
@@ -25,8 +27,14 @@ class ScheduleFiller {
      */
     private $sheet;
 
-    public function __construct(Worksheet $sheet) {
+    /**
+     * Записи расписания
+     */
+    private $schedule;
+
+    public function __construct(Worksheet $sheet, array $schedule) {
         $this->sheet = $sheet;
+        $this->schedule = $schedule;
     }
 
     /**
@@ -36,6 +44,7 @@ class ScheduleFiller {
     public function fillSchedule(): void {
         $this->fillHeader();
         $this->fillDays();
+        $this->fillPairs();
     }
 
     /**
@@ -63,6 +72,65 @@ class ScheduleFiller {
     }
 
     /**
+     * Сформировать строку с предметом
+     * @param $pair
+     * @return string
+     */
+    private function getSubjectRow($pair): string {
+        $result = '';
+        if(isset($pair->start_date_info)) {
+            $result .= $pair->start_date_info . ' ';
+        }
+        $result .= $pair->subject->name;
+        return $result;
+    }
+
+    /**
+     * Сформировать инициалы преподавателя для внесения в расписание
+     * @return string
+     */
+    private function getTeacherNSP($teacher): string {
+        return ucfirst($teacher->surname).' '.ucfirst($teacher->name)[0].'.'.ucfirst($teacher->patronymic)[0];
+    }
+
+    /**
+     * Сформировать строку преподавателя
+     * @param $pair
+     * @return string
+     */
+    private function getTeacherRow($pair): string {
+        $result = '';
+        $result .= $pair->teacher->position; // ?? pair[user][teacher]
+        if(isset($pair->additional_info)) {
+            $result .= $pair->additional_info;
+        }
+        return $result;
+    }
+
+    /**
+     * Заполняет пары в расписании
+     * @return void
+     */
+    private function fillPairs(): void {
+        $startColumn = 3;
+        $startRow = 4;
+        foreach($this->schedule as $schedule) {
+            if(count(json_decode($schedule['regularity'])) === 1) {
+                $this->sheet->setCellValueByColumnAndRow(
+                    $startColumn,
+                    $startRow * $schedule['pair_number']['number'] + 1,
+                    $this->getSubjectRow(json_decode($schedule['regularity'])[0])
+                );
+                $this->sheet->setCellValueByColumnAndRow(
+                    $startColumn,
+                    $startRow * $schedule['pair_number']['number'] + 2,
+                    $this->getTeacherRow(json_decode($schedule['regularity'])[0])
+                );
+            }
+        }
+    }
+
+    /**
      * Заполняет дни недели, а также формат обучения и номера пар
      * @return void
      */
@@ -76,7 +144,7 @@ class ScheduleFiller {
                 $startRow,
                 self::pairCellWidthCount * $groupCount + self::pairCellWidthCount - 1,
                 $startRow);
-            $this->sheet->setCellValueByColumnAndRow(1, $startRow, $day['type']);
+            $this->sheet->setCellValueByColumnAndRow(1, $startRow, $day['study_process']['name']);
 
 
             for($pairIndex = 1; $pairIndex <= self::pairCount; $pairIndex++) {
@@ -109,42 +177,14 @@ class ScheduleFiller {
      * @return array
      */
     private function getGroups(): array {
-        return [[
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ],
-        [
-            'name' => 'РФ16ДР62ПИ'
-        ]];
+        return Group::all()->toArray();
     }
 
+    /**
+     * Метод для получения дней недели
+     * @return array
+     */
     private function getDays() {
-        return [
-            [
-                'name' => 'Понедельник',
-                'type' => 'ДИСТАНЦИОННОЕ ОБУЧЕНИЕ'
-            ],
-            [
-                'name' => 'Вторник',
-                'type' => 'АУДИТОРНОЕ ОБУЧЕНИЕ'
-            ],
-        ];
+        return Day::all()->toArray();
     }
 }

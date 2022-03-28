@@ -21,7 +21,7 @@ class CreateTeachersTable extends Migration
             $table->string('slug')->max(255)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreignId('education_level_id')->constrained()->nullable();
-            $table->enum('position', TeacherPositions::getValues(TeacherPositions::cases()))->nullable();
+            $table->foreignId('teacher_position_id')->constrained();
             $table->string('avatar_path')->nullable()->max(255)->nullable();
             $table->string('education')->max(255)->nullable();
             $table->string('study_link')->max(255)->nullable();

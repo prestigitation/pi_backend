@@ -65,12 +65,12 @@ class ScheduleController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $scheduleFiller = new ScheduleFiller($sheet);
+        $scheduleFiller = new ScheduleFiller($sheet, $schedule->toArray());
         $scheduleFiller->fillSchedule();
         try {
-                $writer = new Xlsx($spreadsheet);
-                $writer->save($file);
-                return response()->download($file)->deleteFileAfterSend(true);
+            $writer = new Xlsx($spreadsheet);
+            $writer->save($file);
+            return response()->download($file)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
