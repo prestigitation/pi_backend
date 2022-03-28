@@ -29,7 +29,10 @@ class PairFormatSeeder extends Seeder
             ],
             [
                 'name' => 'лаб- 2 подгр.'
-            ]
+            ],
+            [
+                'name' => 'лекция + практика'
+            ],
         ];
         foreach($pairFormats as $format) {
             $pairFormat = new PairFormat;
