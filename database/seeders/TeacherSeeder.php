@@ -13,6 +13,7 @@ use App\Helpers\Enums\TeacherPositions;
 use App\Models\EducationLevel;
 use App\Models\ForeignTeacher;
 use App\Models\Regalia;
+use App\Models\Role;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Repositories\TeacherRepository;
@@ -46,8 +47,8 @@ class TeacherSeeder extends Seeder
     {
         // Роли, которые будут дополнительно привязаны для большего функционала
         $additionalTeachersRoles = [
-            TeacherPositions::POSITION_SENIOR_LABORANT->value,
-            TeacherPositions::POSITION_ENGINEER->value,
+            5,
+            4,
         ];
 
         $highEducation = EducationLevel::where('name', EducationLevels::LEVEL_HIGHER->value)->first()->id;
@@ -64,7 +65,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Тягульская",
                 'name' => "Людмила",
                 'patronymic' => "Анатольевна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/tyagulska.png'),
                 'additional_info' => [
                     'role' => array(DashboardRoles::ROLE_OWNER->value),
@@ -86,7 +87,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Козак",
                 'name' => "Людмила",
                 'patronymic' => "Ярославовна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/kozak.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -105,7 +106,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Балан",
                 'name' => "Лилия",
                 'patronymic' => "Александровна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/balan.png'),
                 'additional_info' => [
                     'regalias' => [
@@ -124,7 +125,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Глазов",
                 'name' => "Анатолий",
                 'patronymic' => "Борисович",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/glazov.png'),
                 'study_link' => 'https://vk.com/away.php?to=https%3A%2F%2Fus04web.zoom.us%2Fj%2F4483517670%3Fpwd%3DMVhLaitCRGoreURNY25aYTd5NFpjZz09',
                 'publications_count' => 5432,
@@ -139,7 +140,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Борсуковский",
                 'name' => "Сергей",
                 'patronymic' => "Иванович",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/borsukovskiy.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -153,7 +154,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Ляху",
                 'name' => "Александр",
                 'patronymic' => "Анатольевич",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -167,7 +168,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Сташкова",
                 'name' => "Ольга",
                 'patronymic' => "Витальевна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/stashkova.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -181,7 +182,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Шестопал",
                 'name' => "Оксана",
                 'patronymic' => "Викторовна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/shestopal.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -195,7 +196,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Гарбузняк",
                 'name' => "Елена",
                 'patronymic' => "Сергеевна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/garbuzniak.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -209,7 +210,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Кардаш",
                 'name' => "Людмила",
                 'patronymic' => "Федоровна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'additional_info' => [
                     'regalias' => [
                         Regalia::where('name', Regalias::REGALIA_LEAD_SPECIALIST->value)->first()->id,
@@ -228,7 +229,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Нагаевский",
                 'name' => "Октавиан",
                 'patronymic' => "Михайлович",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 1,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/nagaevsky.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -242,7 +243,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Нагаевская",
                 'name' => "Наталья",
                 'patronymic' => "Владимировна",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 1,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/nagaevskaya.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -256,7 +257,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Борсуковский",
                 'name' => "Сергей",
                 'patronymic' => "Васильевич",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 3,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -270,7 +271,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Луценко",
                 'name' => "Игорь",
                 'patronymic' => "Владимирович",
-                'position' => TeacherPositions::POSITION_ENGINEER->value,
+                'teacher_position_id' => 4,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/lucenko.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -284,7 +285,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Станьковская",
                 'name' => "Алёна",
                 'patronymic' => "Александровна",
-                'position' => TeacherPositions::POSITION_SENIOR_LABORANT->value,
+                'teacher_position_id' => 5,
                 'avatar_path' => $this->fileRepository->getFileLink('teachers/stankovskaya.png'),
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -298,7 +299,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Пешкин",
                 'name' => "Дана",
                 'patronymic' => "Ильинична",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 1,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -312,7 +313,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Анненков",
                 'name' => "Андрей",
                 'patronymic' => "Александрович",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 1,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -326,7 +327,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Коцюржинский",
                 'name' => "Леонард",
                 'patronymic' => "Генадьевич",
-                'position' => TeacherPositions::POSITION_LECTURER->value,
+                'teacher_position_id' => 1,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
@@ -344,7 +345,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Никитина",
                 'name' => "Татьяна",
                 'patronymic' => "Ивановна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -352,7 +353,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Новицкая",
                 'name' => "Наталья",
                 'patronymic' => "Павловна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'https://vk.com/away.php?to=https%3A%2F%2Fus04web.zoom.us%2Fj%2F74136518851%3Fpwd%3DYmZzNk9TU0hjREcxMkNVUzNhNjdiQT09&cc_key=',
             ],
@@ -360,7 +361,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Борисюк",
                 'name' => "Валерий",
                 'patronymic' => "Николаевич",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -368,7 +369,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Егоровна",
                 'name' => "Виктория",
                 'patronymic' => "Григорьевна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -376,7 +377,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Саввина",
                 'name' => "М",
                 'patronymic' => "Г",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -384,7 +385,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Павлинова",
                 'name' => "Ирина",
                 'patronymic' => "Васильева",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -392,7 +393,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Егорова",
                 'name' => "Виктория",
                 'patronymic' => "Григорьевна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -400,7 +401,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Саввина",
                 'name' => "Людмила",
                 'patronymic' => "Ивановна",
-                'position' => TeacherPositions::POSITION_DOCENT->value,
+                'teacher_position_id' => 3,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -408,15 +409,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Шумилова",
                 'name' => "Инга",
                 'patronymic' => "Федоровна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
-                'foreign' => true,
-                'study_link' => 'study_link_here',
-            ],
-            [
-                'surname' => "Шумилова",
-                'name' => "Инга",
-                'patronymic' => "Федоровна",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -424,7 +417,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Мосежный",
                 'name' => "Владимир",
                 'patronymic' => "Иванович",
-                'position' => TeacherPositions::POSITION_SENIOR_LECTURER->value,
+                'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
             ],
@@ -436,7 +429,7 @@ class TeacherSeeder extends Seeder
                     $foreignTeacher->name = $teacher['name'];
                     $foreignTeacher->surname = $teacher['surname'];
                     $foreignTeacher->patronymic = $teacher['patronymic'];
-                    $foreignTeacher->position = $teacher['position'];
+                    $foreignTeacher->teacher_position_id = $teacher['teacher_position_id'];
                     $foreignTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
                     if(isset(($teacher['study_link']))) {
                         $foreignTeacher->study_link = $teacher['study_link'];
@@ -458,20 +451,17 @@ class TeacherSeeder extends Seeder
                         }
                     }
 
-                    $teacherRoleId = $this->teacherRepository->switchRoles(null);
+                    $this->userRepository->setRole($newUser->id, Role::where('name', DashboardRoles::ROLE_TEACHER->value)->first()->id);
 
-                    $this->userRepository->setRole($newUser->id, $teacherRoleId);
+                    $roleId = $this->teacherRepository->switchRoles($teacher['teacher_position_id']);
 
-                    $roleId = $this->teacherRepository->switchRoles($teacher['position']);
-
-                    if(in_array($teacher['position'], $additionalTeachersRoles)) {
+                    if(in_array($teacher['teacher_position_id'], $additionalTeachersRoles)) {
                         // если преподаватель имеет дополнительный функционал(инженер, лаборант), привязываем еще 1 роль
                         $this->userRepository->setRole($newUser->id, $roleId);
                     }
 
                     $newTeacher = new Teacher;
                     $newTeacher->user()->associate($newUser->id);
-                    $newTeacher->position = $teacher['position'];
                     $newTeacher->avatar_path = $teacher['avatar_path'];
                     $newTeacher->education_level_id = $teacher['education_level_id'];
                     $newTeacher->publications_count = $teacher['publications_count'];
@@ -479,7 +469,8 @@ class TeacherSeeder extends Seeder
                     $newTeacher->conferences_count = $teacher['conferences_count'];
                     $newTeacher->diploma_projects_count = $teacher['diploma_projects_count'];
                     $newTeacher->slug = Str::slug($teacher['surname']. ' '.$teacher['name'].' '.$teacher['patronymic']);
-                    if(isset($teacher['education'])) $newTeacher->education = $teacher['education'];
+
+                    if(isset($teacher['teacher_position_id'])) $newTeacher->teacher_position_id = $teacher['teacher_position_id'];
                     if(isset($teacher['proof_document_link'])) $newTeacher->proof_document_link = $teacher['proof_document_link'];
                     if(isset($teacher['dissertation_proof'])) $newTeacher->dissertation_proof = $teacher['dissertation_proof'];
                     if(isset($teacher['professional_interests'])) $newTeacher->professional_interests = $teacher['professional_interests'];

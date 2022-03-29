@@ -45,8 +45,8 @@ class TeacherRepository
         if(isset($data['user_id'])) {
             $teacher->user_id = $data['user_id'];
         }
-        if(isset($data['position'])) {
-            $teacher->position = $data['position'];
+        if(isset($data['position_id'])) {
+            $teacher->position_id = $data['position_id'];
         }
         if(isset($data['avatar_path'])) {
             $teacher->avatar_path = $data['avatar_path'];
@@ -123,10 +123,10 @@ class TeacherRepository
     public function switchRoles(?string $roleName)
     {
         switch($roleName) {
-            case TeacherPositions::POSITION_SENIOR_LABORANT->value: {
+            case 5: {
                 return $this->getRoleId(DashboardRoles::ROLE_LABORANT->value);
             }
-            case TeacherPositions::POSITION_ENGINEER->value: {
+            case 4: {
                 return $this->getRoleId(DashboardRoles::ROLE_ENGINEER->value);
             }
             case DashboardRoles::ROLE_OWNER->value: {

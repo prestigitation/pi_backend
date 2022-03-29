@@ -2,10 +2,11 @@
 namespace App\Repositories;
 
 use App\Helpers\Enums\TeacherPositions;
+use App\Models\TeacherPosition;
 
 class PositionRepository {
     public function getAll() {
-        return TeacherPositions::getValues(TeacherPositions::cases());
+        return TeacherPosition::all();
     }
 
 }

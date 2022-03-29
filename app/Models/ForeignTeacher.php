@@ -9,10 +9,14 @@ class ForeignTeacher extends Model
 {
     use HasFactory;
 
-    protected $with = ['subjects'];
+    protected $with = ['subjects', 'teacherPosition'];
 
     public function educationLevel() {
         return $this->belongsTo(EducationLevel::class);
+    }
+
+    public function teacherPosition() {
+        return $this->belongsTo(TeacherPosition::class);
     }
 
     public function subjects() {
