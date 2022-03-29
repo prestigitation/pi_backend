@@ -14,7 +14,7 @@ class SubjectSeeder extends Seeder
      */
     public function run()
     {
-        $subjects = 
+        $subjects =
         [
             [
                 'name' => 'История ПМР'
@@ -23,7 +23,7 @@ class SubjectSeeder extends Seeder
                 'name' => 'Программирование'
             ],
             [
-                'name' => 'Интегралы и дефференцифльные уравнения'
+                'name' => 'Интегралы и дифференциальные уравнения'
             ],
             [
                 'name' => 'Иностранный язык'

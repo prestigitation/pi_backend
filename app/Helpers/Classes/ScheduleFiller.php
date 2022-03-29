@@ -90,7 +90,10 @@ class ScheduleFiller {
      * @return string
      */
     private function getTeacherNSP($teacher): string {
-        return ucfirst($teacher->surname).' '.ucfirst($teacher->name)[0].'.'.ucfirst($teacher->patronymic)[0];
+        return
+        ucfirst($teacher->surname ?? $teacher->user->surname).' '.
+        mb_substr(ucfirst($teacher->name ?? $teacher->user->name), 0, 1).'.'.
+        mb_substr(ucfirst($teacher->patronymic ?? $teacher->user->patronymic), 0, 1);
     }
 
     /**
@@ -99,8 +102,8 @@ class ScheduleFiller {
      * @return string
      */
     private function getTeacherRow($pair): string {
-        $result = '';
-        $result .= $pair->teacher->position; // ?? pair[user][teacher]
+        $result = $pair->teacher->teacher_position->abbreviated;
+        $result .= ' '.$this->getTeacherNSP($pair->teacher->user ?? $pair->teacher);
         if(isset($pair->additional_info)) {
             $result .= $pair->additional_info;
         }
@@ -126,6 +129,14 @@ class ScheduleFiller {
                     $startRow * $schedule['pair_number']['number'] + 2,
                     $this->getTeacherRow(json_decode($schedule['regularity'])[0])
                 );
+                for($i = 0; $i < self::pairCellHeightCount; $i++) {
+                    $this->sheet->mergeCellsByColumnAndRow(
+                        $startColumn,
+                        ($startRow * $schedule['pair_number']['number']) + $i,
+                        $startColumn + self::pairCellWidthCount - 1,
+                        ($startRow * $schedule['pair_number']['number']) + $i
+                    );
+                }
             }
         }
     }
@@ -165,9 +176,9 @@ class ScheduleFiller {
                 1,
                 $startRow + 1,
                 1,
-                (self::pairCount * self::pairCellHeightCount) + $startRow);
+                (self::pairCount * self::pairCellHeightCount) * ($index + 1));
             $this->sheet->setCellValueByColumnAndRow(1, $startRow + 1, $day['name']);
-            $startRow += (self::pairCount * self::pairCellHeightCount) * ($index + 1) + 1;
+            $startRow = (self::pairCount * self::pairCellHeightCount) * ($index + 1) + 1;
         }
     }
 
