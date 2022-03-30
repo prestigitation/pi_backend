@@ -34,9 +34,8 @@ class ScheduleRepository {
 
     public function getAll() {
         return $this->loadAll()
-        ->orderBy('group_id', 'asc')
         ->orderBy('day_id', 'asc')
-        ->orderBy('pair_number_id', 'asc')->get();
+        ->get();
     }
 
     public function fillPairs(array $pairs) {
@@ -60,7 +59,7 @@ class ScheduleRepository {
                 $result[$index]['start_date_info'] = $this->purifier->clean($pair['start_date_info']);
             }
 
-            if(isset($pair['format'])) {
+            if(isset($pair['format_id'])) {
                 $result[$index]['format'] = PairFormat::find($pair['format_id']);
             }
 
