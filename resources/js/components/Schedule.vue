@@ -342,13 +342,16 @@ export default {
         },
         addPairTeacherToFilter(teacher) {
             let additionalInfo
+            let teacherModel
             if(teacher.user) {
                 additionalInfo = `${teacher.user.surname} ${teacher.user.name} ${teacher.user.patronymic}`
+                teacherModel = 'teacher' // преподаватель с нашей кафедры
             } else if(teacher) {
                 additionalInfo = `${teacher.surname} ${teacher.name} ${teacher.patronymic}`
+                teacherModel = 'foreign_teacher'
             }
 
-            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id' ,'teacher', additionalInfo)
+            let filterPartTemplate = this.getFilterTemplate('Преподаватели','id' , teacherModel, additionalInfo)
             this.moveToFilter(filterPartTemplate, teacher.id)
         },
         addDayToFilter(day) {

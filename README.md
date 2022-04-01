@@ -60,6 +60,8 @@ vendor/bin/phpunit --coverage-html reports/
 
 A `reports` directory has been created for code coverage report. Open the dashboard.html.
 
-## License
+Заметки
+
+1. id учетной записи преподавателя должен быть на 1 больше, чем его id в таблице преподавателей(обеспечивает корректную работу фильтрации)
 
 [MIT license](https://opensource.org/licenses/MIT).

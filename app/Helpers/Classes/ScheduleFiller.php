@@ -239,7 +239,7 @@ class ScheduleFiller {
 
                     $this->fillAndCenterCell(
                         $startColumn + self::pairCellWidthCount,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + (self::pairCellCount * $pairCount),
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']),
                         $this->getAudienceRow(json_decode($schedule['regularity'])[$pairCount])
                     );
                     $this->setBoldCell($startColumn + self::pairCellWidthCount,

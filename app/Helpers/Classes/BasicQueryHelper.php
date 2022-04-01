@@ -7,6 +7,7 @@ class BasicQueryHelper extends QueryHelper {
     protected static $allowedFilterFields = [
         'days' => ['id'],
         'groups' => ['id'],
+        'foreign_teachers' => ['id'],
     ];
     protected static Builder $query;
     protected array $data;

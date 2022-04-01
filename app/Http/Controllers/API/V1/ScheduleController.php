@@ -61,7 +61,7 @@ class ScheduleController extends Controller
         $fileName = $request->file_name ?? 'Расписание';
         $file = public_path("sch/$fileName.xlsx");
         if(isset($request->filter)) {
-            $schedule = $this->scheduleRepository->filter(json_decode($request->filter));
+            $schedule = $this->scheduleRepository->filter(json_decode($request->filter, true));
         } else $schedule = $this->scheduleRepository->getAll();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

@@ -30,6 +30,7 @@ class FilterScheduleRequest extends FormRequest
             'pair_number' => 'nullable|array|min:1',
             'type' => 'nullable|array|min:1',
             'teacher' => 'nullable|array|min:1',
+            'foreign_teacher' => 'nullable|array|min:1',
             'subject' => 'nullable|array|min:1',
             'deleted' => 'nullable|boolean',
             'study_process' => 'nullable|array|min:1'

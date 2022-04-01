@@ -109,6 +109,7 @@ class ScheduleRepository {
             'audience' => ['id', 'name'],
             'subject' => ['id', 'name'],
             'teacher' => ['id'],
+            'foreign_teacher' => ['id'],
             'type' => ['id'],
             'study_process' => ['id']
         ];
@@ -125,11 +126,22 @@ class ScheduleRepository {
                             $models = DB::table(Str::plural($name))->whereIn($key, $criteria)->select($key)->get();
                             foreach($models as $i => $model) {
                                 $queryString = '';
-                                $queryString .= "json_contains(`regularity`,'".json_encode([[$name => $model]])."')";
-                                if($i === 0) {
-                                    $query->whereRaw($queryString);
+                                if($name === 'foreign_teacher') {
+                                    $query
+                                        ->whereJsonContains("regularity", ['teacher' => $model])
+                                        ->whereJsonDoesntContain('regularity', ['teacher' => ['user' => ['id' => $model->id + 1]]]);
                                 } else {
-                                    $query->orWhereRaw($queryString);
+                                    if($name === 'teacher') {
+                                        $query
+                                        ->whereJsonContains("regularity", ['teacher' => ['user' => ['id' => $model->id + 1]]]);
+                                    } else {
+                                        $queryString .= "json_contains(`regularity`,'".json_encode([[$name => $model]])."')";
+                                        if($i === 0) {
+                                            $query->whereRaw($queryString);
+                                        } else {
+                                            $query->orWhereRaw($queryString);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -155,7 +167,7 @@ class ScheduleRepository {
     }
 
 
-    public function filter(array $data) {
+    public function filter(mixed $data) {
         $query = null;
         if(isset($data['deleted']) && $data['deleted'] === true) {
             $query = Schedule::withTrashed();
@@ -165,6 +177,7 @@ class ScheduleRepository {
         $basicHelper = new BasicQueryHelper($query, $data);
         $basicHelper->query('groups')
                     ->query('days');
+
         $query = $basicHelper->getBuilder();
 
         $query = $this->filterPairNumber($data, $query);

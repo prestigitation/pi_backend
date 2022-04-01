@@ -257,7 +257,7 @@ class TeacherSeeder extends Seeder
                 'surname' => "Борсуковский",
                 'name' => "Сергей",
                 'patronymic' => "Васильевич",
-                'teacher_position_id' => 3,
+                'teacher_position_id' => 2,
                 'avatar_path' => '',
                 'publications_count' => 5432,
                 'projects_count' => 876,
