@@ -366,7 +366,7 @@ class TeacherSeeder extends Seeder
                 'study_link' => 'study_link_here',
             ],
             [
-                'surname' => "Егоровна",
+                'surname' => "Егорова",
                 'name' => "Виктория",
                 'patronymic' => "Григорьевна",
                 'teacher_position_id' => 3,
