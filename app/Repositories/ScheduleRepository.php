@@ -34,7 +34,7 @@ class ScheduleRepository {
 
     public function getAll() {
         return $this->loadAll()
-        ->orderBy('day_id', 'asc')
+        ->orderBy('group_id', 'asc')
         ->get();
     }
 

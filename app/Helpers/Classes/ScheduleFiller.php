@@ -202,37 +202,37 @@ class ScheduleFiller {
      * @return void
      */
     private function fillPairs(): void {
-        $startColumn = 3;
         $startRow = 4;
         foreach($this->schedule as $index => $schedule) {
+            $startColumn = ((4 * ($schedule['group_id'] - 1)) + 3);
             $pairsPerCell = count(json_decode($schedule['regularity']));
             if($pairsPerCell) {
                 for($pairCount = 0; $pairCount < $pairsPerCell; $pairCount++) {
                     $this->fillAndCenterCell(
                         $startColumn,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + (self::pairCellCount * $pairCount),
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']),
                         $this->getSubjectRow(json_decode($schedule['regularity'])[$pairCount])
                     );
 
                     $this->setBoldCell(
                         $startColumn,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + (self::pairCellCount * $pairCount));
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']));
 
                     $this->setBorderOutline($startColumn,
-                    ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + (self::pairCellCount * $pairCount));
+                    ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']));
 
                     $this->fillAndCenterCell(
                         $startColumn,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + 1 + (self::pairCellCount * $pairCount),
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1,
                         $this->getTeacherRow(json_decode($schedule['regularity'])[$pairCount])
                     );
 
                     $this->setBorderOutline($startColumn,
-                    ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + (self::pairCellCount * $pairCount));
+                    ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']));
 
                     $this->fillAndCenterCell(
                         $startColumn + self::pairCellWidthCount,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + 1 + (self::pairCellCount * $pairCount),
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1,
                         $this->getAudienceSubRow(json_decode($schedule['regularity'])[$pairCount])
                     );
 
@@ -243,7 +243,7 @@ class ScheduleFiller {
                         $this->getAudienceRow(json_decode($schedule['regularity'])[$pairCount])
                     );
                     $this->setBoldCell($startColumn + self::pairCellWidthCount,
-                    ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + 1 + (self::pairCellCount * $pairCount));
+                    ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1);
                 }
             }
 
@@ -251,18 +251,18 @@ class ScheduleFiller {
                 // Установка Border для всех затронутых ячеек
                     $this->setBorderOutline(
                         $startColumn + self::pairCellWidthCount,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + $i
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + $i
                     );
                     $this->setBorderOutline(
                         $startColumn,
-                        ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + $i
+                        ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + $i
                     );
 
                 $this->sheet->mergeCellsByColumnAndRow(
                     $startColumn,
-                    ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + $i,
+                    ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + $i,
                     $startColumn + self::pairCellWidthCount - 1,
-                    ($startRow * ($index + 1)) + ($schedule['day']['id'] - 1) + $i
+                    ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + $i
                 );
             }
         }
