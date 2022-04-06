@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Teacher extends Model
 {
     use HasFactory;
-
     protected $with = ['user', 'educationLevel', 'regalias', 'subjects', 'teacherPosition'];
 
     public function user() {

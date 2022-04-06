@@ -41,7 +41,7 @@ export default {
         }
     },
     async mounted() {
-        await axios.get(process.env.MIX_API_PATH + 'time_form')
+        await axios.get(process.env.MIX_API_PATH + 'time_forms')
             .then(({data}) => this.time_forms = data.data)
             .catch(() => this.showFailMessage('Не удалось загрузить специальности'))
     },

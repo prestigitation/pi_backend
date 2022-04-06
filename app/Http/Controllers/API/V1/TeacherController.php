@@ -30,4 +30,5 @@ class TeacherController extends Controller
         return $this->teacherRepository->findBySlug($slug);
     }
 
+
 }

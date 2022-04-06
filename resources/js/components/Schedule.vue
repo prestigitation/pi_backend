@@ -5,17 +5,23 @@
 
         <div class="col-12">
 
-            <div class="card" v-if="$gate.isAdmin()">
+            <div class="card">
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
-                            <div>
-                                <span>Таблица расписания</span>
-                                <span class="btn btn-success" @click.prevent="openScheduleModal">Скачать расписание</span>
-                            </div>
+
+                            <span>Таблица расписания</span>
                             <p class="mt-4">
                                 <button class="btn btn-primary" type="button" @click.prevent="toggleFilterButton">
                                     Фильтрация +
+                                </button>
+
+                                <button class="btn btn-success" @click.prevent="openScheduleModal">
+                                    Скачать расписание
+                                </button>
+
+                                <button class="btn btn-primary" @click.prevent="openMySchedule">
+                                    Мое расписание
                                 </button>
                             </p>
                             <div class="collapse" id="filter__collapse">
@@ -86,7 +92,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-center">
-                    <tr v-for="schedule_data in schedules" :key="schedule_data.id">
+                    <tr v-for="schedule_data in schedules.data ? schedules.data : schedules" :key="schedule_data.id">
                         <td>
                             {{schedule_data.id}}
                         </td>
@@ -140,15 +146,10 @@
                 </tbody>
                 </table>
             </div>
-            <div class="card-footer" v-if="schedules && schedules.length">
+            <div class="card-footer" v-if="schedules">
                 <pagination :data="schedules" @pagination-change-page="getResults"></pagination>
             </div>
         </div>
-        </div>
-
-
-        <div v-if="!$gate.isAdmin()">
-            <not-found></not-found>
         </div>
 
         <schedule-modal
@@ -167,6 +168,10 @@
             id="scheduleDownload"
             :filterQuery.sync="filterQuery"
         />
+
+        <self-schedule-modal
+            id="mySchedule"
+        />
     </div>
     </div>
 </section>
@@ -178,15 +183,17 @@ import { notificationMixin } from '../mixins/notificationMixin'
 import PairNumberPresenter from './layout/PairNumberPresenter.vue'
 import PairPresenter from './layout/PairPresenter.vue'
 import ScheduleDownloadModal from './ScheduleDownloadModal.vue'
+import SelfScheduleModal from './SelfScheduleModal.vue'
 export default {
         name: 'schedule',
         mixins: [notificationMixin],
         components: {
-        ScheduleModal,
-        PairNumberPresenter,
-        PairPresenter,
-        ScheduleDownloadModal
-    },
+    ScheduleModal,
+    PairNumberPresenter,
+    PairPresenter,
+    ScheduleDownloadModal,
+    SelfScheduleModal
+},
     data() {
         return {
             schedules: [],
@@ -216,6 +223,12 @@ export default {
             this.scheduleId = null
             this.showModal()
         },
+        openMySchedule() {
+            this.showModal('mySchedule')
+        },
+        closeMySchedule() {
+            this.toggleModal('mySchedule')
+        },
         openScheduleModal() {
             this.showModal('scheduleDownload')
         },
@@ -237,6 +250,11 @@ export default {
             this.editmode = true
             this.form.fill(schedule)
             $('#addNew').modal('show');
+        },
+        getResults(page = 1) {
+                    this.$Progress.start();
+                    axios.get(process.env.MIX_API_PATH + 'schedules?page=' + page).then(({ data }) => (this.schedules = data));
+                    this.$Progress.finish();
         },
         deleteScheduleEntryByIndex(index) {
             this.form.pairs.splice(index, 1)

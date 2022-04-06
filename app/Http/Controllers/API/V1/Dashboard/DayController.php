@@ -21,7 +21,7 @@ class DayController extends BaseController
      */
     public function index()
     {
-        return new DayResource($this->dayRepository->getAll());
+        return new DayResource($this->dayRepository->get());
     }
 
     /**

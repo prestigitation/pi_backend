@@ -2,15 +2,13 @@
 
 namespace App\Repositories;
 
+
+
 use App\Models\Day;
+use Prettus\Repository\Eloquent\BaseRepository;
 
-class DayRepository {
-    public function loadAll() {
-        return Day::query();
-    }
-
-    public function getAll()
-    {
-        return $this->loadAll()->get();
+class DayRepository extends BaseRepository {
+    public function model() {
+        return Day::class;
     }
 }

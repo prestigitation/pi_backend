@@ -29,7 +29,8 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(f
         'news' => 'NewsController',
         'schedules' => 'ScheduleController',
         'teachers' => 'TeacherController',
-        'questions' => 'QAController'
+        'questions' => 'QAController',
+        'days' => 'DayController'
     ]);
 });
 
@@ -48,6 +49,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('types.get_all');
     Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_levels.get_all');
     Route::get('header_info', 'DashboardController@getHeaderInfo')->middleware('web')->name('header_info.get');;
+    Route::get('schedules/me', 'ScheduleController@getMySchedule');
+
     /* Специфические роуты */
     Route::post('users/{user_id}/roles/{role_id}', 'UserController@attachRole');
     Route::post('users/search', 'UserController@search');

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
+use App\Http\Resources\ScheduleResource;
 use App\Models\Audience;
 use App\Models\ForeignTeacher;
 use App\Models\PairFormat;
@@ -27,9 +28,10 @@ class ScheduleRepository {
         return Schedule::query();
     }
 
+    //TODO: сохранение расписания при апдейте расписания, с меткой даты
     public function getPaginated($schedule = null) {
         $scheduleQuery = $schedule ?? $this->loadAll();
-        return $scheduleQuery->paginate(10);
+        return new ScheduleResource($scheduleQuery->paginate(10));
     }
 
     public function getAll() {

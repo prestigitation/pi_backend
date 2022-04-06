@@ -12,14 +12,6 @@
                             Список вопросов и ответов
                         </slot>
                     </h3>
-
-                <div class="card-tools">
-
-                <!--<button type="button" class="btn btn-sm btn-primary" @click="newModal">
-                    <i class="fa fa-plus-square"></i>
-                    Добавить
-                </button> -->
-                </div>
             </div>
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover align-middle">

@@ -2,19 +2,27 @@
 
 namespace App\Http\Controllers\API\V1\Dashboard;
 
+use App\Helpers\Enums\DashboardRoles;
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+use App\Http\Controllers\API\V1\ScheduleController as ApiScheduleController;
 use App\Http\Requests\Schedule\StoreScheduleRequest;
 use App\Http\Requests\Schedule\UpdateScheduleRequest;
 use App\Models\Schedule;
+use App\Models\Teacher;
+use App\Models\User;
 use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class ScheduleController extends BaseController
 {
     private $scheduleRepository;
+    private $apiScheduleController;
 
-    public function __construct(ScheduleRepository $scheduleRepository) {
+    public function __construct(ScheduleRepository $scheduleRepository, ApiScheduleController $apiScheduleController) {
         $this->scheduleRepository = $scheduleRepository;
+        $this->apiScheduleController = $apiScheduleController;
     }
 
     /**
@@ -86,5 +94,28 @@ class ScheduleController extends BaseController
         } catch (\Exception $e) {
             return $this->sendError('Запись в расписании не была удалена, возникла ошибка.');
         }
+    }
+
+    public function getMySchedule() {
+        $filter = [];
+        $user = User::find(Auth::id());
+        $allowedRoles = [
+            DashboardRoles::ROLE_TEACHER->value
+        ];
+        foreach($user->roles as $role) {
+            if(in_array($role->name, $allowedRoles)) {
+                switch($role->name) {
+                    case DashboardRoles::ROLE_TEACHER->value: {
+                        $teacher = Teacher::where('user_id', Auth::id())->first();
+                        $filter['teacher']['id'] = [$teacher['id']];
+                    }
+                }
+            }
+        }
+        $request = new \Illuminate\Http\Request();
+
+        $request->request->add(['filter_string' => json_encode($filter)]);
+        //dd($request);
+        return $this->apiScheduleController->filter($request);
     }
 }

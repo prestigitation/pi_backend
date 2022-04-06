@@ -31,7 +31,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return $this->scheduleRepository->getAll();
+        return $this->scheduleRepository->getPaginated();
     }
 
     /**
@@ -40,10 +40,10 @@ class ScheduleController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return Schedule[] | \Illuminate\Http\Response
      */
-    public function filter(Request $request) {
+    public function filter(Request $request, array $data = null) {
             try {
                 $filterScheduleRequest = new FilterScheduleRequest;
-                $validated = Validator::validate(json_decode($request->request->get('filter_string'), true), $filterScheduleRequest->rules());
+                $validated = Validator::validate($data ?? json_decode($request->request->get('filter_string'), true), $filterScheduleRequest->rules());
                 if(!count($validated)) {
                     return new Response('Вы не указали ни одного параметра фильтрации', 400);
                 }

@@ -73,5 +73,18 @@ class AuthServiceProvider extends ServiceProvider
                 EnumHelper::getValues($roles)
             ));
         });
+
+        Gate::define('accessSchedule', function (User $user) {
+            $roles = [
+                DashboardRoles::ROLE_ADMIN,
+                DashboardRoles::ROLE_OWNER,
+                DashboardRoles::ROLE_LABORANT,
+                DashboardRoles::ROLE_TEACHER,
+            ];
+            return count(array_intersect(
+                EnumHelper::getNames($user->roles->toArray()),
+                EnumHelper::getValues($roles)
+            ));
+        });
     }
 }
