@@ -251,10 +251,11 @@ class TeacherSeeder extends Seeder
                 'diploma_projects_count' => 345,
                 'education_level_id' => $highEducation
             ],
+            //Борсуковского Сергея Васильевича в расписании нет
             [
                 'education' => 'ПГКУ им. Шевченко в 1994г.,
                 математика и физика, учитель математики и физики',
-                'surname' => "Борсуковский",
+                'surname' => "Борсуковский", 
                 'name' => "Сергей",
                 'patronymic' => "Васильевич",
                 'teacher_position_id' => 2,
@@ -390,9 +391,9 @@ class TeacherSeeder extends Seeder
                 'study_link' => 'study_link_here',
             ],
             [
-                'surname' => "Егорова",
-                'name' => "Виктория",
-                'patronymic' => "Григорьевна",
+                'surname' => "Задобривская",
+                'name' => " Оксана",
+                'patronymic' => " Федоровна",
                 'teacher_position_id' => 3,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
