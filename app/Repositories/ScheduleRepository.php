@@ -3,6 +3,9 @@
 namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
+use App\Helpers\Classes\ScheduleFiller;
+use App\Http\Requests\Schedule\DownloadScheduleRequest;
+use App\Http\Requests\Schedule\StoreScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Models\Audience;
 use App\Models\ForeignTeacher;
@@ -16,12 +19,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 use Stevebauman\Purify\Purify;
 
 class ScheduleRepository {
     private $purifier;
-    public function __construct(Purify $purifier) {
+    private $fileRepository;
+    public function __construct(Purify $purifier, FileRepository $fileRepository) {
         $this->purifier = $purifier;
+        $this->fileRepository = $fileRepository;
     }
     public function loadAll()
     {
@@ -76,7 +85,9 @@ class ScheduleRepository {
         $schedule->day_id = $data['day_id'];
         $schedule->group_id = $data['group_id'];
         $schedule->pair_number_id = $data['pair_number_id'];
-        $schedule->regularity = collect($this->fillPairs($data['pairs']))->toJson() ?? null; //json_encode($this->fillPairs($data['pairs']));
+        if(isset($data['pairs'])) {
+            $schedule->regularity = collect($this->fillPairs($data['pairs']))->toJson() ?? null; //json_encode($this->fillPairs($data['pairs']));
+        }
     }
 
     public function create(array $data)
@@ -187,5 +198,27 @@ class ScheduleRepository {
 
 
         return $query->get();
+    }
+
+    public function saveSchedule(DownloadScheduleRequest $request) {
+        $fileName = $request->file_name ?? 'Расписание';
+        $file = 'sch/'.$fileName.'.xlsx';
+
+        if(isset($request->filter)) {
+            $schedule = $this->filter(json_decode($request->filter, true));
+        } else $schedule = $this->getAll();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $scheduleFiller = new ScheduleFiller($sheet, $schedule->toArray());
+        $scheduleFiller->fillSchedule();
+        try {
+            $writer = new WriterXlsx($spreadsheet);
+            \PhpOffice\PhpSpreadsheet\Shared\File::setUseUploadTempDirectory(true);
+            $writer->save($file);
+            return $file;
+        } catch (\Exception $e) {
+            return;
+        }
     }
 }

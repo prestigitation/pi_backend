@@ -27,7 +27,7 @@ class UpdateScheduleRequest extends FormRequest
             'group_id' => 'required|integer|exists:App\Models\Group,id',
             'day_id' => 'required|integer|exists:App\Models\Day,id',
             'pair_number_id' => 'required|integer|exists:App\Models\PairNumber,id',
-            'pairs' => 'required|array|min:1',
+            'pairs' => 'nullable|array|min:1',
             'pairs.*.additional_info' => 'string|nullable',
             'pairs.*.audience_id' => 'integer|exists:App\Models\Audience,id',
             'pairs.*.subject_id' => 'integer|exists:App\Models\Subject,id',

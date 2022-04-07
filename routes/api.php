@@ -47,16 +47,18 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subjects.get_all');
     Route::get('positions/all', 'PositionController@getAll')->middleware('web')->name('positions.get_all');
     Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('types.get_all');
+    Route::get('categories/all', 'CategoryController@getAll')->middleware('web')->name('categories.get_all');
     Route::get('education_levels/all', 'EducationLevelController@getAll')->middleware('web')->name('education_levels.get_all');
     Route::get('header_info', 'DashboardController@getHeaderInfo')->middleware('web')->name('header_info.get');;
-    Route::get('schedules/me', 'ScheduleController@getMySchedule');
+    Route::get('schedules/me', 'ScheduleController@getMySchedule')->name('schedules.my_schedule');
+    Route::get('schedules/versions', 'ScheduleController@getVersions')->name('schedules.get_versions');
 
     /* Специфические роуты */
     Route::post('users/{user_id}/roles/{role_id}', 'UserController@attachRole');
     Route::post('users/search', 'UserController@search');
     Route::post('teachers/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
     Route::post('foreign_teachers/{id}/avatar', 'ForeignTeacherController@changeAvatar')->middleware('auth:api')->name('foreign_teacher.store_avatar');
-
+    Route::post('schedules/snapshot', 'ScheduleController@makeSnapshot')->middleware('can:accessSchedule')->name('schedules.make_snapshot');
     /* Роуты на удаление */
     Route::delete('users/{user_id}/roles/{role_id}', 'UserController@detachRole');
 

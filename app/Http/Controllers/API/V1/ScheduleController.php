@@ -49,7 +49,7 @@ class ScheduleController extends Controller
                 }
                 return $this->scheduleRepository->filter($validated);
             } catch(\Exception $e) {
-                dd($e->getMessage());
+
             }
     }
 
@@ -58,23 +58,8 @@ class ScheduleController extends Controller
      * @return resource
      */
     public function downloadSchedule(DownloadScheduleRequest $request) {
-        $fileName = $request->file_name ?? 'Расписание';
-        $file = public_path("sch/$fileName.xlsx");
-        if(isset($request->filter)) {
-            $schedule = $this->scheduleRepository->filter(json_decode($request->filter, true));
-        } else $schedule = $this->scheduleRepository->getAll();
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $scheduleFiller = new ScheduleFiller($sheet, $schedule->toArray());
-        $scheduleFiller->fillSchedule();
-        try {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save($file);
-            return response()->download($file)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-        }
+        $savedSchedulePath = $this->scheduleRepository->saveSchedule($request);
+        return response()->download($savedSchedulePath)->deleteFileAfterSend(true);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TeacherResource;
 use App\Models\Teacher;
 use App\Repositories\TeacherRepository;
+use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
@@ -28,6 +29,10 @@ class TeacherController extends Controller
 
     public function findBySlug(string $slug): Teacher {
         return $this->teacherRepository->findBySlug($slug);
+    }
+
+    public function show(Request $request, int $id) {
+        return Teacher::find($id);
     }
 
 

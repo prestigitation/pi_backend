@@ -27,7 +27,6 @@ class UpdateTeacherRequest extends FormRequest
             'name' => 'required|string|max:255|min:2',
             'surname' => 'required|string|max:255|min:2',
             'patronymic' => 'required|string|max:255|min:2',
-            'email' => 'required|string|email',
             'password' => 'nullable|string|min:6|max:255',
             'education_level_id' => 'required|exists:App\Models\EducationLevel,id',
             'study_link' => 'nullable|string|max:255',

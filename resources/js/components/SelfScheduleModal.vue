@@ -79,8 +79,10 @@ export default {
         }
     },
     async created() {
-        await this.getDays();
-        await this.getMySchedule();
+        if(this.$gate.isTeacher()) { // TODO: isStudent
+            await this.getDays();
+            await this.getMySchedule();
+        }
     },
     computed: {
         daySchedule() {

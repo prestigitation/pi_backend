@@ -5,7 +5,7 @@
 
         <div class="col-12">
 
-            <div class="card" v-if="$gate.isAdmin()">
+            <div class="card">
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
@@ -105,9 +105,6 @@
         </div>
 
 
-        <div v-if="!$gate.isAdmin()">
-            <not-found></not-found>
-        </div>
         <slot name="edit_modal">
             <user-modal
                 @update_user="$props.update_user ? $props.update_user() : updateUser()"

@@ -20,8 +20,12 @@
                                     Скачать расписание
                                 </button>
 
-                                <button class="btn btn-primary" @click.prevent="openMySchedule">
+                                <button v-if="$gate.isTeacher()" class="btn btn-info" @click.prevent="openMySchedule">
                                     Мое расписание
+                                </button>
+
+                                <button class="btn btn-warning" @click.prevent="openScheduleHistory">
+                                    Предыдущие расписания
                                 </button>
                             </p>
                             <div class="collapse" id="filter__collapse">
@@ -70,6 +74,11 @@
                     </h3>
 
                 <div class="card-tools">
+
+                <button type="button" class="btn btn-sm btn-warning" @click="commitSchedule">
+                    <i class="fa fa-plus-square"></i>
+                    Зафиксировать расписание
+                </button>
 
                 <button type="button" class="btn btn-sm btn-primary" @click="newModal">
                     <i class="fa fa-plus-square"></i>
@@ -158,6 +167,7 @@
             @close_schedule_data_modal="closeModal"
             @add_pair="addPair"
             @delete_pair="deletePair"
+            @schedule_modified="getScheduleHistory"
             id="addNew"
             :editmode="editmode"
             :form="form"
@@ -172,29 +182,37 @@
         <self-schedule-modal
             id="mySchedule"
         />
+
+        <history-schedule-modal
+            id="scheduleHistory"
+            :scheduleHistory.sync="scheduleHistory"
+            @paginate_schedule_history="paginateScheduleHistory"
+        />
     </div>
     </div>
 </section>
 </template>
 
 <script>
-import ScheduleModal from './ScheduleModal.vue'
 import { notificationMixin } from '../mixins/notificationMixin'
+import ScheduleModal from './ScheduleModal.vue'
 import PairNumberPresenter from './layout/PairNumberPresenter.vue'
 import PairPresenter from './layout/PairPresenter.vue'
 import ScheduleDownloadModal from './ScheduleDownloadModal.vue'
 import SelfScheduleModal from './SelfScheduleModal.vue'
+import HistoryScheduleModal from './HistoryScheduleModal.vue'
 export default {
         name: 'schedule',
         mixins: [notificationMixin],
         components: {
-    ScheduleModal,
-    PairNumberPresenter,
-    PairPresenter,
-    ScheduleDownloadModal,
-    SelfScheduleModal
-},
-    data() {
+            ScheduleModal,
+            PairNumberPresenter,
+            PairPresenter,
+            ScheduleDownloadModal,
+            SelfScheduleModal,
+            HistoryScheduleModal
+        },
+        data() {
         return {
             schedules: [],
             editmode: false,
@@ -207,11 +225,17 @@ export default {
             }),
             filterQuery: null,
             scheduleId: null,
+            scheduleHistory: [],
             filters: [],
             filterCollapseToggled: false,
         }
     },
     methods: {
+        async commitSchedule() {
+            await axios.post(process.env.MIX_DASHBOARD_PATH + 'schedules/snapshot')
+                .then(() => this.showSuccessMessage('Расписание было успешно зафиксировано!'))
+                .catch(() => this.showFailMessage('Не удалось зафиксировать расписание!'))
+        },
         showModal(name = 'addNew') {
             $(`#${name}`).modal('show');
         },
@@ -222,6 +246,9 @@ export default {
             this.editmode = false
             this.scheduleId = null
             this.showModal()
+        },
+        openScheduleHistory() {
+            this.showModal('scheduleHistory')
         },
         openMySchedule() {
             this.showModal('mySchedule')
@@ -252,9 +279,9 @@ export default {
             $('#addNew').modal('show');
         },
         getResults(page = 1) {
-                    this.$Progress.start();
-                    axios.get(process.env.MIX_API_PATH + 'schedules?page=' + page).then(({ data }) => (this.schedules = data));
-                    this.$Progress.finish();
+            this.$Progress.start();
+            axios.get(process.env.MIX_API_PATH + 'schedules?page=' + page).then(({ data }) => (this.schedules = data));
+            this.$Progress.finish();
         },
         deleteScheduleEntryByIndex(index) {
             this.form.pairs.splice(index, 1)
@@ -269,10 +296,11 @@ export default {
                         confirmButtonText: 'Да'
                         }).then(async (result) => {
                             if (result.value) {
-                                    this.form.delete(`schedules/${scheduleId}`).then(async ()=>{
-                                        this.showSuccessMessage('Часть расписания была успешно удалена!')
-                                        await this.getSchedule();
-                                    })
+                                this.form.delete(`schedules/${scheduleId}`).then(async ()=>{
+                                    this.showSuccessMessage('Часть расписания была успешно удалена!')
+                                    await this.getSchedule();
+                                    await this.getScheduleHistory()
+                                })
                             }
                         })
         },
@@ -430,9 +458,21 @@ export default {
                 $('#filter__collapse').collapse('show')
             } else $('#filter__collapse').collapse('hide')
         },
+
+        async getScheduleHistory() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules/versions')
+                .then(({data}) => this.scheduleHistory = data)
+                .catch(() => this.showFailMessage('Не удалось загрузить список предыдущего расписания'))
+        },
+        paginateScheduleHistory(page = 1) {
+            this.$Progress.start();
+            axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules/versions?page=' + page).then(({ data }) => (this.scheduleVariants = data));
+            this.$Progress.finish();
+        },
     },
     async created() {
         await this.getSchedule()
+        await this.getScheduleHistory()
     },
     watch: {
         filters : function (current, previous) {

@@ -21,6 +21,10 @@ class CategoryController extends BaseController
         $this->category = $category;
     }
 
+    public function getAll() {
+        return Category::all();
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -65,6 +69,7 @@ class CategoryController extends BaseController
 
         return $this->sendResponse($tag, 'Category Created Successfully');
     }
+
 
     /**
      * Update the resource in storage

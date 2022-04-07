@@ -179,6 +179,7 @@ return [
         App\Providers\TelescopeServiceProvider::class,
 
         App\Providers\ProductRepositoryServiceProvider::class,
+        Jenssegers\Date\DateServiceProvider::class,
 
     ],
 
@@ -207,6 +208,7 @@ return [
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
+        'Date' => Jenssegers\Date\Date::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,

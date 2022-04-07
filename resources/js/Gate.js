@@ -5,11 +5,15 @@ export default class Gate {
     }
 
     isAdmin() {
-        return this.user.roles[0].name === 'Администратор';
+        return this.user.roles.find(role => role.name === 'Администратор');
     }
 
     isUser() {
-        return this.user.roles[0].name === 'Пользователь';
+        return this.user.roles.find(role => role.name === 'Пользователь');
+    }
+
+    isTeacher() {
+        return this.user.roles.find(role => role.name === 'Преподаватель');
     }
 
     isAdminOrUser() {

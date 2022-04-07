@@ -175,6 +175,7 @@ export default {
         async updateSchedule() {
             await axios.put(process.env.MIX_DASHBOARD_PATH + `schedules/${this.scheduleId}`, this.form).then(() => {
                 this.showSuccessMessage("Групппа была успешно изменена");
+                this.$emit('schedule_modified')
             }).catch(() => {
                 this.showFailMessage("Не удалось изменить данные о группе");
             }).finally(async () => {
