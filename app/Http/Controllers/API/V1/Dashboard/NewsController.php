@@ -72,8 +72,10 @@ class NewsController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        //
+        $this->newsRepository->delete($id);
+
+        return $this->sendResponse(null, 'Новость была успешно удалена!');
     }
 }

@@ -16,6 +16,18 @@ export default class Gate {
         return this.user.roles.find(role => role.name === 'Преподаватель');
     }
 
+    isStudent() {
+        return this.user.roles.find(role => role.name === 'Студент');
+    }
+
+    isOwner() {
+        return this.user.roles.find(role => role.name === 'Заведующий кафедрой');
+    }
+
+    isLaborant() {
+        return this.user.roles.find(role => role.name === 'Лаборант');
+    }
+
     isAdminOrUser() {
         if (this.user.type === 'user' || this.user.type === 'admin') {
             return true;

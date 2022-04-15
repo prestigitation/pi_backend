@@ -100,25 +100,12 @@ class ScheduleController extends BaseController
     }
 
     public function getMySchedule() {
-        $filter = [];
-        $user = User::find(Auth::id());
-        $allowedRoles = [
-            DashboardRoles::ROLE_TEACHER->value
-        ];
-        foreach($user->roles as $role) {
-            if(in_array($role->name, $allowedRoles)) {
-                switch($role->name) {
-                    case DashboardRoles::ROLE_TEACHER->value: {
-                        $teacher = Teacher::where('user_id', Auth::id())->first();
-                        $filter['teacher']['id'] = [$teacher['id']];
-                    }
-                }
-            }
+        try {
+            return $this->scheduleRepository->getMySchedule();
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return $this->sendError('Не удалось получить собственное расписание!');
         }
-        $request = new \Illuminate\Http\Request();
-
-        $request->request->add(['filter_string' => json_encode($filter)]);
-        return $this->apiScheduleController->filter($request);
     }
 
     public function getVersions() {

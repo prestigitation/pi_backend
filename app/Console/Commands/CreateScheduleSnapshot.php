@@ -49,7 +49,6 @@ class CreateScheduleSnapshot extends Command
      */
     public function handle()
     {
-
         $downloadScheduleRequest = new DownloadScheduleRequest;
         \Jenssegers\Date\Date::setLocale('ru');
         $currentTime = Date::now()->format('d-M-Y H-i');

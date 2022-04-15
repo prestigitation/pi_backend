@@ -15,7 +15,6 @@
         "jenssegers/date": "^4.0",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.0",
-        "laravel/telescope": "^4.7",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.1",
         "phpoffice/phpspreadsheet": "^1.22",

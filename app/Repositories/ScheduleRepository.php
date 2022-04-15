@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
 use App\Helpers\Classes\ScheduleFiller;
+use App\Helpers\Enums\DashboardRoles;
 use App\Http\Requests\Schedule\DownloadScheduleRequest;
-use App\Http\Requests\Schedule\StoreScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Models\Audience;
+use App\Models\Day;
 use App\Models\ForeignTeacher;
 use App\Models\PairFormat;
 use App\Models\Schedule;
@@ -15,12 +16,12 @@ use App\Models\StudyProcess;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Type;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 use Stevebauman\Purify\Purify;
@@ -28,7 +29,10 @@ use Stevebauman\Purify\Purify;
 class ScheduleRepository {
     private $purifier;
     private $fileRepository;
-    public function __construct(Purify $purifier, FileRepository $fileRepository) {
+    public function __construct(
+        Purify $purifier,
+        FileRepository $fileRepository)
+    {
         $this->purifier = $purifier;
         $this->fileRepository = $fileRepository;
     }
@@ -37,7 +41,6 @@ class ScheduleRepository {
         return Schedule::query();
     }
 
-    //TODO: сохранение расписания при апдейте расписания, с меткой даты
     public function getPaginated($schedule = null) {
         $scheduleQuery = $schedule ?? $this->loadAll();
         return new ScheduleResource($scheduleQuery->paginate(10));
@@ -46,6 +49,7 @@ class ScheduleRepository {
     public function getAll() {
         return $this->loadAll()
         ->orderBy('group_id', 'asc')
+        ->orderBy('day_id', 'asc')
         ->get();
     }
 
@@ -181,12 +185,10 @@ class ScheduleRepository {
 
 
     public function filter(mixed $data) {
-        $query = null;
-        if(isset($data['deleted']) && $data['deleted'] === true) {
-            $query = Schedule::withTrashed();
-        } else {
-            $query = Schedule::query();
-        }
+        $query =
+        isset($data['deleted']) && $data['deleted'] === true
+        ? Schedule::withTrashed()
+        : Schedule::query();
         $basicHelper = new BasicQueryHelper($query, $data);
         $basicHelper->query('groups')
                     ->query('days');
@@ -197,7 +199,7 @@ class ScheduleRepository {
         $query = $this->filterRegularity($data, $query);
 
 
-        return $query->get();
+        return $query->orderBy('day_id', 'asc')->orderBy('pair_number_id')->get();
     }
 
     public function saveSchedule(DownloadScheduleRequest $request) {
@@ -220,5 +222,58 @@ class ScheduleRepository {
         } catch (\Exception $e) {
             return;
         }
+    }
+
+    /**
+     * Получить расписание, основанное на текущем пользователе
+     * @param array | null $additionalInfo
+     * return mixed
+     */
+    public function getMySchedule(array | null $additionalInfo = null) {
+        $teacher = DashboardRoles::ROLE_TEACHER->value;
+        $student = DashboardRoles::ROLE_STUDENT->value;
+        $filter = [];
+        $user = User::where('id', Auth::id())->with('groups')->first();
+        $allowedRoles = [
+            $teacher,
+            $student
+        ];
+        foreach($user->roles as $role) {
+            if(in_array($role->name, $allowedRoles)) {
+                switch($role->name) {
+                    case $teacher: {
+                        $teacher = Teacher::where('user_id', Auth::id())->first();
+                        $filter['teacher']['id'] = [$teacher['id']];
+                    }
+                    case $student: {
+                        foreach($user->groups as $group) {
+                            if(!array_key_exists('group', $filter)) {
+                                $filter['groups'] = ['id' => $group->id];
+                            } else {
+                                array_push($filter['groups'], ['id' => $group->id]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if(isset($additionalInfo) && count($additionalInfo)) {
+            foreach($additionalInfo as $key => $value) {
+                $filter[$key] = $value;
+            }
+        }
+
+        return $this->filter($filter);
+    }
+
+    public function getDashboardSchedule() {
+        Date::setLocale('ru');
+        $currentDay = Date::now()->format('l'); // Получаем сегодняшний день
+        $currentDayId = Day::where('name', mb_convert_case($currentDay, MB_CASE_TITLE))->first()->id;
+        $additionalSchduleFilter = [
+            'days' => ['id' => $currentDayId]
+        ]; // добавляем фильтрацию на сегодняшний день
+        return $this->getMySchedule($additionalSchduleFilter);
     }
 }

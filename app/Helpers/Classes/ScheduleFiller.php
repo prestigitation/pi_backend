@@ -352,6 +352,6 @@ class ScheduleFiller {
      * @return array
      */
     private function getDays() {
-        return Day::all()->toArray();
+        return Day::active()->toArray();
     }
 }

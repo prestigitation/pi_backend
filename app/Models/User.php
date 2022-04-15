@@ -85,6 +85,18 @@ class User extends Authenticatable // implements MustVerifyEmail
         return $this->roles()->where('name', DashboardRoles::ROLE_USER->value)->exists();
     }
 
+    public function isStudent()
+    {
+        foreach ($this->roles()->get() as $role)
+        {
+            if ($role->name == DashboardRoles::ROLE_STUDENT->value)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     /**

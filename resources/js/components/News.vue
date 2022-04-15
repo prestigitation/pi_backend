@@ -27,37 +27,37 @@
                     <tr>
                         <slot name="table_header">
                             <th class="align-middle text-center">ID</th>
+                            <th class="align-middle text-center">Изображение</th>
                             <th class="align-middle text-center">Заголовок</th>
                             <th class="align-middle text-center">Категория</th>
-                            <th class="align-middle text-center">Текст статьи</th>
                             <th class="align-middle text-center">Действия</th>
                         </slot>
                     </tr>
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="news_data in news" :key="news_data.id">
-                        <td>
-                            {{news_data.id}}
-                        </td>
-                        <td>
-                            {{news_data.title}}
-                        </td>
-                        <td class="text-truncate">
-                            {{news_data.category.name}}
-                        </td>
-                        <td>
-                            {{news_data.description}}
-                        </td>
-                        <td>
-                            <a href="#" @click="editNews(news_data)">
-                                <i class="fa fa-edit blue"></i>
-                            </a>
-                            /
-                            <a href="#" @click="deleteNews(news_data.id)">
-                                <i class="fa fa-trash red"></i>
-                            </a>
-                        </td>
-                    </tr>
+                    <td>
+                        {{news_data.id}}
+                    </td>
+                    <td>
+                        <img :src="news_data.image" alt="Нет изображения" class="news__image" :style="image_width ? `width:${image_width}` : '',image_height ? `width:${image_height}` : ''">
+                    </td>
+                    <td class="h2 px-2">
+                        {{news_data.title}}
+                    </td>
+                    <td class="text-truncate">
+                        {{news_data.category.name}}
+                    </td>
+                    <td>
+                        <a href="#" @click="editNews(news_data)">
+                            <i class="fa fa-edit blue"></i>
+                        </a>
+                        /
+                        <a href="#" @click="deleteNews(news_data.id)">
+                            <i class="fa fa-trash red"></i>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
                 </table>
             </div>
@@ -91,7 +91,7 @@ export default {
     name: 'news',
     mixins: [notificationMixin],
     components: {
-        NewsModal
+        NewsModal,
     },
     data() {
         return {
@@ -140,7 +140,7 @@ export default {
         },
         async getNews() {
             await axios.get(process.env.MIX_API_PATH + 'news')
-                .then(({data}) => this.news = data.data)
+                .then(({data}) => this.news = data)
                 .catch(() => this.showFailMessage('Не удалось загрузить новости'))
         }
     },
@@ -149,4 +149,13 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.news {
+    &__image {
+        width: 200px;
+        height: 200px;
+    }
+}
+</style>
 

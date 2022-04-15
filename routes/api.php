@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::namespace('App\\Http\\Controllers\\API\V1')->middleware('guest')->group(function () {
+    Route::get('/teachers/{slug}', 'TeacherController@findBySlug')->name('teacher.find_by_slug');
+    Route::get('/news/{slug}', 'NewsController@findBySlug')->name('news.find_by_slug');
+
     Route::post('/schedules/filter', 'ScheduleController@filter')->name('schedule.filter');
     Route::post('/schedules/download', 'ScheduleController@downloadSchedule')->name('schedule.download');
 

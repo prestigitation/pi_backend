@@ -18,4 +18,8 @@ class Day extends Model
     public function studyProcess() {
         return $this->belongsTo(StudyProcess::class);
     }
+
+    public function scopeActive(Day $day) {
+        return $day->id !== Day::count();
+    }
 }

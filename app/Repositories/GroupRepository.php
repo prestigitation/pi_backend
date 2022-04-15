@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Enums\DashboardRoles;
 use App\Models\Group;
+use App\Models\Role;
 use App\Models\User;
 
 class GroupRepository
@@ -28,10 +30,15 @@ class GroupRepository
         $group->curator_id = $data['curator_id'];
         $group->study_variant_id = $data['study_variant_id'];
         if(isset($data['users']) && count($data['users'])) {
+            array_push($data['users'], ['id' => $data['headman_id']]); // т.к староста тоже является студентом, добавляем его в список пользователей
             foreach($data['users'] as $user) {
-                $userId = User::find($user['id']);
+                $user = User::find($user['id']);
+                if(!$user->isStudent()) { // если на момент привязки пользователь группы не является студентом
+                    $studentRole = Role::where('name', DashboardRoles::ROLE_STUDENT->value)->first();
+                    $user->roles()->attach($studentRole);
+                }
                 $group->users()->detach();
-                $group->users()->attach($userId);
+                $group->users()->attach($user);
             }
         }
     }

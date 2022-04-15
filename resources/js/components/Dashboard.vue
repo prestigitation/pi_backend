@@ -89,7 +89,104 @@
             <!-- /.col -->
             </div>
             <!-- /.row -->
+            <div class="row">
+                <!-- Left col -->
+                <div class="col-md-8">
+                    <!-- MAP & BOX PANE -->
+                    <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Расписание на сегодня</h3>
 
+                        <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <SelfScheduleLayout :daySchedule="header_info.today_schedule" />
+                        </div>
+                    </div>
+                <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <!-- /.card -->
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Последние новости</h3>
+
+                        <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <tbody class="text-center d-flex">
+                            <NewsCard v-for="article in header_info.last_news" :key="article.id" :article="article" />
+                        </tbody>
+                    </div>
+                <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- /.col -->
+
+            <div class="col-md-4">
+                <!-- Info Boxes Style 2 -->
+                <div class="info-box mb-3 bg-secondary">
+                <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Inventory</span>
+                    <span class="info-box-number">5,200</span>
+                </div>
+                <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+                <div class="info-box mb-3 bg-success">
+                <span class="info-box-icon"><i class="far fa-heart"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Mentions</span>
+                    <span class="info-box-number">92,050</span>
+                </div>
+                <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+                <div class="info-box mb-3 bg-danger">
+                <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Downloads</span>
+                    <span class="info-box-number">114,381</span>
+                </div>
+                <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+                <div class="info-box mb-3 bg-info">
+                <span class="info-box-icon"><i class="far fa-comment"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Direct Messages</span>
+                    <span class="info-box-number">163,921</span>
+                </div>
+                <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            </div>
+            <!-- /.row -->
             <!-- /.row -->
         </div><!--/. container-fluid -->
     </section>
@@ -97,20 +194,23 @@
 
 <script>
 import {notificationMixin} from '../mixins/notificationMixin'
+import SelfScheduleLayout from './layout/SelfScheduleLayout.vue'
+import NewsCard from './layout/NewsCard.vue';
 export default {
-    name: 'dashboard',
+    name: "dashboard",
     mixins: [
         notificationMixin
     ],
     data() {
         return {
             header_info: {}
-        }
+        };
     },
     async mounted() {
-        await axios.get(process.env.MIX_DASHBOARD_PATH + 'header_info')
-            .then(({data}) => this.header_info = data)
-            .catch(() => this.showFailMessage('Не удалось загрузить информацию для админ-панели!'))
-    }
+        await axios.get(process.env.MIX_DASHBOARD_PATH + "header_info")
+            .then(({ data }) => this.header_info = data)
+            .catch(() => this.showFailMessage("Не удалось загрузить информацию для админ-панели!"));
+    },
+    components: { SelfScheduleLayout, NewsCard }
 }
 </script>

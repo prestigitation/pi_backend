@@ -26,7 +26,8 @@ class StoreNewsRequest extends FormRequest
         return [
             'title' => 'required|string',
             'description' => 'required|string',
-            'category_id' => 'required|integer|exists:App\Models\Category,id'
+            'category_id' => 'required|integer|exists:App\Models\Category,id',
+            'image' => 'nullable|file|image'
         ];
     }
 }

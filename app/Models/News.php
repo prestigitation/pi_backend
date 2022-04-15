@@ -10,9 +10,9 @@ class News extends Model
 
     protected $with = ['category'];
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'image', 'category_id'];
 
-    protected $table = 'news';
+    //protected $table = 'news';
 
     use HasFactory;
 

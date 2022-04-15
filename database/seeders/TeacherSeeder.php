@@ -254,7 +254,7 @@ class TeacherSeeder extends Seeder
             [
                 'education' => 'ПГКУ им. Шевченко в 1994г.,
                 математика и физика, учитель математики и физики',
-                'surname' => "Борсуковский", 
+                'surname' => "Борсуковский",
                 'name' => "Сергей",
                 'patronymic' => "Васильевич",
                 'teacher_position_id' => 2,
@@ -333,7 +333,7 @@ class TeacherSeeder extends Seeder
                 'projects_count' => 876,
                 'conferences_count' => 432,
                 'diploma_projects_count' => 345,
-                'education_level_id' => $highEducation
+                'education_level_id' => $highEducation,
             ],
 
 

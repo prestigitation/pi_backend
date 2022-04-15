@@ -14,34 +14,12 @@
                         <span :class="['modal__days-day_name', {'modal__days-day_active': index === selectedDay}]" @click.prevent="setDay(index)">
                             {{day.name}}
                         </span>
-                        <span class="modal__days-day_delimiter">
+                        <span class="modal__days-day_delimiter" v-if="index !== days.length - 1">
                                 |
                         </span>
                     </span>
                 </div>
-                <div class="modal__schedule" v-if="daySchedule && mySchedule.length">
-                    <div v-for="schedule in daySchedule" :key="schedule.id">
-                        <span>
-                            {{schedule.pair_number.number}} пара - {{schedule.group.name}}
-                        </span>
-                        <ul>
-                            <li v-for="pair in JSON.parse(schedule.regularity)" v-if="getPairUserId(pair.teacher && pair.teacher.user && pair.teacher.user.id ? pair.teacher.user.id : undefined)">
-                                <span>
-                                    <span>{{pair.subject.name}}</span>
-                                    <span v-if="pair.format">({{pair.format.name}})</span>
-                                    <span>- {{pair.audience.name}} ауд.</span>
-                                </span>
-                                <span v-if="pair.type.value !== 'regular'">
-                                    <span>{{pair.type.name}}</span>
-                                    <span :style="'color: ' + pair.type.marker_color">*</span>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div v-else>
-                    В этот день нет пар!
-                </div>
+                <SelfScheduleLayout :daySchedule="daySchedule" />
             </div>
         </div>
     </div>
@@ -50,45 +28,44 @@
 
 <script>
 import {notificationMixin} from '../mixins/notificationMixin'
+import SelfScheduleLayout from './layout/SelfScheduleLayout.vue'
 export default {
-    name: 'self-schedule-modal',
+    name: "self-schedule-modal",
     mixins: [notificationMixin],
     data() {
         return {
             mySchedule: [],
             days: [],
             selectedDay: 0
-        }
+        };
     },
     methods: {
         async getMySchedule() {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'schedules/me')
-                .then(({data}) => this.mySchedule = data)
-                .catch(() => this.showFailMessage('Не удалось загрузить расписание'))
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "schedules/me")
+                .then(({ data }) => this.mySchedule = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить расписание"));
         },
         async getDays() {
-            await axios.get(process.env.MIX_API_PATH + 'days')
-                .then(({data}) => this.days = data)
-                .catch(() => this.showFailMessage('Не удалось загрузить дни недели'))
+            await axios.get(process.env.MIX_API_PATH + "days")
+                .then(({ data }) => this.days = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить дни недели"));
         },
         setDay(index) {
-            this.selectedDay = index
+            this.selectedDay = index;
         },
-        getPairUserId(pairUserId) {
-            return pairUserId === window.user.id
-        }
     },
     async created() {
-        if(this.$gate.isTeacher()) { // TODO: isStudent
+        if (this.$gate.isTeacher() || this.$gate.isStudent()) {
             await this.getDays();
             await this.getMySchedule();
         }
     },
     computed: {
         daySchedule() {
-            return this.mySchedule.filter((sch) => sch.day_id === this.selectedDay + 1)
+            return this.mySchedule.filter((sch) => sch.day_id === this.selectedDay + 1);
         }
-    }
+    },
+    components: { SelfScheduleLayout }
 }
 </script>
 

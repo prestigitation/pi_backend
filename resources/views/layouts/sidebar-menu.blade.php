@@ -121,7 +121,7 @@
 
       <li class="nav-item">
         <a href="#" class="nav-link" onclick="event.preventDefault();
-          document.getElementById('logout-form').submit();">
+          document.getElementById('logout-form').submit(); localStorage.removeItem('X-XSRF-TOKEN');">
           <i class="nav-icon fas fa-power-off red"></i>
           <p>
             Выйти из системы

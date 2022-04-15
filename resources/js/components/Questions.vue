@@ -5,7 +5,7 @@
 
         <div class="col-12">
 
-            <div class="card" v-if="$gate.isAdmin()">
+            <div class="card" v-if="$gate.isAdmin() || $gate.isTeacher()">
             <div class="card-header">
                     <h3 class="card-title">
                         <slot name="table_title">
@@ -74,10 +74,6 @@
         </div>
         </div>
 
-
-        <div v-if="!$gate.isAdmin()">
-            <not-found></not-found>
-        </div>
 
         <question-modal
             @close_question_modal="closeModal"

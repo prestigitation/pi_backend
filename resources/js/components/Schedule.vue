@@ -20,7 +20,7 @@
                                     Скачать расписание
                                 </button>
 
-                                <button v-if="$gate.isTeacher()" class="btn btn-info" @click.prevent="openMySchedule">
+                                <button v-if="$gate.isTeacher() || $gate.isStudent()" class="btn btn-info" @click.prevent="openMySchedule">
                                     Мое расписание
                                 </button>
 

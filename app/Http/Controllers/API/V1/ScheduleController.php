@@ -49,7 +49,7 @@ class ScheduleController extends Controller
                 }
                 return $this->scheduleRepository->filter($validated);
             } catch(\Exception $e) {
-
+                return new Response('Не удалось получить расписание', 400);
             }
     }
 
@@ -60,50 +60,5 @@ class ScheduleController extends Controller
     public function downloadSchedule(DownloadScheduleRequest $request) {
         $savedSchedulePath = $this->scheduleRepository->saveSchedule($request);
         return response()->download($savedSchedulePath)->deleteFileAfterSend(true);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

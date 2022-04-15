@@ -32,6 +32,11 @@
                             </select>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Изображение статьи</label>
+                            <input ref="image" class="form-control" type="file" id="formFile">
+                        </div>
+
                         <div class="form-group">
                             <label>Текст новости</label>
                             <wysiwyg v-model="form.description" />
@@ -76,8 +81,18 @@ export default {
             .catch(() => this.showFailMessage('Не удалось загрузить категории новостей'))
     },
     methods: {
+        loadFormData() {
+            let formData = new FormData()
+            formData.append('title', this.form.title)
+            formData.append('category_id', this.form.category_id)
+            formData.append('description', this.form.description)
+            if(this.$refs.image.files[0]) {
+                formData.append('image', this.$refs.image.files[0])
+            }
+            return formData
+        },
         async updateNews() {
-            await axios.put(process.env.MIX_DASHBOARD_PATH + `news/${this.newsId}`, this.form).then(() => {
+            await axios.put(process.env.MIX_DASHBOARD_PATH + `news/${this.newsId}`, this.loadFormData()).then(() => {
                 this.showSuccessMessage('Новость была успешно изменена')
             }).catch(() => {
                 this.showFailMessage('Не удалось изменить данные о новости')
@@ -86,7 +101,7 @@ export default {
             })
         },
         async createNews() {
-            await axios.post(process.env.MIX_DASHBOARD_PATH + 'news', this.form)
+            await axios.post(process.env.MIX_DASHBOARD_PATH + 'news', this.loadFormData())
                 .then(() => {
                     this.showSuccessMessage('Новость была успешно добавлена!')
                     this.$emit('close_direction_modal')

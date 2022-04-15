@@ -5,7 +5,7 @@ use App\Helpers\Classes\Abstract\QueryHelper;
 use Illuminate\Database\Eloquent\Builder;
 class BasicQueryHelper extends QueryHelper {
     protected static $allowedFilterFields = [
-        'days' => ['id'],
+        'days' => ['id', 'name'],
         'groups' => ['id'],
         'foreign_teachers' => ['id'],
     ];

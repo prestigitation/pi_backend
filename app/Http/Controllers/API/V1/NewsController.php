@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NewsResource;
+use App\Models\News;
 use App\Repositories\NewsRepository;
 use Illuminate\Http\Request;
 
@@ -23,51 +24,16 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return $this->newsRepository->getAll();
+        return News::all();
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Находит статью по slug
+     * @param string $slug
+     * @return News
      */
-    public function store(Request $request)
+    public function findBySlug(string $slug): News
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return $this->newsRepository->findBySlug($slug);
     }
 }
