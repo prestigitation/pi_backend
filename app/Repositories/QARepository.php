@@ -6,9 +6,8 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Stevebauman\Purify\Purify;
 
 class QARepository extends BaseRepository {
-    private $purifier;
-    public function __construct(Purify $purifier) {
-        $this->purifier = $purifier;
+    public function __construct() {
+        parent::__construct(app());
     }
     /**
      * Specify Model class name

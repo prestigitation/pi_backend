@@ -5,12 +5,15 @@ namespace App\Repositories;
 use App\Helpers\Classes\BasicQueryHelper;
 use App\Helpers\Classes\ScheduleFiller;
 use App\Helpers\Enums\DashboardRoles;
+use App\Http\Controllers\API\V1\Dashboard\RegularityController;
+use App\Http\Requests\Regularity\StoreRegularityRequest;
 use App\Http\Requests\Schedule\DownloadScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Models\Audience;
 use App\Models\Day;
 use App\Models\ForeignTeacher;
 use App\Models\PairFormat;
+use App\Models\Regularity;
 use App\Models\Schedule;
 use App\Models\StudyProcess;
 use App\Models\Subject;
@@ -18,9 +21,11 @@ use App\Models\Teacher;
 use App\Models\Type;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
@@ -29,12 +34,16 @@ use Stevebauman\Purify\Purify;
 class ScheduleRepository {
     private $purifier;
     private $fileRepository;
+    private $regularityRepository;
     public function __construct(
         Purify $purifier,
-        FileRepository $fileRepository)
+        FileRepository $fileRepository,
+        RegularityRepository $regularityRepository
+        )
     {
         $this->purifier = $purifier;
         $this->fileRepository = $fileRepository;
+        $this->regularityRepository = $regularityRepository;
     }
     public function loadAll()
     {
@@ -53,34 +62,17 @@ class ScheduleRepository {
         ->get();
     }
 
-    public function fillPairs(array $pairs) {
+    public function fillPairs(array $pairs): array {
         $result = [];
         foreach($pairs as $index => $pair) {
-            if($pair['is_foreign'] === true) {
-                $result[$index]['teacher'] = ForeignTeacher::findOrFail($pair['teacher_id']);
-            } else {
-                $result[$index]['teacher'] = Teacher::findOrFail($pair['teacher_id']);
-            }
-
-            $result[$index]['audience'] = Audience::find($pair['audience_id']);
-            $result[$index]['subject'] = Subject::find($pair['subject_id']);
-            $result[$index]['type'] = Type::find($pair['type_id']);
-
-            if(isset($pair['additional_info'])) {
-                $result[$index]['additional_info'] = $this->purifier->clean($pair['additional_info']);
-            }
-
-            if(isset($pair['start_date_info'])) {
-                $result[$index]['start_date_info'] = $this->purifier->clean($pair['start_date_info']);
-            }
-
-            if(isset($pair['format_id'])) {
-                $result[$index]['format'] = PairFormat::find($pair['format_id']);
-            }
-
-            if(isset($pair['study_process_id'])) {
-                $result[$index]['study_process'] = StudyProcess::find($pair['study_process_id']);
-            }
+            $newRegularityRequest = new StoreRegularityRequest();
+            $validatedRegularity = Validator::validate($pair, $newRegularityRequest->rules());
+            $regularity = $this->regularityRepository->create($validatedRegularity);
+            if(isset($pair['is_foreign_teacher'])) {
+                $regularity->foreignTeachers()->attach($pair['teacher']);
+            } else $regularity->teachers()->attach($pair['teacher']);
+            $regularity->save();
+            array_push($result, $regularity->id);
         }
         return $result;
     }
@@ -89,9 +81,6 @@ class ScheduleRepository {
         $schedule->day_id = $data['day_id'];
         $schedule->group_id = $data['group_id'];
         $schedule->pair_number_id = $data['pair_number_id'];
-        if(isset($data['pairs'])) {
-            $schedule->regularity = collect($this->fillPairs($data['pairs']))->toJson() ?? null; //json_encode($this->fillPairs($data['pairs']));
-        }
     }
 
     public function create(array $data)
@@ -99,6 +88,12 @@ class ScheduleRepository {
         $schedule = new Schedule;
         $this->addScheduleInfo($schedule, $data);
         $schedule->save();
+        if(isset($data['pairs'])) {
+            $regularities = $this->fillPairs($data['pairs']);
+            foreach($regularities as $reg) {
+                $schedule->regularity()->attach($reg);
+            }
+        }
     }
 
     public function update(array $data, int $id)

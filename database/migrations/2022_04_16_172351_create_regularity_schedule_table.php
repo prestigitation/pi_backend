@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubjectablesTable extends Migration
+class CreateRegularityScheduleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateSubjectablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('subjectables', function (Blueprint $table) {
+        Schema::create('regularity_schedule', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('subject_id');
-            $table->bigInteger('subjectable_id');
-            $table->string('subjectable_type');
+            $table->foreignId('regularity_id')->constrained();
+            $table->foreignId('schedule_id')->constrained();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateSubjectablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subjectable');
+        Schema::dropIfExists('regularity_schedule');
     }
 }
