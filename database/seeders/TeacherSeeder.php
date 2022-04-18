@@ -78,7 +78,8 @@ class TeacherSeeder extends Seeder
                 'projects_count' => 876,
                 'conferences_count' => 432,
                 'diploma_projects_count' => 345,
-                'education_level_id' => $highEducation
+                'education_level_id' => $highEducation,
+                'subjects' => [1]
             ],
             [
                 'education' => 'ПГКУ им. Шевченко в 1994г.,
@@ -348,6 +349,7 @@ class TeacherSeeder extends Seeder
                 'teacher_position_id' => 2,
                 'foreign' => true,
                 'study_link' => 'study_link_here',
+                'subjects' => [1]
             ],
             [
                 'surname' => "Новицкая",
@@ -424,6 +426,7 @@ class TeacherSeeder extends Seeder
             ];
 
             foreach($teachers as $teacher) {
+                $model = null; // teacher || foreignTeacher
                 if(isset($teacher['foreign']) && $teacher['foreign'] === true) { // если это преподаватель с другой кафедры, заносим в отдельную таблицу
                     $foreignTeacher = new ForeignTeacher;
                     $foreignTeacher->name = $teacher['name'];
@@ -435,6 +438,7 @@ class TeacherSeeder extends Seeder
                         $foreignTeacher->study_link = $teacher['study_link'];
                     }
                     $foreignTeacher->save();
+                    $model = $foreignTeacher;
                 } else { // в ином случае создаем пользователя под каждого преподавателя
                     $newUser = User::create([
                         'name' => $teacher['name'],
@@ -477,10 +481,18 @@ class TeacherSeeder extends Seeder
                     if(isset($teacher['study_link'])) $newTeacher->study_link = $teacher['study_link'];
                     $newTeacher->save();
 
+                    $model = $newTeacher;
+
                     if(isset($teacher['additional_info']['regalias'])) {
                         foreach($teacher['additional_info']['regalias'] as $regalia) {
                             $newTeacher->regalias()->attach($regalia);
                         }
+                    }
+                }
+
+                if(isset($teacher['subjects'])) {
+                    foreach($teacher['subjects'] as $subjectId) {
+                        $model->subjects()->attach($subjectId);
                     }
                 }
             }

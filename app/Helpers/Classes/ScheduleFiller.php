@@ -40,7 +40,7 @@ class ScheduleFiller {
      */
     private $schedule;
 
-    public function __construct(Worksheet $sheet, array $schedule) {
+    public function __construct(Worksheet $sheet, $schedule) {
         $this->sheet = $sheet;
         $this->schedule = $schedule;
     }
@@ -109,11 +109,19 @@ class ScheduleFiller {
      * Сформировать инициалы преподавателя для внесения в расписание
      * @return string
      */
-    private function getTeacherNSP($teacher): string {
-        return
-        ucfirst($teacher->surname ?? $teacher->user->surname).' '.
-        mb_substr(ucfirst($teacher->name ?? $teacher->user->name), 0, 1).'.'.
-        mb_substr(ucfirst($teacher->patronymic ?? $teacher->user->patronymic), 0, 1);
+    private function getTeacherNSP($teachers): string {
+        $result = '';
+        foreach($teachers as $index => $teacher) {
+
+            $result .= $teacher->teacherPosition->abbreviated. ' '.
+            ucfirst($teacher->surname ?? $teacher->user->surname).' '.
+            mb_substr(ucfirst($teacher->name ?? $teacher->user->name), 0, 1).'.'.
+            mb_substr(ucfirst($teacher->patronymic ?? $teacher->user->patronymic), 0, 1);
+            if($index !== count($teachers) - 1) {
+                $result .= ',';
+            }
+        }
+        return $result;
     }
 
     /**
@@ -122,9 +130,7 @@ class ScheduleFiller {
      * @return string
      */
     private function getTeacherRow($pair): string {
-        $result = $pair->teacher->teacher_position->abbreviated ?? '';
-        $result .= ' '.$this->getTeacherNSP($pair->teacher->user ?? $pair->teacher);
-        return $result;
+        return ' '.$this->getTeacherNSP(count($pair->foreignTeachers) ? $pair->foreignTeachers : $pair->teachers);
     }
 
     /**
@@ -205,13 +211,13 @@ class ScheduleFiller {
         $startRow = 4;
         foreach($this->schedule as $index => $schedule) {
             $startColumn = ((4 * ($schedule['group_id'] - 1)) + 3);
-            $pairsPerCell = count(json_decode($schedule['regularity']));
+            $pairsPerCell = count($schedule['regularity']);
             if($pairsPerCell) {
                 for($pairCount = 0; $pairCount < $pairsPerCell; $pairCount++) {
                     $this->fillAndCenterCell(
                         $startColumn,
                         ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']),
-                        $this->getSubjectRow(json_decode($schedule['regularity'])[$pairCount])
+                        $this->getSubjectRow($schedule['regularity'][$pairCount])
                     );
 
                     $this->setBoldCell(
@@ -224,7 +230,7 @@ class ScheduleFiller {
                     $this->fillAndCenterCell(
                         $startColumn,
                         ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1,
-                        $this->getTeacherRow(json_decode($schedule['regularity'])[$pairCount])
+                        $this->getTeacherRow($schedule['regularity'][$pairCount])
                     );
 
                     $this->setBorderOutline($startColumn,
@@ -233,14 +239,14 @@ class ScheduleFiller {
                     $this->fillAndCenterCell(
                         $startColumn + self::pairCellWidthCount,
                         ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1,
-                        $this->getAudienceSubRow(json_decode($schedule['regularity'])[$pairCount])
+                        $this->getAudienceSubRow($schedule['regularity'][$pairCount])
                     );
 
 
                     $this->fillAndCenterCell(
                         $startColumn + self::pairCellWidthCount,
                         ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']),
-                        $this->getAudienceRow(json_decode($schedule['regularity'])[$pairCount])
+                        $this->getAudienceRow($schedule['regularity'][$pairCount])
                     );
                     $this->setBoldCell($startColumn + self::pairCellWidthCount,
                     ($schedule['day_id'] - 1) * (self::pairCount * self::pairCellHeightCount) + ($schedule['day_id'] - 1) + (self::pairCellHeightCount * $schedule['pair_number_id']) + 1);
@@ -299,7 +305,7 @@ class ScheduleFiller {
                 $startRow,
                 self::pairCellWidthCount * $groupCount + self::pairCellWidthCount - 1,
                 $startRow);
-            $this->sheet->setCellValueByColumnAndRow(1, $startRow, $day['study_process']['name']);
+            $this->sheet->setCellValueByColumnAndRow(1, $startRow, $day->studyProcess->name);
 
 
 
@@ -326,7 +332,7 @@ class ScheduleFiller {
             $this->setDayBorder(1, $startRow + 1);
 
             $this->sheet
-            ->setCellValueByColumnAndRow(1, $startRow + 1, $day['name'])
+            ->setCellValueByColumnAndRow(1, $startRow + 1, $day->name)
             ->getStyleByColumnAndRow(1, $startRow + 1)
             ->getAlignment()
             ->setTextRotation(-90)
@@ -343,8 +349,8 @@ class ScheduleFiller {
      * Метод для получения всех групп
      * @return array
      */
-    private function getGroups(): array {
-        return Group::all()->toArray();
+    private function getGroups() {
+        return Group::all();
     }
 
     /**
@@ -352,6 +358,6 @@ class ScheduleFiller {
      * @return array
      */
     private function getDays() {
-        return Day::active()->toArray();
+        return Day::active()->get();
     }
 }

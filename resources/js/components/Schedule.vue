@@ -124,8 +124,8 @@
                             </a>
                         </td>
                         <td>
-                            <div v-if="JSON.parse(schedule_data.regularity).length">
-                                <div v-for="pair in JSON.parse(schedule_data.regularity)">
+                            <div v-if="schedule_data.regularity.length">
+                                <div v-for="pair in schedule_data.regularity">
                                     <pair-presenter
                                         :pair="pair"
                                         @pair_process_click="addPairProcessToFilter"

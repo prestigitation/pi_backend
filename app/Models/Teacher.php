@@ -30,7 +30,7 @@ class Teacher extends Model
         return $this->morphToMany(Subject::class, 'subjectable');
     }
 
-    public function regularity() {
-        return $this->morphTo(Regularity::class, 'teachable');
+    public function regularities() {
+        return $this->morphedByMany(Regularity::class, 'teachable');
     }
 }

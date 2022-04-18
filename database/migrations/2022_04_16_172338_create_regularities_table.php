@@ -17,7 +17,7 @@ class CreateRegularitiesTable extends Migration
             $table->id();
             $table->foreignId('audience_id')->constrained();
             $table->foreignId('subject_id')->constrained();
-            $table->bigInteger('type_id')->nullable();
+            $table->foreignId('type_id')->constrained();
             $table->bigInteger('pair_format_id')->nullable();
             $table->foreignId('study_process_id')->constrained();
             $table->string('additional_info')->nullable()->max(20);

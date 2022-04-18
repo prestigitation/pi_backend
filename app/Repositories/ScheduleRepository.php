@@ -17,6 +17,7 @@ use App\Models\Regularity;
 use App\Models\Schedule;
 use App\Models\StudyProcess;
 use App\Models\Subject;
+use App\Models\Teachable;
 use App\Models\Teacher;
 use App\Models\Type;
 use App\Models\User;
@@ -68,10 +69,10 @@ class ScheduleRepository {
             $newRegularityRequest = new StoreRegularityRequest();
             $validatedRegularity = Validator::validate($pair, $newRegularityRequest->rules());
             $regularity = $this->regularityRepository->create($validatedRegularity);
-            if(isset($pair['is_foreign_teacher'])) {
-                $regularity->foreignTeachers()->attach($pair['teacher']);
-            } else $regularity->teachers()->attach($pair['teacher']);
             $regularity->save();
+            if(!$pair['is_foreign_teacher']) {
+                $regularity->foreignTeachers()->attach(ForeignTeacher::find($pair['teacher']));
+            } else $regularity->teachers()->attach(Teacher::find($pair['teacher']));
             array_push($result, $regularity->id);
         }
         return $result;
@@ -132,27 +133,36 @@ class ScheduleRepository {
                 foreach($params as $key => $criteria) {
                     if(isset($allowedFields[$name])) {
                         if(in_array(0, $criteria)) {
-                            $query->whereJsonLength('regularity', 0);
+                            $query->where('regularity', []);
                             break;
                         } else {
                             $models = DB::table(Str::plural($name))->whereIn($key, $criteria)->select($key)->get();
                             foreach($models as $i => $model) {
-                                $queryString = '';
                                 if($name === 'foreign_teacher') {
-                                    $query
-                                        ->whereJsonContains("regularity", ['teacher' => $model])
-                                        ->whereJsonDoesntContain('regularity', ['teacher' => ['user' => ['id' => $model->id + 1]]]);
+                                    $query->whereHas('regularity', function (Builder $q) use ($model) {
+                                        $q->whereHas('foreignTeachers', function ($q) use ($model) {
+                                            foreach((array) $model as $key => $value) {
+                                                $q->where('foreign_teachers.'.$key, $value);
+                                            }
+                                        });
+                                    });
                                 } else {
                                     if($name === 'teacher') {
-                                        $query
-                                        ->whereJsonContains("regularity", ['teacher' => ['user' => ['id' => $model->id + 1]]]);
+                                        $query->whereHas('regularity', function (Builder $q) use ($model) {
+                                            $q->whereHas('teachers', function ($q) use ($model) {
+                                                foreach((array) $model as $key => $value) {
+                                                    $q->where('teachers.'.$key, $value);
+                                                }
+                                            });
+                                        });
                                     } else {
-                                        $queryString .= "json_contains(`regularity`,'".json_encode([[$name => $model]])."')";
-                                        if($i === 0) {
-                                            $query->whereRaw($queryString);
-                                        } else {
-                                            $query->orWhereRaw($queryString);
-                                        }
+                                        $query->whereHas('regularity', function ($q) use ($model, $name) {
+                                            $q->whereHas($name, function ($q) use ($model, $name) {
+                                                foreach((array) $model as $key => $value) {
+                                                    $q->where(Str::plural($name).'.'.$key, $value);
+                                                }
+                                            });
+                                        });
                                     }
                                 }
                             }
@@ -193,7 +203,6 @@ class ScheduleRepository {
         $query = $this->filterPairNumber($data, $query);
         $query = $this->filterRegularity($data, $query);
 
-
         return $query->orderBy('day_id', 'asc')->orderBy('pair_number_id')->get();
     }
 
@@ -207,7 +216,7 @@ class ScheduleRepository {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $scheduleFiller = new ScheduleFiller($sheet, $schedule->toArray());
+        $scheduleFiller = new ScheduleFiller($sheet, $schedule);
         $scheduleFiller->fillSchedule();
         try {
             $writer = new WriterXlsx($spreadsheet);

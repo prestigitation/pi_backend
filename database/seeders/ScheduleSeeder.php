@@ -292,17 +292,18 @@ class ScheduleSeeder extends Seeder
                         $data['pairs'][$index]['additional_info'] = $regularity->additional_info;
                     }
 
+                    if(isset($regularity->type->id)) {
+                        $data['pairs'][$index]['type_id'] = $regularity->type->id;
+                    }
+
                     if(isset($regularity->start_date_info)) {
                         $data['pairs'][$index]['start_date_info'] = $regularity->start_date_info;
                     }
 
-                    if(isset($regularity->format_id)) {
-                        $data['pairs'][$index]['format'] = $regularity->format_id;
+                    if(isset($regularity->format->id)) {
+                        $data['pairs'][$index]['pair_format_id'] = $regularity->format->id;
                     }
 
-                    if(isset($regularity->study_process_id)) {
-                        $data['pairs'][$index]['study_process'] = $regularity->study_process_id;
-                    }
 
                     $data['pairs'][$index]['is_foreign_teacher'] = isset($regularity->teacher->user);
 
