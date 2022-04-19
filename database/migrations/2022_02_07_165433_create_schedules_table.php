@@ -18,7 +18,7 @@ class CreateSchedulesTable extends Migration
             $table->foreignId('group_id')->constrained();
             $table->foreignId('day_id')->constrained();
             $table->foreignId('pair_number_id')->constrained();
-            $table->json('regularity');
+            //$table->json('regularity');
             $table->softDeletes();
             $table->unsignedBigInteger('deletion_author_id')->nullable(); //ID удалившего пользователя
             $table->timestamps();

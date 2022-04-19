@@ -31,7 +31,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return $this->scheduleRepository->getPaginated();
+        return $this->scheduleRepository->getAll();
     }
 
     /**
@@ -49,6 +49,7 @@ class ScheduleController extends Controller
                 }
                 return $this->scheduleRepository->filter($validated);
             } catch(\Exception $e) {
+                dd($e->getMessage());
                 return new Response('Не удалось получить расписание', 400);
             }
     }

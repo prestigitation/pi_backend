@@ -19,7 +19,7 @@ class Day extends Model
         return $this->belongsTo(StudyProcess::class);
     }
 
-    public function scopeActive(Day $day) {
-        return $day->id !== Day::count();
+    public function scopeActive($q) {
+        $q->where('id', '!=', Day::count());
     }
 }

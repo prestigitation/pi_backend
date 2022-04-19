@@ -9,8 +9,14 @@ class Audience extends Model
 {
     use HasFactory;
 
+    //protected $with = ['regularity'];
+
     protected $fillable = [
         'capacity',
         'name'
     ];
+
+    public function regularity() {
+        return $this->hasOne(Regularity::class);
+    }
 }

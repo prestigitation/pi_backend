@@ -16,7 +16,6 @@ class CreateSubjectablesTable extends Migration
         Schema::create('subjectables', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('subject_id');
-            //TODO: fix teacher model with subjects not working
             $table->bigInteger('subjectable_id');
             $table->string('subjectable_type');
             $table->timestamps();

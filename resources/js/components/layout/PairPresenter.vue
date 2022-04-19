@@ -13,9 +13,26 @@
         {{pair.subject.name}}
     </a>
     <span>-</span>
-    <a @click.prevent="$emit('pair_teacher_click', pair.teacher)" href="#" class="link-primary">
-        <user-name-data :user="pair.teacher.user ? pair.teacher.user : pair.teacher" />
-    </a>
+    <span v-if="pair.teachers.length">
+        <span v-for="teacher, index in pair.teachers">
+            <a @click.prevent="$emit('pair_teacher_click', teacher)" href="#" class="link-primary">
+                <user-name-data :user="teacher.user" />
+            </a>
+            <span v-if="index !== pair.teachers.length - 1">
+                ,
+            </span>
+        </span>
+    </span>
+    <span v-else-if="pair.foreign_teachers">
+        <span v-for="teacher, index in pair.foreign_teachers">
+            <a @click.prevent="$emit('pair_teacher_click', teacher)" href="#" class="link-primary">
+                <user-name-data :user="teacher" />
+            </a>
+            <span v-if="index !== pair.foreign_teachers.length - 1">
+                ,
+            </span>
+        </span>
+    </span>
     <span>-</span>
     <a @click.prevent="$emit('pair_audience_click', pair.audience)" href="#" class="link-primary">
         {{pair.audience.name}} аудитория

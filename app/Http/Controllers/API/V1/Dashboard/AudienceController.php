@@ -85,4 +85,12 @@ class AudienceController extends BaseController
             $this->sendError('Не удалось удалить данные об аудитории');
         }
     }
+
+    public function getEmptyAudiences() {
+        try {
+            return $this->audienceRepository->getEmptyAudiences();
+        } catch (\Exception $e) {
+            $this->sendError('Не удалось загрузить данные об загруженности аудиторий');
+        }
+    }
 }
