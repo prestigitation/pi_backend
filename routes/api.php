@@ -55,6 +55,7 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('header_info', 'DashboardController@getHeaderInfo')->middleware('web')->name('header_info.get');;
     Route::get('schedules/me', 'ScheduleController@getMySchedule')->name('schedules.my_schedule');
     Route::get('schedules/versions', 'ScheduleController@getVersions')->name('schedules.get_versions');
+    Route::get('audiences/empty', 'AudienceController@getEmptyAudiences')->name('audiences.get_empty');
 
     /* Специфические роуты */
     Route::post('users/{user_id}/roles/{role_id}', 'UserController@attachRole');

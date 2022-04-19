@@ -36,15 +36,18 @@ class ScheduleRepository {
     private $purifier;
     private $fileRepository;
     private $regularityRepository;
+    private $dayRepository;
     public function __construct(
         Purify $purifier,
         FileRepository $fileRepository,
-        RegularityRepository $regularityRepository
+        RegularityRepository $regularityRepository,
+        DayRepository $dayRepository
         )
     {
         $this->purifier = $purifier;
         $this->fileRepository = $fileRepository;
         $this->regularityRepository = $regularityRepository;
+        $this->dayRepository = $dayRepository;
     }
     public function loadAll()
     {
@@ -131,6 +134,7 @@ class ScheduleRepository {
         foreach($regularityInfo as $name => $params) {
             if(is_array($params)) {
                 foreach($params as $key => $criteria) {
+
                     if(isset($allowedFields[$name])) {
                         if(in_array(0, $criteria)) {
                             $query->where('regularity', []);
@@ -155,7 +159,25 @@ class ScheduleRepository {
                                                 }
                                             });
                                         });
-                                    } else {
+                                    } else if ($name === 'type') {
+                                            // Поскольку в модели Schedule может быть regularity с разным отношением type(even, odd или regular)
+                                            // выбираем только те пункты type, которые удовлетворяют условию в фильтре
+                                            foreach((array) $model as $k => $value) {
+                                                if(count(array_values($criteria)) > 1) {
+                                                    $query->whereHas('regularity.type', function (Builder $q) use ($key, $criteria, $value) {
+                                                        $q->whereIn($key, $criteria)
+                                                            ->where($key, '<>', $value);
+                                                    });
+                                                } else {
+                                                    $query->whereHas('regularity.type', function ($q) use ($k, $value) {
+                                                        $q->where($k, '=', $value);
+                                                    })->whereDoesntHave('regularity.type', function ($q) use ($k, $value) {
+                                                        $q->where($k, '<>', $value);
+                                                    });
+                                                }
+                                            }
+                                    }
+                                    else {
                                         $query->whereHas('regularity', function ($q) use ($model, $name) {
                                             $q->whereHas($name, function ($q) use ($model, $name) {
                                                 foreach((array) $model as $key => $value) {
@@ -194,6 +216,7 @@ class ScheduleRepository {
         isset($data['deleted']) && $data['deleted'] === true
         ? Schedule::withTrashed()
         : Schedule::query();
+
         $basicHelper = new BasicQueryHelper($query, $data);
         $basicHelper->query('groups')
                     ->query('days');
@@ -272,9 +295,7 @@ class ScheduleRepository {
     }
 
     public function getDashboardSchedule() {
-        Date::setLocale('ru');
-        $currentDay = Date::now()->format('l'); // Получаем сегодняшний день
-        $currentDayId = Day::where('name', mb_convert_case($currentDay, MB_CASE_TITLE))->first()->id;
+        $currentDayId = $this->dayRepository->getCurrentDayId();
         $additionalSchduleFilter = [
             'days' => ['id' => $currentDayId]
         ]; // добавляем фильтрацию на сегодняшний день

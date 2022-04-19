@@ -31,7 +31,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return $this->scheduleRepository->getPaginated();
+        return $this->scheduleRepository->getAll();
     }
 
     /**

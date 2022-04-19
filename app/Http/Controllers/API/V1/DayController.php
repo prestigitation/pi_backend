@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Day;
 use App\Repositories\DayRepository;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,7 @@ class DayController extends Controller
      */
     public function index()
     {
-        return $this->dayRepository->get();
+        return Day::active()->get();
     }
 
     /**
