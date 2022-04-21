@@ -9,7 +9,7 @@ class Regularity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['audience_id', 'subject_id', 'type_id', 'pair_format_id', 'study_process_id', 'additional_info', 'start_date_info'];
+    protected $fillable = ['audience_id', 'teacher_id', 'subject_id', 'type_id', 'pair_format_id', 'study_process_id', 'additional_info', 'start_date_info'];
     protected $with = ['teachers', 'foreignTeachers', 'audience', 'subject', 'type', 'pairFormat', 'studyProcess'];
 
     public function audience() {

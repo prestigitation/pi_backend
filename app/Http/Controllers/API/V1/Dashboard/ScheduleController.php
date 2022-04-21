@@ -49,6 +49,7 @@ class ScheduleController extends BaseController
             $this->scheduleRepository->create($request->validated());
             return $this->sendResponse(null, 'Запись в расписании была успешно добавлена!');
         } catch(\Exception $e) {
+            dd($e->getMessage());
             return $this->sendError('Не удалось добавить новую запись в расписании');
         }
     }
@@ -103,7 +104,6 @@ class ScheduleController extends BaseController
         try {
             return $this->scheduleRepository->getMySchedule();
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Не удалось получить собственное расписание!');
         }
     }

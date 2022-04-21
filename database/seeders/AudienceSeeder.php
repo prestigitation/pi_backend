@@ -22,6 +22,14 @@ class AudienceSeeder extends Seeder
             [
                 'name' => '29',
                 'capacity' => 12
+            ],
+            [
+                'name' => '26',
+                'capacity' => 10
+            ],
+            [
+                'name' => '25',
+                'capacity' => 25
             ]
         ];
 

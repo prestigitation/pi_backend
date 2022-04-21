@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Http\Requests\Audiences\StoreAudienceRequest;
 use App\Http\Requests\Audiences\UpdateAudienceRequest;
+use App\Models\Audience;
 use App\Repositories\AudienceRepository;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class AudienceController extends BaseController
     }
 
     public function getAll() {
-        return $this->audienceRepository->get();
+        return Audience::all();
     }
 
     /**

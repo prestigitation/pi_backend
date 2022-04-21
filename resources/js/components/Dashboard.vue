@@ -157,7 +157,9 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-4">
-                        <EmptyAudiencesLayout />
+                        <EmptyAudiencesLayout
+                            :audience_data="header_info.empty_audiences"
+                        />
                     </div>
                 <!-- /.card-body -->
                 </div>
