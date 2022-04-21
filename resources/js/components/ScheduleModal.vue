@@ -51,20 +51,20 @@
                                 </div>
                                 <label>Выберите преподавателя</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" v-model="form.pairs[index].is_foreign" id="checkbox">
+                                    <input class="form-check-input" type="checkbox" v-model="form.pairs[index].is_foreign_teacher" id="checkbox">
                                     <label class="form-check-label" for="checkbox">
                                         Преподаватели с других кафедр
                                     </label>
                                 </div>
-                                <span v-show="form.pairs[index].is_foreign">
-                                    <select name="teacher" v-model="form.pairs[index].teacher_id" id="teacher" class="form-control">
+                                <span v-show="form.pairs[index].is_foreign_teacher">
+                                    <select name="teacher" v-model="form.pairs[index].teacher" id="teacher" class="form-control">
                                         <option v-for="teacher in foreignTeachers" :key="teacher.id" :value="teacher.id">
                                             <user-name-data :user="teacher" />
                                         </option>
                                     </select>
                                 </span>
-                                <span v-show="!form.pairs[index].is_foreign">
-                                    <select name="teacher" v-model="form.pairs[index].teacher_id" id="teacher" class="form-control">
+                                <span v-show="!form.pairs[index].is_foreign_teacher">
+                                    <select name="teacher" v-model="form.pairs[index].teacher" id="teacher" class="form-control">
                                         <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
                                             <user-name-data :user="teacher.user ? teacher.user : teacher" />
                                         </option>
@@ -103,7 +103,7 @@
 
                                 <div class="form-group">
                                     <label>Выберите формат проведения пары(опционально)</label>
-                                    <select name="type" v-model="form.pairs[index].format_id" id="type" class="form-control">
+                                    <select name="type" v-model="form.pairs[index].pair_format_id" id="type" class="form-control">
                                         <option v-for="format in formats" :key="format.id" :value="format.id">
                                             {{format.name}}
                                         </option>
@@ -155,7 +155,7 @@ export default {
             subjects: [],
             formats: [],
             processes: [],
-            is_foreign: false,
+            is_foreign_teacher: false,
         };
     },
     props: {
@@ -243,13 +243,13 @@ export default {
             this.$emit('add_pair_to_schedule', {
                 type_id: '',
                 subject_id: '',
-                teacher_id: '',
+                teacher: '',
                 audience_id: '',
                 additional_info: '',
                 start_date_info: '',
-                format_id: '',
+                pair_format_id: '',
                 study_process_id: '',
-                is_foreign: this.is_foreign
+                is_foreign_teacher: this.is_foreign_teacher
             })
         },
         deleteScheduleEntry(index) {

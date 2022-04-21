@@ -303,11 +303,7 @@ class ScheduleSeeder extends Seeder
                     if(isset($regularity->format->id)) {
                         $data['pairs'][$index]['pair_format_id'] = $regularity->format->id;
                     }
-
-
-                    $data['pairs'][$index]['is_foreign_teacher'] = isset($regularity->teacher->user);
-
-
+                    $data['pairs'][$index]['is_foreign_teacher'] = !isset($regularity->teacher->user);
                 }
             }
             array_push($sch, $data);

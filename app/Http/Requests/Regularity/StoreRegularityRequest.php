@@ -28,7 +28,7 @@ class StoreRegularityRequest extends FormRequest
             'subject_id' => 'required|integer|exists:App\Models\Subject,id',
             'type_id' => 'nullable|integer|exists:App\Models\Type,id',
             'pair_format_id' => 'nullable|integer|exists:App\Models\PairFormat,id',
-            'study_process_id' => 'required|integer|exists:App\Models\StudyProcess,id',
+            'study_process_id' => 'nullable|integer|exists:App\Models\StudyProcess,id',
             'additional_info' => 'nullable|string|max:255',
             'start_date_info' => 'nullable|string|max:255',
         ];

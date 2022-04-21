@@ -36,7 +36,7 @@ class StoreScheduleRequest extends FormRequest
             'pairs.*.type_id' => 'nullable|integer|exists:App\Models\Type,id|distinct',
             'pairs.*.start_date_info' => 'nullable|string|max:20',
             'pairs.*.format_id' => 'nullable|integer|exists:App\Models\PairFormat,id',
-            'pairs.*.study_process' => 'nullable|array'
+            'pairs.*.study_process_id' => 'nullable|integer|exists:App\Models\StudyProcess,id'
         ];
     }
 }

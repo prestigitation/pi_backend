@@ -73,7 +73,7 @@ class ScheduleRepository {
             $validatedRegularity = Validator::validate($pair, $newRegularityRequest->rules());
             $regularity = $this->regularityRepository->create($validatedRegularity);
             $regularity->save();
-            if(!$pair['is_foreign_teacher']) {
+            if($pair['is_foreign_teacher']) {
                 $regularity->foreignTeachers()->attach(ForeignTeacher::find($pair['teacher']));
             } else $regularity->teachers()->attach(Teacher::find($pair['teacher']));
             array_push($result, $regularity->id);
