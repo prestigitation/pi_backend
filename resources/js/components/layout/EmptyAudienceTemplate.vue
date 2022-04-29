@@ -1,5 +1,5 @@
 <template>
-<span :class="['btn', 'p-1', 'mx-1', `btn-${button_type}`]">
+<span @click.prevent="$emit('button-click')" :class="['btn', 'p-1', 'mx-1', `btn-${button_type}`]">
     {{ audience.name }}
 </span>
 </template>

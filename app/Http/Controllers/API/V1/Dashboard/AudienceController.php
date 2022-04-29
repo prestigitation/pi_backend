@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
+use App\Http\Requests\Audiences\BorrowAudienceRequest;
 use App\Http\Requests\Audiences\StoreAudienceRequest;
 use App\Http\Requests\Audiences\UpdateAudienceRequest;
 use App\Models\Audience;
@@ -92,6 +93,14 @@ class AudienceController extends BaseController
             return $this->audienceRepository->getEmptyAudiences();
         } catch (\Exception $e) {
             $this->sendError('Не удалось загрузить данные об загруженности аудиторий');
+        }
+    }
+
+    public function borrow(int $audienceId, int $pairNumberId, BorrowAudienceRequest $request) {
+        try {
+            return $this->audienceRepository->borrowAudience($audienceId, $pairNumberId, $request->validated());
+        } catch (\Exception $e) {
+            $this->sendError('Не удалось создать запись об бронировании аудитории');
         }
     }
 }

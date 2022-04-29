@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Dashboard;
 
+use App\Helpers\Classes\Parity;
 use App\Http\Controllers\API\V1\Dashboard\BaseController;
 use App\Models\Direction;
 use App\Models\ForeignTeacher;
@@ -15,11 +16,16 @@ use App\Repositories\ScheduleRepository;
 class DashboardController extends BaseController {
     private $scheduleRepository;
     private $audienceRepository;
-
-    public function __construct(ScheduleRepository $scheduleRepository, AudienceRepository $audienceRepository)
+    private $parity;
+    public function __construct(
+        ScheduleRepository $scheduleRepository,
+        AudienceRepository $audienceRepository,
+        Parity $parity
+        )
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->audienceRepository = $audienceRepository;
+        $this->parity = $parity;
     }
 
     public function getHeaderInfo() {
@@ -37,7 +43,8 @@ class DashboardController extends BaseController {
             'directions_count' => Direction::all()->count(),
             'today_schedule' => $this->scheduleRepository->getDashboardSchedule(),
             'last_news' => News::orderBy('id', 'desc')->limit(3)->get(),
-            'empty_audiences' => $this->audienceRepository->getEmptyAudiences()
+            'empty_audiences' => $this->audienceRepository->getEmptyAudiences(),
+            'parity' => $this->parity->getSemesterStart()
         ];
     }
 }

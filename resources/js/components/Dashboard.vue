@@ -95,7 +95,7 @@
                     <!-- MAP & BOX PANE -->
                     <div class="card" v-if="header_info.today_schedule && header_info.today_schedule.length">
                     <div class="card-header">
-                        <h3 class="card-title">Расписание на сегодня</h3>
+                        <h3 class="card-title">Расписание на сегодня <Parity /> </h3>
 
                         <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -156,7 +156,7 @@
                         </div>
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body p-4">
+                    <div class="card-body p-4" v-if="$gate.isTeacher() || $gate.isAdmin()">
                         <EmptyAudiencesLayout
                             :audience_data="header_info.empty_audiences"
                         />
@@ -177,6 +177,7 @@ import {notificationMixin} from '../mixins/notificationMixin'
 import SelfScheduleLayout from './layout/SelfScheduleLayout.vue'
 import EmptyAudiencesLayout from './layout/EmptyAudiencesLayout'
 import NewsCard from './layout/NewsCard.vue';
+import Parity from './layout/Parity.vue';
 export default {
     name: "dashboard",
     mixins: [
@@ -193,9 +194,10 @@ export default {
             .catch(() => this.showFailMessage("Не удалось загрузить информацию для админ-панели!"));
     },
     components: {
-        SelfScheduleLayout,
-        NewsCard,
-        EmptyAudiencesLayout
-    }
+    SelfScheduleLayout,
+    NewsCard,
+    EmptyAudiencesLayout,
+    Parity
+}
 }
 </script>

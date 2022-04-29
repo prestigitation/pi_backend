@@ -2,16 +2,17 @@
 namespace App\Repositories;
 
 use App\Models\Audience;
+use App\Models\AudienceBorrow;
 use App\Models\PairNumber;
-use App\Models\Regularity;
-use App\Models\Schedule;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 class AudienceRepository extends BaseRepository {
     private $scheduleRepository;
-    public function __construct(ScheduleRepository $scheduleRepository)
+    private $audienceBorrowsRepository;
+    public function __construct(ScheduleRepository $scheduleRepository, AudienceBorrowsRepository $audienceBorrowsRepository)
     {
         $this->scheduleRepository = $scheduleRepository;
+        $this->audienceBorrowsRepository = $audienceBorrowsRepository;
     }
     /**
      * Specify Model class name
@@ -38,18 +39,37 @@ class AudienceRepository extends BaseRepository {
 
         foreach($daySchedule as $scheduleEntry) {
             foreach($scheduleEntry->regularity as $regularity) {
+                //$regularity->audience_id
+                $isBorrowing = AudienceBorrow::query()->each(function ($q) use ($audiences, $scheduleEntry, $regularity) {
+                    $q->whereIn('audience_id', $audiences->where('id', '<>', $regularity->audience_id)->pluck('id')->toArray())
+                    ->where('pair_number_id', $scheduleEntry->pair_number_id);
+                });
+
                 if(!in_array($regularity->audience, $emptyAudienceList[$scheduleEntry->pairNumber->number]['busy'])) {
                     array_push($emptyAudienceList[$scheduleEntry->pairNumber->number]['busy'], $regularity->audience);
                 }
             }
+        }
 
+        foreach($emptyAudienceList as $key => $audienceList) {
             foreach($audiences as $audience) {
-                if(!in_array($audience, $emptyAudienceList[$scheduleEntry->pairNumber->number]['empty'])) {
-                    array_push($emptyAudienceList[$scheduleEntry->pairNumber->number]['empty'], $audience);
+                $inBusy = array_filter($audienceList['busy'], function($aud) use ($audience) {
+                    return $audience->name === $aud->name;
+                });
+
+                if(!count($inBusy)) {
+                    array_push($emptyAudienceList[$key]['empty'], $audience);
                 }
             }
         }
 
         return $emptyAudienceList;
+    }
+
+    public function borrowAudience(int $audienceId, int $pairNumberId, array $borrowingData) {
+        $borrowEntry = $this->audienceBorrowsRepository->create($borrowingData);
+        $borrowEntry->audience()->associate($audienceId);
+        $borrowEntry->pairNumber()->associate($pairNumberId);
+        $borrowEntry->save();
     }
 }

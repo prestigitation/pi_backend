@@ -56,6 +56,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('schedules/me', 'ScheduleController@getMySchedule')->name('schedules.my_schedule');
     Route::get('schedules/versions', 'ScheduleController@getVersions')->name('schedules.get_versions');
     Route::get('audiences/empty', 'AudienceController@getEmptyAudiences')->name('audiences.get_empty');
+    Route::get('time/parity', 'DateController@getParity')->name('times.get_parity');
+
 
     /* Специфические роуты */
     Route::post('users/{user_id}/roles/{role_id}', 'UserController@attachRole');
@@ -63,6 +65,8 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::post('teachers/{id}/avatar', 'TeacherController@changeAvatar')->middleware('auth:api')->name('teacher.store_avatar');
     Route::post('foreign_teachers/{id}/avatar', 'ForeignTeacherController@changeAvatar')->middleware('auth:api')->name('foreign_teacher.store_avatar');
     Route::post('schedules/snapshot', 'ScheduleController@makeSnapshot')->middleware('can:accessSchedule')->name('schedules.make_snapshot');
+    Route::post('audience/{audience_id}/pair_number/{pair_number_id}', 'AudienceController@borrow')->middleware('auth:api')->name('audiences.borrow');
+
     /* Роуты на удаление */
     Route::delete('users/{user_id}/roles/{role_id}', 'UserController@detachRole');
 
