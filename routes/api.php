@@ -47,6 +47,7 @@ Route::namespace('App\\Http\\Controllers\\API\\V1\\Dashboard')->prefix('dashboar
     Route::get('pair_formats/all', 'PairFormatController@getAll')->middleware('web')->name('pair_formats.get_all');
     Route::get('questions/all', 'QAController@getAll')->middleware('can:accessQA')->name('pair_formats.get_all');
     Route::get('audiences/all', 'AudienceController@getAll')->middleware('web')->name('audiences.get_all');
+    Route::get('audiences/empty', 'AudienceController@getEmptyAudiences')->middleware('web')->name('audiences.get_empty');
     Route::get('subjects/all', 'SubjectController@getAll')->middleware('web')->name('subjects.get_all');
     Route::get('positions/all', 'PositionController@getAll')->middleware('web')->name('positions.get_all');
     Route::get('types/all', 'TypeController@getAll')->middleware('web')->name('types.get_all');

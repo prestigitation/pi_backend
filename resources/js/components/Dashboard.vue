@@ -144,7 +144,10 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <span>Свободные аудитории</span>
+                        <span>
+                            <span class="lead">Свободные аудитории</span>
+                            <span class="btn btn-primary" @click.prevent="changeEmptyAudiencesDate">Выбрать дату</span>
+                        </span>
 
                         <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -158,7 +161,7 @@
                     <!-- /.card-header -->
                     <div class="card-body p-4" v-if="$gate.isTeacher() || $gate.isAdmin()">
                         <EmptyAudiencesLayout
-                            :audience_data="header_info.empty_audiences"
+                            :audience_data="emptyAudiences"
                         />
                     </div>
                 <!-- /.card-body -->
@@ -185,13 +188,25 @@ export default {
     ],
     data() {
         return {
-            header_info: {}
+            header_info: {},
+            emptyAudiences: [],
+            currentDate: new Date()
         };
     },
     async mounted() {
         await axios.get(process.env.MIX_DASHBOARD_PATH + "header_info")
             .then(({ data }) => this.header_info = data)
             .catch(() => this.showFailMessage("Не удалось загрузить информацию для админ-панели!"));
+        if(this.$gate.isAdmin() || this.$gate.isTeacher()) {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'audiences/empty')
+                .then(({ data }) => this.emptyAudiences = data)
+                .catch(() => this.showFailMessage("Не удалось получить загруженность аудиторий!"));
+        }
+    },
+    methods: {
+        changeEmptyAudiencesDate() {
+
+        }
     },
     components: {
     SelfScheduleLayout,

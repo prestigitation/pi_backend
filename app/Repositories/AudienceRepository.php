@@ -39,7 +39,7 @@ class AudienceRepository extends BaseRepository {
 
         foreach($daySchedule as $scheduleEntry) {
             foreach($scheduleEntry->regularity as $regularity) {
-                //$regularity->audience_id
+                //$regularity->audience_id PLUCK all borrow audiences by id
                 $isBorrowing = AudienceBorrow::query()->each(function ($q) use ($audiences, $scheduleEntry, $regularity) {
                     $q->whereIn('audience_id', $audiences->where('id', '<>', $regularity->audience_id)->pluck('id')->toArray())
                     ->where('pair_number_id', $scheduleEntry->pair_number_id);

@@ -90,7 +90,7 @@
             </template>
 
             <template #table_content_created_at = "{user: teacher}">
-                {{teacher.user.created_at}}
+                {{new Date(teacher.user.created_at)}}
             </template>
 
             <template #table_content_roles = "{user: teacher}">

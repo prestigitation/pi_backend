@@ -17,6 +17,7 @@ class CreateAudienceBorrowsTable extends Migration
             $table->id();
             $table->bigInteger('audience_id')->nullable();
             $table->bigInteger('pair_number_id')->nullable();
+            $table->dateTime('date');
             $table->string('reason')->max(255);
             $table->timestamps();
         });

@@ -1,18 +1,10 @@
 <?php
 namespace App\Helpers\Classes;
+
+use Illuminate\Support\Facades\DB;
 use Jenssegers\Date\Date;
 
 class Parity {
-
-    private $startDates;
-    public function __construct() {
-
-        $this->startDates = [
-            new Date('second day February 2021'),
-            new Date('first day September 2021'),
-            new Date('second day February 2022')
-        ];
-    }
     /**
      * Получить дату начала семестра
      */
@@ -34,17 +26,6 @@ class Parity {
      * Нахождение даты начала текущего семестра
      */
     private function getNearestStartDate() {
-        $newDates = array();
-        foreach($this->startDates as $date)
-        {
-            $newDates[] = strtotime($date);
-        }
-        sort($newDates);
-        foreach ($newDates as $index => $time)
-        {
-            if ($time >= strtotime(new Date)) //текущая дата
-            return $newDates[$index - 1];
-        }
-        return $newDates[count($newDates) - 1];
+        return DB::table('semester_start')->first()->date;
     }
 }
