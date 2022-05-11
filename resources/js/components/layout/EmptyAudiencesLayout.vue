@@ -25,7 +25,7 @@
 
     <BorrowAudienceModal
         id="borrowAudience"
-        @borrow-audience="sendBorrowedAudience"
+        @borrow_audience="sendBorrowedAudience"
     />
 </div>
 </template>
@@ -45,6 +45,9 @@ export default {
             currentPairNumberId: ''
         }
     },
+    inject: [
+        'currentDate'
+    ],
     methods: {
         borrowAudience(audienceId, pairNumberId) {
             $('#borrowAudience').modal('show')
@@ -54,6 +57,9 @@ export default {
         async sendBorrowedAudience(reason) {
             let form = new FormData()
             form.append('reason', reason)
+            if(this.currentDate) {
+                form.append('date', this.currentDate)
+            }
             await axios.post(process.env.MIX_DASHBOARD_PATH + `audience/${this.currentAudienceId}/pair_number/${this.pairNumberId}`, form)
                 .then(() => this.showSuccessMessage('Аудитория была забронирована!'))
                 .catch(() => this.showFailMessage('Не удалось забронировать аудиторию!'))

@@ -294,8 +294,14 @@ class ScheduleRepository {
         return $this->filter($filter);
     }
 
-    public function getDashboardSchedule() {
-        $currentDayId = $this->dayRepository->getCurrentDayId();
+    public function getDashboardSchedule($date = null) {
+        if(isset($date)) {
+            $currentDayId = $this->dayRepository->getCurrentDayId();
+        } else {
+            $currentDay = new Date;
+            $currentDayId = $currentDay->dayOfWeek;
+        }
+
         $additionalSchduleFilter = [
             'days' => ['id' => $currentDayId]
         ]; // добавляем фильтрацию на сегодняшний день

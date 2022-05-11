@@ -24,7 +24,8 @@ class BorrowAudienceRequest extends FormRequest
     public function rules()
     {
         return [
-            'reason' => 'required|string|min:1|max:255'
+            'reason' => 'required|string|min:1|max:255',
+            'date' => 'nullable|date'
         ];
     }
 }

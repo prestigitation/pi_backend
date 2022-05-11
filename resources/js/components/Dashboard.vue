@@ -161,8 +161,14 @@
                     <!-- /.card-header -->
                     <div class="card-body p-4" v-if="$gate.isTeacher() || $gate.isAdmin()">
                         <EmptyAudiencesLayout
-                            :audience_data="emptyAudiences"
+                            :audience_data.sync="emptyAudiences"
                         />
+                        <EmptyAudienceDateModal
+                            id="emptyAudiencesDate"
+                            @close_modal="closeEmptyAudiencesDateModal"
+                            @change_date="changeCurrentAudiencesDate"
+                        />
+
                     </div>
                 <!-- /.card-body -->
                 </div>
@@ -181,11 +187,17 @@ import SelfScheduleLayout from './layout/SelfScheduleLayout.vue'
 import EmptyAudiencesLayout from './layout/EmptyAudiencesLayout'
 import NewsCard from './layout/NewsCard.vue';
 import Parity from './layout/Parity.vue';
+import EmptyAudienceDateModal from './EmptyAudienceDateModal.vue';
 export default {
     name: "dashboard",
     mixins: [
         notificationMixin
     ],
+    provide() {
+        return {
+            currentDate: this.currentDate.toISOString()
+        }
+    },
     data() {
         return {
             header_info: {},
@@ -193,26 +205,40 @@ export default {
             currentDate: new Date()
         };
     },
-    async mounted() {
-        await axios.get(process.env.MIX_DASHBOARD_PATH + "header_info")
-            .then(({ data }) => this.header_info = data)
-            .catch(() => this.showFailMessage("Не удалось загрузить информацию для админ-панели!"));
+    async created() {
+        await this.getHeaderinfo()
         if(this.$gate.isAdmin() || this.$gate.isTeacher()) {
-            await axios.get(process.env.MIX_DASHBOARD_PATH + 'audiences/empty')
-                .then(({ data }) => this.emptyAudiences = data)
-                .catch(() => this.showFailMessage("Не удалось получить загруженность аудиторий!"));
+            await this.getEmptyAudiences()
         }
     },
     methods: {
         changeEmptyAudiencesDate() {
-
+            $('#emptyAudiencesDate').modal('show')
+        },
+        async closeEmptyAudiencesDateModal() {
+            $('#emptyAudiencesDate').modal('toggle')
+            await this.getEmptyAudiences(this.currentDate)
+        },
+        changeCurrentAudiencesDate(date) {
+            this.currentDate = date
+        },
+        async getHeaderinfo() {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + "header_info")
+                .then(({ data }) => this.header_info = data)
+                .catch(() => this.showFailMessage("Не удалось загрузить информацию для админ-панели!"));
+        },
+        async getEmptyAudiences(date = null) {
+            await axios.get(process.env.MIX_DASHBOARD_PATH + 'audiences/empty', {params: {date}})
+                .then(({ data }) => this.emptyAudiences = data)
+                .catch(() => this.showFailMessage("Не удалось получить загруженность аудиторий!"));
         }
     },
     components: {
     SelfScheduleLayout,
     NewsCard,
     EmptyAudiencesLayout,
-    Parity
+    Parity,
+    EmptyAudienceDateModal
 }
 }
 </script>

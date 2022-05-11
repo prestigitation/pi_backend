@@ -9,7 +9,7 @@ class AudienceBorrow extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['reason'];
+    protected $fillable = ['reason', 'date'];
 
     protected $with = ['audience', 'pairNumber'];
 

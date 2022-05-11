@@ -88,9 +88,9 @@ class AudienceController extends BaseController
         }
     }
 
-    public function getEmptyAudiences() {
+    public function getEmptyAudiences(Request $request) {
         try {
-            return $this->audienceRepository->getEmptyAudiences();
+            return $this->audienceRepository->getEmptyAudiences($request->date);
         } catch (\Exception $e) {
             $this->sendError('Не удалось загрузить данные об загруженности аудиторий');
         }

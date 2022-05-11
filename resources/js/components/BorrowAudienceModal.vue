@@ -31,7 +31,7 @@ export default {
     },
     methods: {
         borrowAudience() {
-            this.$emit('borrow-audience', this.reason)
+            this.$emit('borrow_audience', this.reason)
         }
     }
 }
