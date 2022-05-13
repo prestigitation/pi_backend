@@ -104,6 +104,17 @@
             </router-link>
           </li>
 
+        @can('accessDates')
+            <li class="nav-item">
+            <router-link to="/dates" class="nav-link list-group-item">
+              <i class="nav-icon fas fa-list-ol green"></i>
+              <p>
+                Даты
+              </p>
+            </router-link>
+          </li>
+        @endcan
+
           <li class="nav-item">
             <router-link to="/foreign_teachers" class="nav-link list-group-item">
               <i class="nav-icon fas fa-list-ol green"></i>

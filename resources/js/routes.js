@@ -12,5 +12,6 @@ export default [
     { path: '/study_variants', component: require('./components/layout/StudyVariantCreate.vue').default },
     { path: '/groups', component: require('./components/Groups.vue').default },
     { path: '/foreign_teachers', component: require('./components/ForeignTeachers.vue').default },
+    { path: '/dates', component: require('./components/Dates.vue').default },
     { path: '*', component: require('./components/NotFound.vue').default },
 ];

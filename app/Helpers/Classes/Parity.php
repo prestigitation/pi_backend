@@ -11,7 +11,7 @@ class Parity {
     public function getSemesterStart() {
         $nearestDate = new Date($this->getNearestStartDate());
         $diff = $nearestDate->diffInWeeks(new Date());
-        if($diff % 2 === 0) {
+        if($diff + 1 % 2 == 0) {
             return [
                 'week' => 'Четная',
                 'value' => 'even',

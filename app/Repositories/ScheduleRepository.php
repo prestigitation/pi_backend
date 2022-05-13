@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Helpers\Classes\BasicQueryHelper;
+use App\Helpers\Classes\Parity;
 use App\Helpers\Classes\ScheduleFiller;
 use App\Helpers\Enums\DashboardRoles;
 use App\Http\Controllers\API\V1\Dashboard\RegularityController;
@@ -37,17 +38,20 @@ class ScheduleRepository {
     private $fileRepository;
     private $regularityRepository;
     private $dayRepository;
+    private $parity;
     public function __construct(
         Purify $purifier,
         FileRepository $fileRepository,
         RegularityRepository $regularityRepository,
-        DayRepository $dayRepository
+        DayRepository $dayRepository,
+        Parity $parity
         )
     {
         $this->purifier = $purifier;
         $this->fileRepository = $fileRepository;
         $this->regularityRepository = $regularityRepository;
         $this->dayRepository = $dayRepository;
+        $this->parity = $parity;
     }
     public function loadAll()
     {
@@ -294,7 +298,7 @@ class ScheduleRepository {
         return $this->filter($filter);
     }
 
-    public function getDashboardSchedule($date = null) {
+    public function getDashboardSchedule($date = null, bool $getByParity = false) {
         if(isset($date)) {
             $currentDayId = $this->dayRepository->getCurrentDayId();
         } else {
@@ -302,9 +306,17 @@ class ScheduleRepository {
             $currentDayId = $currentDay->dayOfWeek;
         }
 
-        $additionalSchduleFilter = [
+
+        $additionalScheduleFilter = [
             'days' => ['id' => $currentDayId]
         ]; // добавляем фильтрацию на сегодняшний день
-        return $this->getMySchedule($additionalSchduleFilter);
+
+        if($getByParity === true) {
+            $parity = $this->parity->getSemesterStart();
+            $typeByParity = Type::where('value', $parity['value'])->first()->id;
+            $regularType = Type::where('value', 'regular')->first()->id;
+            $additionalScheduleFilter['types'] = ['id' => [$typeByParity, $regularType]];
+        }
+        return $this->getMySchedule($additionalScheduleFilter);
     }
 }

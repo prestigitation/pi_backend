@@ -30,7 +30,7 @@ class AudienceRepository extends BaseRepository {
         $emptyAudienceList = [];
         $audiences = Audience::all();
         $pairNumbers = PairNumber::all();
-        $daySchedule = $this->scheduleRepository->getDashboardSchedule($date);
+        $daySchedule = $this->scheduleRepository->getDashboardSchedule($date, true);
 
         foreach($pairNumbers as $pairNumber) {
             $emptyAudienceList[$pairNumber->number] = [
@@ -42,10 +42,11 @@ class AudienceRepository extends BaseRepository {
         foreach($daySchedule as $scheduleEntry) {
             //TODO: проверка на parity
             foreach($scheduleEntry->regularity as $regularity) {
-
                 $borrowedEntry = AudienceBorrow::whereIn('audience_id', Audience::where('id', '<>', $regularity->audience_id)->pluck('id')->toArray())
                     ->where('pair_number_id', $scheduleEntry->pair_number_id)
-                    ->whereBetween('date', [$date?->startOfDay() ?? Date::now()->startOfDay(), $date?->endOfDay() ?? Date::now()->endOfDay()])->get()->toArray();
+                    ->whereBetween('date', [$date?->startOfDay() ?? Date::now()->startOfDay(), $date?->endOfDay() ?? Date::now()->endOfDay()])
+                    ->get()
+                    ->toArray();
 
                 if(!in_array($regularity->audience, $emptyAudienceList[$scheduleEntry->pairNumber->number]['busy']))
                 {

@@ -16,7 +16,6 @@ class CreateSemesterStartTable extends Migration
         Schema::create('semester_start', function (Blueprint $table) {
             $table->id();
             $table->timestamp('date');
-            $table->timestamps();
         });
     }
 
