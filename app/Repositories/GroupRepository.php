@@ -37,7 +37,6 @@ class GroupRepository
                     $studentRole = Role::where('name', DashboardRoles::ROLE_STUDENT->value)->first();
                     $user->roles()->attach($studentRole);
                 }
-                $group->users()->detach();
                 $group->users()->attach($user);
             }
         }

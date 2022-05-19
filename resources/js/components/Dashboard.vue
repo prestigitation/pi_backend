@@ -141,7 +141,7 @@
             </div>
             <!-- /.col -->
 
-            <div class="col-md-4">
+            <div class="col-md-4" v-if="$gate.isTeacher() || $gate.isAdmin()">
                 <div class="card">
                     <div class="card-header">
                         <span>

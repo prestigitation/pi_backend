@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\Audience;
 use App\Models\AudienceBorrow;
 use App\Models\PairNumber;
+use App\Models\Schedule;
 use DateTime;
 use Jenssegers\Date\Date;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -11,10 +12,15 @@ use Prettus\Repository\Eloquent\BaseRepository;
 class AudienceRepository extends BaseRepository {
     private $scheduleRepository;
     private $audienceBorrowsRepository;
-    public function __construct(ScheduleRepository $scheduleRepository, AudienceBorrowsRepository $audienceBorrowsRepository)
+    private $dateRepository;
+    public function __construct(
+        ScheduleRepository $scheduleRepository,
+        AudienceBorrowsRepository $audienceBorrowsRepository,
+        DateRepository $dateRepository)
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->audienceBorrowsRepository = $audienceBorrowsRepository;
+        $this->dateRepository = $dateRepository;
     }
     /**
      * Specify Model class name
@@ -31,7 +37,6 @@ class AudienceRepository extends BaseRepository {
         $audiences = Audience::all();
         $pairNumbers = PairNumber::all();
         $daySchedule = $this->scheduleRepository->getDashboardSchedule($date, true);
-
         foreach($pairNumbers as $pairNumber) {
             $emptyAudienceList[$pairNumber->number] = [
                 'busy' => [],
@@ -40,13 +45,23 @@ class AudienceRepository extends BaseRepository {
         }
 
         foreach($daySchedule as $scheduleEntry) {
-            //TODO: проверка на parity
             foreach($scheduleEntry->regularity as $regularity) {
                 $borrowedEntry = AudienceBorrow::whereIn('audience_id', Audience::where('id', '<>', $regularity->audience_id)->pluck('id')->toArray())
                     ->where('pair_number_id', $scheduleEntry->pair_number_id)
                     ->whereBetween('date', [$date?->startOfDay() ?? Date::now()->startOfDay(), $date?->endOfDay() ?? Date::now()->endOfDay()])
                     ->get()
                     ->toArray();
+
+              /*  $audiencesWithoutBorrows = Schedule::
+                    where('pair_number_id', $scheduleEntry->pair_number_id)
+                    ->where('day_id', $this->dateRepository->getCurrentDay()->id)
+                    ->whereRelation('regularity.audience', function ($q) use ($regularity) {
+                        return $q->where('id', $regularity->audience_id);
+                    })
+                    ->get(['id'])
+                    ->toArray();
+                    dd(collect($audiencesWithoutBorrows)->pluck('id'), $borrowedEntry);*/
+               /* $borrowedEntry = array_merge($audiencesWithoutBorrows, $borrowedEntry);*/
 
                 if(!in_array($regularity->audience, $emptyAudienceList[$scheduleEntry->pairNumber->number]['busy']))
                 {

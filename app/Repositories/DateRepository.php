@@ -1,7 +1,9 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Day;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Date\Date;
 
 class DateRepository {
     public function getDates() {
@@ -14,5 +16,9 @@ class DateRepository {
         if(isset($data['semester_start_date'])) {
             DB::table('semester_start')->where('id', 1)->update(['date' => $data['semester_start_date']]);
         }
+    }
+
+    public function getCurrentDay() {
+        return Day::where('id', Date::now()->dayOfWeek)->first();
     }
 }

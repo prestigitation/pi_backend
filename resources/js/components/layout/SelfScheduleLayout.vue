@@ -12,7 +12,7 @@
                 <ul>
                     <li
                         v-for="pair in schedule.regularity"
-                        v-if="getPairUserId(pair.teacher && pair.teacher.user && pair.teacher.user.id ? pair.teacher.user.id : undefined) && validPairsExist(pair)"
+                        v-if="getPairUserId(pair.teachers[0] && pair.teachers[0].user && pair.teachers[0].user.id ? pair.teachers[0].user.id : pair.foreign_teachers[0].id) && validPairsExist(pair)"
                     >
                         <span>
                             <span>{{pair.subject.name}}</span>
@@ -58,7 +58,7 @@ export default {
                 return true;
         },
         validPairsExist(pair) {
-            return this.$gate.isTeacher() ? pair.teacher.user.id === window.user.id : true;
+            return this.$gate.isTeacher() ? pair.teachers[0].user.id === window.user.id : true;
         },
         hasStudyLink(pair) {
             let hasLink = false

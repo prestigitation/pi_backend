@@ -22,11 +22,13 @@ use App\Models\Teachable;
 use App\Models\Teacher;
 use App\Models\Type;
 use App\Models\User;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate as FacadesGate;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -260,42 +262,46 @@ class ScheduleRepository {
      * @param array | null $additionalInfo
      * return mixed
      */
-    public function getMySchedule(array | null $additionalInfo = null) {
-        $teacher = DashboardRoles::ROLE_TEACHER->value;
-        $student = DashboardRoles::ROLE_STUDENT->value;
-        $filter = [];
-        $user = User::where('id', Auth::id())->with('groups')->first();
-        $allowedRoles = [
-            $teacher,
-            $student
-        ];
-        foreach($user->roles as $role) {
-            if(in_array($role->name, $allowedRoles)) {
-                switch($role->name) {
-                    case $teacher: {
-                        $teacher = Teacher::where('user_id', Auth::id())->first();
-                        $filter['teacher']['id'] = [$teacher['id']];
-                    }
-                    case $student: {
-                        foreach($user->groups as $group) {
-                            if(!array_key_exists('group', $filter)) {
-                                $filter['groups'] = ['id' => $group->id];
-                            } else {
-                                array_push($filter['groups'], ['id' => $group->id]);
+    public function getMySchedule(array | null $additionalInfo = null, bool $getByParity = false) {
+        if(FacadesGate::allows('watchSelfSchedule')) {
+            $teacher = DashboardRoles::ROLE_TEACHER->value;
+            $student = DashboardRoles::ROLE_STUDENT->value;
+            $filter = [];
+            $user = User::where('id', Auth::id())->with('groups')->first();
+            $allowedRoles = [
+                $teacher,
+                $student
+            ];
+            foreach($user->roles as $role) {
+                if(in_array($role->name, $allowedRoles)) {
+                    switch($role->name) {
+                        case $teacher: {
+                            if($getByParity == false) {
+                                $teacher = Teacher::where('user_id', Auth::id())->first();
+                                $filter['teacher']['id'] = [$teacher['id']];
+                            }
+                        }
+                        case $student: {
+                            foreach($user->groups as $group) {
+                                if(!array_key_exists('group', $filter)) {
+                                    $filter['groups'] = ['id' => $group->id];
+                                } else {
+                                    array_push($filter['groups'], ['id' => $group->id]);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        if(isset($additionalInfo) && count($additionalInfo)) {
-            foreach($additionalInfo as $key => $value) {
-                $filter[$key] = $value;
+            if(isset($additionalInfo) && count($additionalInfo)) {
+                foreach($additionalInfo as $key => $value) {
+                    $filter[$key] = $value;
+                }
             }
-        }
 
-        return $this->filter($filter);
+            return $this->filter($filter);
+        } else return [];
     }
 
     public function getDashboardSchedule($date = null, bool $getByParity = false) {
@@ -305,7 +311,6 @@ class ScheduleRepository {
             $currentDay = new Date;
             $currentDayId = $currentDay->dayOfWeek;
         }
-
 
         $additionalScheduleFilter = [
             'days' => ['id' => $currentDayId]
@@ -317,6 +322,6 @@ class ScheduleRepository {
             $regularType = Type::where('value', 'regular')->first()->id;
             $additionalScheduleFilter['types'] = ['id' => [$typeByParity, $regularType]];
         }
-        return $this->getMySchedule($additionalScheduleFilter);
+        return $this->getMySchedule($additionalScheduleFilter, $getByParity);
     }
 }

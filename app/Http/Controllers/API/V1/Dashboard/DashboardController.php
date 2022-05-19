@@ -41,7 +41,7 @@ class DashboardController extends BaseController {
                 'answered' => Question::answered()->count()
             ],
             'directions_count' => Direction::all()->count(),
-            'today_schedule' => $this->scheduleRepository->getDashboardSchedule(),
+            'today_schedule' => $this->scheduleRepository->getDashboardSchedule(null, false),
             'last_news' => News::orderBy('id', 'desc')->limit(3)->get(),
             'empty_audiences' => $this->audienceRepository->getEmptyAudiences(),
             'parity' => $this->parity->getSemesterStart()

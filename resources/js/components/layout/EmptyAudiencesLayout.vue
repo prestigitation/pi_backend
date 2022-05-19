@@ -1,7 +1,7 @@
 <template>
 <div class="audience__wrapper" v-if="audience_data">
     <div v-for="(audience, index) in audience_data" :key="audience.id">
-        <div v-if="audience.busy.length">
+        <div>
             <div class="lead h3 d-flex justify-content-center">{{ index }} пара</div>
             <div class="audience__variants mb-3">
                 <div class="my-2"><u>Занятые аудитории:</u></div>
